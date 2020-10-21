@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+      <LangVersion>9</LangVersion>
+      <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Blauhaus.Domain.Abstractions" Version="0.13.0" />
+    <PackageReference Include="Blauhaus.Ioc.Abstractions" Version="1.2.2" />
+    <PackageReference Include="Blauhaus.Responses" Version="0.2.7" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0-rc.1.20451.14" />
+    <PackageReference Include="Winton.Extensions.Threading.Actor" Version="1.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Blauhaus.ClientActors.Abstractions\Blauhaus.ClientActors.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>
