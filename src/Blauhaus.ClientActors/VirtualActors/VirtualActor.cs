@@ -7,11 +7,11 @@ using Blauhaus.ClientActors.StandaloneActors;
 using Blauhaus.Domain.Abstractions.CommandHandlers;
 using Blauhaus.Ioc.Abstractions;
 using Blauhaus.Responses;
-using IActor = Blauhaus.ClientActors.Abstractions.IActor;
+using IClientActor = Blauhaus.ClientActors.Abstractions.IClientActor;
 
 namespace Blauhaus.ClientActors.VirtualActors
 {
-    public class VirtualActor<TActor> : BaseStandaloneActor, IVirtualActor<TActor> where TActor : class, IActor
+    public class VirtualActor<TActor> : BaseStandaloneActor, IVirtualActor<TActor> where TActor : class, IClientActor
     {
         private readonly IServiceLocator _serviceLocator;
         private readonly string _id;

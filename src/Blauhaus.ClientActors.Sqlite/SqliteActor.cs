@@ -6,7 +6,7 @@ using SQLite;
 
 namespace Blauhaus.ClientActors.Sqlite
 {
-    public abstract class SqliteActor : IActor
+    public abstract class SqliteActor : IClientActor
     {
         private readonly ISqliteDatabaseService _sqliteDatabaseService;
         private SQLiteAsyncConnection _connection;

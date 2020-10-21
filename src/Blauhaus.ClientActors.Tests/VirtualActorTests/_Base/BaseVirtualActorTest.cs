@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Blauhaus.ClientActors.Tests.VirtualActorTests._Base
 {
     public class BaseVirtualActorTest<TActor> : BaseActorTest<VirtualActor<TActor>> 
-        where TActor : class, IActor
+        where TActor : class, IClientActor
     {
         protected string ActorId;
         protected IServiceLocator ServiceLocator;

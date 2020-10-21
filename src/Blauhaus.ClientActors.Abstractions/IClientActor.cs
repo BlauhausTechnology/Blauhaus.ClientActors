@@ -2,7 +2,7 @@
 
 namespace Blauhaus.ClientActors.Abstractions
 {
-    public interface IActor 
+    public interface IClientActor 
     {
         Task InitializeAsync(string id);
         Task ShutdownAsync();

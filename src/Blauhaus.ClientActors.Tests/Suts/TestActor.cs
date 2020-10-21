@@ -9,7 +9,7 @@ using Blauhaus.Responses;
 namespace Blauhaus.ClientActors.Tests.Suts
 { 
 
-    public class TestActor : IActor,
+    public class TestActor : IClientActor,
         IVoidCommandHandler<MyVoidMessage>,
         ICommandHandler<MyTestResult, MyTestMessage>
     {

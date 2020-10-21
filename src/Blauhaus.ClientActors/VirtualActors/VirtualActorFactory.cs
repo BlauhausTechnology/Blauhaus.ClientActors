@@ -12,7 +12,7 @@ namespace Blauhaus.ClientActors.VirtualActors
             _serviceLocator = serviceLocator;
         }
 
-        public IVirtualActor<TActor> Get<TActor>(string actorId) where TActor : class, IActor
+        public IVirtualActor<TActor> Get<TActor>(string actorId) where TActor : class, IClientActor
         {
             return new VirtualActor<TActor>(_serviceLocator, actorId);
         }

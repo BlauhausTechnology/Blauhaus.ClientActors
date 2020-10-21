@@ -9,7 +9,7 @@ using NUnit.Framework;
 
 namespace Blauhaus.ClientActors.Tests.VirtualActorTests
 {
-    public interface ITestActor : IActor
+    public interface ITestActor : IClientActor
     {
         public List<int> GetNumbers();
     }
