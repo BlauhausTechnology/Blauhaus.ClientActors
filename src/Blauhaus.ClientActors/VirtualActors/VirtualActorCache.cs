@@ -6,6 +6,7 @@ using Blauhaus.ClientActors.Abstractions;
 [assembly:InternalsVisibleTo("Blauhaus.ClientActors.TestHelpers")]
 namespace Blauhaus.ClientActors.VirtualActors
 {
+    //todo this needs to move to the VirtualActorFactory. The Virtual part also needs to be one per actor else the queues get duplicated
     internal class VirtualActorCache 
     {
         private readonly ConcurrentDictionary<string, IClientActor> _actors = new ConcurrentDictionary<string, IClientActor>();

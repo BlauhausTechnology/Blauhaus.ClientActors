@@ -36,7 +36,7 @@ namespace Blauhaus.ClientActors.Tests.Suts
         {
             Thread.Sleep(1);
             _numbers.Add(_count++);
-            Console.WriteLine("Invoked: " + _count);
+            Console.WriteLine($"Thread: {Thread.CurrentThread.ManagedThreadId}. Invoked times: {_count}");
             return Task.CompletedTask;
         }
 
@@ -44,7 +44,7 @@ namespace Blauhaus.ClientActors.Tests.Suts
         {
             Thread.Sleep(1);
             _numbers.Add(_count++);
-            Console.WriteLine("Invoked: " + _count);
+            Console.WriteLine($"Thread: {Thread.CurrentThread.ManagedThreadId}. Invoked times: {_count}");
             return Task.FromResult(new MyTestResult(_count));
         }
 
@@ -52,7 +52,7 @@ namespace Blauhaus.ClientActors.Tests.Suts
         {
             Thread.Sleep(1);
             _numbers.Add(_count++); 
-            Console.WriteLine("Invoked: " + _count);
+            Console.WriteLine($"Thread: {Thread.CurrentThread.ManagedThreadId}. Invoked times: {_count}");
             return Task.CompletedTask;
         }
 
@@ -60,7 +60,7 @@ namespace Blauhaus.ClientActors.Tests.Suts
         {
             Thread.Sleep(1);
             _numbers.Add(_count++);
-            Console.WriteLine("Invoked: " + _count);
+            Console.WriteLine($"Thread: {Thread.CurrentThread.ManagedThreadId}. Invoked times: {_count}");
             return Task.FromResult(new MyTestResult(_count));
         }
          
@@ -68,14 +68,14 @@ namespace Blauhaus.ClientActors.Tests.Suts
         {
             Thread.Sleep(1);
             _numbers.Add(_count++);
-            Console.WriteLine("Invoked: " + _count);
+            Console.WriteLine($"Thread: {Thread.CurrentThread.ManagedThreadId}. Invoked times: {_count}");
         }
 
         public MyTestResult Action_WithReturnValueNoMessage()
         {
             Thread.Sleep(1);
             _numbers.Add(_count++);
-            Console.WriteLine("Invoked: " + _count);
+            Console.WriteLine($"Thread: {Thread.CurrentThread.ManagedThreadId}. Invoked times: {_count}");
             return new MyTestResult(_count);
         }
 
@@ -83,14 +83,14 @@ namespace Blauhaus.ClientActors.Tests.Suts
         {
             Thread.Sleep(1);
             _numbers.Add(_count++); 
-            Console.WriteLine("Invoked: " + _count);
+            Console.WriteLine($"Thread: {Thread.CurrentThread.ManagedThreadId}. Invoked times: {_count}");
         }
 
         public MyTestResult Action_WithReturnValueWithMessage(MyTestMessage message)
         {
             Thread.Sleep(1);
             _numbers.Add(_count++);
-            Console.WriteLine("Invoked: " + _count);
+            Console.WriteLine($"Thread: {Thread.CurrentThread.ManagedThreadId}. Invoked times: {_count}");
             return new MyTestResult(_count);
         }
         
@@ -98,7 +98,7 @@ namespace Blauhaus.ClientActors.Tests.Suts
         {
             Thread.Sleep(1);
             _numbers.Add(_count++);
-            Console.WriteLine("Invoked: " + _count);
+            Console.WriteLine($"Thread: {Thread.CurrentThread.ManagedThreadId}. Invoked times: {_count}");
             return Response.Success();
         }
 
@@ -106,7 +106,7 @@ namespace Blauhaus.ClientActors.Tests.Suts
         {
             Thread.Sleep(1);
             _numbers.Add(_count++);
-            Console.WriteLine("Invoked: " + _count);
+            Console.WriteLine($"Thread: {Thread.CurrentThread.ManagedThreadId}. Invoked times: {_count}");
             return Response.Success(new MyTestResult(_count));
         }
 
