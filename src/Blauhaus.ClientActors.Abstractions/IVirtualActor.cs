@@ -6,7 +6,7 @@ using Blauhaus.Responses;
 
 namespace Blauhaus.ClientActors.Abstractions
 {
-    public interface IVirtualActor<TActor> : IAsyncDisposable where TActor : IInitializeById
+    public interface IVirtualActor<TActor> : IAsyncDisposable  
     {
 
         Task InvokeAsync(Expression<Func<TActor, Func<Task>>> handler, CancellationToken token = default);

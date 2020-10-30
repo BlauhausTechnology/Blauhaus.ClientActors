@@ -20,17 +20,29 @@ namespace Blauhaus.ClientActors.VirtualActors
 
         public IVirtualActor<TActor> Get<TActor>(string actorId) where TActor : class, IInitializeById
         {
-            var virtualActor = GetVirtualActor<TActor>(actorId);
+            var virtualActor = GetAndInitializeVirtualActor<TActor>(actorId);
             _actors[$"{typeof(TActor).FullName}|{actorId}"] = virtualActor;
             return virtualActor;
         }
 
         public IVirtualActor<TActor> GetTransient<TActor>(string actorId) where TActor : class, IInitializeById
         {
-            return GetVirtualActor<TActor>(actorId);
+            return GetAndInitializeVirtualActor<TActor>(actorId);
         }
 
-        private VirtualActor<TActor> GetVirtualActor<TActor>(string actorId) where TActor : class, IInitializeById
+        public IVirtualActor<TActor> Get<TActor>() where TActor : class
+        {
+            var virtualActor = GetVirtualActor<TActor>();
+            _actors[$"{typeof(TActor).FullName}"] = virtualActor;
+            return virtualActor;
+        }
+
+        public IVirtualActor<TActor> GetTransient<TActor>() where TActor : class
+        {
+            return GetVirtualActor<TActor>();
+        }
+
+        private VirtualActor<TActor> GetAndInitializeVirtualActor<TActor>(string actorId) where TActor : class, IInitializeById
         {
             var actorKey = $"{typeof(TActor).FullName}|{actorId}";
             if (_actors.TryGetValue(actorKey, out var actorObject))
@@ -44,6 +56,20 @@ namespace Blauhaus.ClientActors.VirtualActors
             //don't need to await this, it will be the first item in the actor's processing queue
             Task.Run(async () => await virtualActor.InvokeAsync(x => x.InitializeAsync, actorId, CancellationToken.None));
 
+            return virtualActor;
+        }
+
+        private VirtualActor<TActor> GetVirtualActor<TActor>() where TActor : class
+        {
+            var actorKey = $"{typeof(TActor).FullName}";
+            if (_actors.TryGetValue(actorKey, out var actorObject))
+            {
+                return (VirtualActor<TActor>) actorObject;
+            }
+            
+            var actor = _serviceLocator.Resolve<TActor>();
+            var virtualActor = new VirtualActor<TActor>(actor);
+            
             return virtualActor;
         }
     }

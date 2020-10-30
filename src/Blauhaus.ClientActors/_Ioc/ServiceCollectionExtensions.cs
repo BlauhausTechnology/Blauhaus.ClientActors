@@ -8,18 +8,13 @@ namespace Blauhaus.ClientActors._Ioc
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddActor<TActor>(this IServiceCollection services) 
-            where TActor : class, IInitializeById
-        {
-            services.AddTransient<TActor>();
-            return services;
-        }
-
-        public static IServiceCollection AddActorSystem(this IServiceCollection services) 
+        public static IServiceCollection AddActor<TActor>(this IServiceCollection services) where TActor : class
         {
             services.TryAddSingleton<IVirtualActorFactory, VirtualActorFactory>();
-            services.TryAddSingleton<VirtualActorCache>();
+            services.AddTransient<TActor>();
+
             return services;
         }
+         
     }
 }
