@@ -1,4 +1,7 @@
-﻿using Blauhaus.ClientActors.Abstractions;
+﻿using System.Collections.Concurrent;
+using System.Threading;
+using System.Threading.Tasks;
+using Blauhaus.ClientActors.Abstractions;
 using Blauhaus.Ioc.Abstractions;
 
 namespace Blauhaus.ClientActors.VirtualActors
@@ -7,14 +10,41 @@ namespace Blauhaus.ClientActors.VirtualActors
     {
         private readonly IServiceLocator _serviceLocator;
 
+        private readonly ConcurrentDictionary<string, object> _actors;
+
         public VirtualActorFactory(IServiceLocator serviceLocator)
         {
+            _actors = new ConcurrentDictionary<string, object>();
             _serviceLocator = serviceLocator;
         }
 
-        public IVirtualActor<TActor> Get<TActor>(string actorId) where TActor : class, IClientActor
+        public IVirtualActor<TActor> Get<TActor>(string actorId) where TActor : class, IInitializeById
         {
-            return new VirtualActor<TActor>(_serviceLocator, actorId);
+            var virtualActor = GetVirtualActor<TActor>(actorId);
+            _actors[$"{typeof(TActor).FullName}|{actorId}"] = virtualActor;
+            return virtualActor;
+        }
+
+        public IVirtualActor<TActor> GetTransient<TActor>(string actorId) where TActor : class, IInitializeById
+        {
+            return GetVirtualActor<TActor>(actorId);
+        }
+
+        private VirtualActor<TActor> GetVirtualActor<TActor>(string actorId) where TActor : class, IInitializeById
+        {
+            var actorKey = $"{typeof(TActor).FullName}|{actorId}";
+            if (_actors.TryGetValue(actorKey, out var actorObject))
+            {
+                return (VirtualActor<TActor>) actorObject;
+            }
+            
+            var actor = _serviceLocator.Resolve<TActor>();
+            var virtualActor = new VirtualActor<TActor>(actor);
+            
+            //don't need to await this, it will be the first item in the actor's processing queue
+            Task.Run(async () => await virtualActor.InvokeAsync(x => x.InitializeAsync, actorId, CancellationToken.None));
+
+            return virtualActor;
         }
     }
 }

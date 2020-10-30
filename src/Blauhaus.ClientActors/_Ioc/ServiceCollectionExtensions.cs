@@ -9,7 +9,7 @@ namespace Blauhaus.ClientActors._Ioc
     public static class ServiceCollectionExtensions
     {
         public static IServiceCollection AddActor<TActor>(this IServiceCollection services) 
-            where TActor : class, IClientActor
+            where TActor : class, IInitializeById
         {
             services.AddTransient<TActor>();
             return services;

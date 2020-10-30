@@ -9,15 +9,13 @@ using Blauhaus.Responses;
 namespace Blauhaus.ClientActors.Tests.Suts
 { 
 
-    public class TestActor : IClientActor,
-        IVoidCommandHandler<MyVoidMessage>,
-        ICommandHandler<MyTestResult, MyTestMessage>
+    public class TestActor : ITestActor
     {
 
         private readonly List<int> _numbers = new List<int>();
         private int _count;
         private int _shutDownCount;
-     
+
         public Task InitializeAsync(string id)
         {
             Thread.Sleep(1);

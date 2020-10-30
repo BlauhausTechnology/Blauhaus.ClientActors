@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Blauhaus.ClientActors.Abstractions;
 using Blauhaus.ClientActors.Tests._Base;
 using Blauhaus.ClientActors.Tests.Suts;
@@ -9,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Blauhaus.ClientActors.Tests.VirtualActorTests._Base
 {
     public class BaseVirtualActorTest<TActor> : BaseActorTest<VirtualActor<TActor>> 
-        where TActor : class, IClientActor
+        where TActor : class, IInitializeById
     {
         protected string ActorId;
         protected IServiceLocator ServiceLocator;
@@ -28,7 +30,9 @@ namespace Blauhaus.ClientActors.Tests.VirtualActorTests._Base
         protected override VirtualActor<TActor> ConstructSut()
         {
             ServiceLocator = Services.BuildServiceProvider().GetRequiredService<IServiceLocator>();
-            return new VirtualActor<TActor>(ServiceLocator, ActorId);
+            var virtualActor = new VirtualActor<TActor>(ServiceLocator.Resolve<TActor>());
+            Task.Run(async () => await virtualActor.InvokeAsync(x => x.InitializeAsync, ActorId, CancellationToken.None));
+            return virtualActor;
         }
 
     }

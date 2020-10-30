@@ -2,6 +2,8 @@
 {
     public interface IVirtualActorFactory
     {
-        IVirtualActor<TVirtualActor> Get<TVirtualActor>(string actorId) where TVirtualActor : class, IClientActor;
+        IVirtualActor<TActor> Get<TActor>(string actorId) where TActor : class, IInitializeById;
+        IVirtualActor<TActor> GetTransient<TActor>(string actorId) where TActor : class, IInitializeById;
     }
+
 }
