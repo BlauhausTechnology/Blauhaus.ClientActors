@@ -12,12 +12,16 @@ namespace Blauhaus.ClientActors.Tests.ActorFactoryTests
     {
 
         private MockBuilder<ITestActor> MockTestActor => AddMock<ITestActor>().Invoke();
+        private MockBuilder<IGenericTestActor<int>> MockGenericIntTestActor => AddMock<IGenericTestActor<int>>().Invoke();
+        private MockBuilder<IGenericTestActor<string>> MockGenericStringTestActor => AddMock<IGenericTestActor<string>>().Invoke();
 
         public override void Setup()
         {
             base.Setup();
 
             AddService(MockTestActor.Object);
+            AddService(MockGenericStringTestActor.Object);
+            AddService(MockGenericIntTestActor.Object);
         }
 
         [Test]
@@ -44,19 +48,40 @@ namespace Blauhaus.ClientActors.Tests.ActorFactoryTests
             //Assert
             MockTestActor.Mock.Verify(x => x.InitializeAsync("myId"), Times.Once);
         }
+         
 
         [Test]
-        public async Task WHEN_different_VirtualActor_exists_SHOULD_create_new_one()
+        public async Task SHOULD_treat_different_generics_with_same_id_as_different()
         {
             //Arrange
-            Sut.GetById<ITestActor>("myId");
+            Sut.GetById<IGenericTestActor<int>>("myId");
 
             //Act
-            Sut.GetById<ITestActor>("newId");
+            Sut.GetById<IGenericTestActor<string>>("myId");
             await Task.Delay(10); //delay because initialization happens asyncronousmly
 
             //Assert
-            MockTestActor.Mock.Verify(x => x.InitializeAsync(It.IsAny<string>()), Times.Exactly(2));
+            MockGenericIntTestActor.Mock.Verify(x => x.InitializeAsync(It.IsAny<string>()), Times.Exactly(1));
+            MockGenericStringTestActor.Mock.Verify(x => x.InitializeAsync(It.IsAny<string>()), Times.Exactly(1));
+            Assert.That(Sut.GetActive<IGenericTestActor<int>>().Count, Is.EqualTo(1));
+            Assert.That(Sut.GetActive<IGenericTestActor<string>>().Count, Is.EqualTo(1));
+        }
+
+        [Test]
+        public async Task SHOULD_treat_same_generics_with_same_id_as_same()
+        {
+            //Arrange
+            Sut.GetById<IGenericTestActor<int>>("myId");
+
+            //Act
+            Sut.GetById<IGenericTestActor<int>>("myId");
+            await Task.Delay(10); //delay because initialization happens asyncronousmly
+
+            //Assert
+            MockGenericIntTestActor.Mock.Verify(x => x.InitializeAsync(It.IsAny<string>()), Times.Exactly(1));
+            MockGenericStringTestActor.Mock.Verify(x => x.InitializeAsync(It.IsAny<string>()), Times.Exactly(0));
+            Assert.That(Sut.GetActive<IGenericTestActor<int>>().Count, Is.EqualTo(1));
+            Assert.That(Sut.GetActive<IGenericTestActor<string>>().Count, Is.EqualTo(0));
         }
     }
 }
