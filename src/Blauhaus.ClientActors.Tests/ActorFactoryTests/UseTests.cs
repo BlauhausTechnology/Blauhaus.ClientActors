@@ -8,7 +8,7 @@ using NUnit.Framework;
 
 namespace Blauhaus.ClientActors.Tests.ActorFactoryTests
 {
-    public class GetTransientTests : BaseActorTest<VirtualActorFactory>
+    public class UseTests : BaseActorTest<VirtualActorFactory>
     {
 
         private MockBuilder<ITestActor> MockTestActor => AddMock<ITestActor>().Invoke();
@@ -24,53 +24,40 @@ namespace Blauhaus.ClientActors.Tests.ActorFactoryTests
         public async Task WHEN_VirtualActor_does_not_exist_SHOULD_create_and_initialize_one()
         {
             //Act
-            Sut.GetTransient<ITestActor>("myId");
+            Sut.Use<ITestActor>();
             await Task.Delay(10); //delay because initialization happens asyncronousmly
 
             //Assert
-            MockTestActor.Mock.Verify(x => x.InitializeAsync("myId"));
+            MockTestActor.Mock.Verify(x => x.InitializeAsync());
         }
 
         [Test]
         public async Task WHEN_VirtualActor_has_been_used_before_SHOULD_still_create_new_one()
         {
             //Arrange
-            Sut.GetTransient<ITestActor>("myId");
+            Sut.Use<ITestActor>();
 
             //Act
-            Sut.GetTransient<ITestActor>("myId");
+            Sut.Use<ITestActor>();
             await Task.Delay(10); //delay because initialization happens asyncronousmly
 
             //Assert
-            MockTestActor.Mock.Verify(x => x.InitializeAsync("myId"), Times.Exactly(2));
+            MockTestActor.Mock.Verify(x => x.InitializeAsync(), Times.Exactly(2));
         }
 
         [Test]
         public async Task WHEN_VirtualActor_has_been_got_before_SHOULD_reuse_it()
         {
             //Arrange
-            Sut.Get<ITestActor>("myId");
+            Sut.Get<ITestActor>();
 
             //Act
-            Sut.GetTransient<ITestActor>("myId");
+            Sut.Use<ITestActor>();
             await Task.Delay(10); //delay because initialization happens asyncronousmly
 
             //Assert
-            MockTestActor.Mock.Verify(x => x.InitializeAsync("myId"), Times.Exactly(1));
+            MockTestActor.Mock.Verify(x => x.InitializeAsync(), Times.Exactly(1));
         }
-
-        [Test]
-        public async Task WHEN_different_VirtualActor_exists_SHOULD_create_new_one()
-        {
-            //Arrange
-            Sut.GetTransient<ITestActor>("myId");
-
-            //Act
-            Sut.GetTransient<ITestActor>("newId");
-            await Task.Delay(10); //delay because initialization happens asyncronousmly
-
-            //Assert
-            MockTestActor.Mock.Verify(x => x.InitializeAsync(It.IsAny<string>()), Times.Exactly(2));
-        }
+         
     }
 }

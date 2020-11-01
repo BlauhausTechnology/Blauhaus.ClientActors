@@ -113,7 +113,10 @@ namespace Blauhaus.ClientActors.Tests.Suts
             return Task.FromResult(_numbers);
         }
 
-      
 
+        public Task InitializeAsync()
+        {
+            return Task.CompletedTask;
+        }
     }
 }

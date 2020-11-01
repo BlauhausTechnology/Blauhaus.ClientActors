@@ -6,9 +6,12 @@ using Blauhaus.Responses;
 
 namespace Blauhaus.ClientActors.Abstractions
 {
-    public interface IVirtualActor<TActor> : IAsyncDisposable  
+    public interface IVirtualActor : IAsyncDisposable
     {
 
+    }
+    public interface IVirtualActor<TActor> : IVirtualActor  
+    {
         Task InvokeAsync(Expression<Func<TActor, Func<Task>>> handler, CancellationToken token = default);
         Task<TResponse> InvokeAsync<TResponse>(Expression<Func<TActor, Func<Task<TResponse>>>> handler, CancellationToken token = default);
         Task InvokeAsync<TMessage>(Expression<Func<TActor, Func<TMessage, Task>>> handler, TMessage message, CancellationToken token = default);
@@ -21,6 +24,5 @@ namespace Blauhaus.ClientActors.Abstractions
 
         Task<Response> HandleVoidAsync<TCommand>(TCommand command, CancellationToken token = default);
         Task<Response<TResponse>> HandleAsync<TResponse, TCommand>(TCommand command, CancellationToken token = default);
-
     }
 }

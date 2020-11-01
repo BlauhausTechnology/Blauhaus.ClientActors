@@ -1,4 +1,6 @@
 ﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Blauhaus.ClientActors.Abstractions;
@@ -10,44 +12,68 @@ namespace Blauhaus.ClientActors.VirtualActors
     {
         private readonly IServiceLocator _serviceLocator;
 
-        private readonly ConcurrentDictionary<string, object> _actors;
+        private readonly ConcurrentDictionary<string, object> _actorsWithoutId;
+        private readonly ConcurrentDictionary<string, Dictionary<string, object>> _actorsWithId = new ConcurrentDictionary<string, Dictionary<string, object>>();
 
         public VirtualActorFactory(IServiceLocator serviceLocator)
         {
-            _actors = new ConcurrentDictionary<string, object>();
+            _actorsWithoutId = new ConcurrentDictionary<string, object>();
             _serviceLocator = serviceLocator;
         }
 
-        public IVirtualActor<TActor> Get<TActor>(string actorId) where TActor : class, IInitializeById
+        public IVirtualActor<TActor> GetById<TActor>(string actorId) where TActor : class, IInitializeById
         {
-            var virtualActor = GetAndInitializeVirtualActor<TActor>(actorId);
-            _actors[$"{typeof(TActor).FullName}|{actorId}"] = virtualActor;
-            return virtualActor;
-        }
+            var actorName = typeof(TActor).FullName;
 
-        public IVirtualActor<TActor> GetTransient<TActor>(string actorId) where TActor : class, IInitializeById
-        {
-            return GetAndInitializeVirtualActor<TActor>(actorId);
-        }
+            var virtualActor = GetAndInitializeActorWithId<TActor>(actorName, actorId);
 
-        public IVirtualActor<TActor> Get<TActor>() where TActor : class
-        {
-            var virtualActor = GetVirtualActor<TActor>();
-            _actors[$"{typeof(TActor).FullName}"] = virtualActor;
-            return virtualActor;
-        }
-
-        public IVirtualActor<TActor> GetTransient<TActor>() where TActor : class
-        {
-            return GetVirtualActor<TActor>();
-        }
-
-        private VirtualActor<TActor> GetAndInitializeVirtualActor<TActor>(string actorId) where TActor : class, IInitializeById
-        {
-            var actorKey = $"{typeof(TActor).FullName}|{actorId}";
-            if (_actors.TryGetValue(actorKey, out var actorObject))
+            if (_actorsWithId.TryGetValue(actorName, out var actorCache))
             {
-                return (VirtualActor<TActor>) actorObject;
+                actorCache[actorId] = virtualActor;
+            }
+            else
+            {
+                _actorsWithId[actorName] = new Dictionary<string, object> {[actorId] = virtualActor};
+            }
+            
+            return virtualActor;
+        }
+
+        public IVirtualActor<TActor> UseById<TActor>(string actorId) where TActor : class, IInitializeById
+        {
+            return GetAndInitializeActorWithId<TActor>(typeof(TActor).FullName, actorId);
+        }
+
+        public IVirtualActor<TActor> Get<TActor>() where TActor : class, IInitialize
+        {
+            var virtualActor = GetAndInitializeActorWithoutId<TActor>();
+            _actorsWithoutId[$"{typeof(TActor).FullName}"] = virtualActor;
+            return virtualActor;
+        }
+
+        public IVirtualActor<TActor> Use<TActor>() where TActor : class, IInitialize
+        {
+            return GetAndInitializeActorWithoutId<TActor>();
+        }
+
+        public IReadOnlyList<IVirtualActor<TActor>> GetActive<TActor>()
+        {
+            var actorName = typeof(TActor).FullName;
+            if (_actorsWithId.TryGetValue(actorName, out var activeActors))
+            {
+                return activeActors.Select(x => (VirtualActor<TActor>) x.Value).ToList();
+            }
+            return new List<IVirtualActor<TActor>>();
+        }
+
+        private VirtualActor<TActor> GetAndInitializeActorWithId<TActor>(string actorName, string actorId) where TActor : class, IInitializeById
+        {
+            if (_actorsWithId.TryGetValue(actorName, out var virtualActorCache))
+            {
+                if (virtualActorCache.TryGetValue(actorId, out var actorObject))
+                {
+                    return (VirtualActor<TActor>) actorObject;
+                }
             }
             
             var actor = _serviceLocator.Resolve<TActor>();
@@ -59,16 +85,18 @@ namespace Blauhaus.ClientActors.VirtualActors
             return virtualActor;
         }
 
-        private VirtualActor<TActor> GetVirtualActor<TActor>() where TActor : class
+        private VirtualActor<TActor> GetAndInitializeActorWithoutId<TActor>() where TActor : class, IInitialize
         {
             var actorKey = $"{typeof(TActor).FullName}";
-            if (_actors.TryGetValue(actorKey, out var actorObject))
+            if (_actorsWithoutId.TryGetValue(actorKey, out var actorObject))
             {
                 return (VirtualActor<TActor>) actorObject;
             }
             
             var actor = _serviceLocator.Resolve<TActor>();
             var virtualActor = new VirtualActor<TActor>(actor);
+
+            Task.Run(async () => await virtualActor.InvokeAsync(x => x.InitializeAsync, CancellationToken.None));
             
             return virtualActor;
         }

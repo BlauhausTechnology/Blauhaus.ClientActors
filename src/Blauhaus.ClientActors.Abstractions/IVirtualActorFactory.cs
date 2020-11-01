@@ -1,12 +1,16 @@
-﻿namespace Blauhaus.ClientActors.Abstractions
+﻿using System.Collections.Generic;
+
+namespace Blauhaus.ClientActors.Abstractions
 {
     public interface IVirtualActorFactory
     {
-        IVirtualActor<TActor> Get<TActor>(string actorId) where TActor : class, IInitializeById;
-        IVirtualActor<TActor> GetTransient<TActor>(string actorId) where TActor : class, IInitializeById;
+        IVirtualActor<TActor> GetById<TActor>(string actorId) where TActor : class, IInitializeById;
+        IVirtualActor<TActor> UseById<TActor>(string actorId) where TActor : class, IInitializeById;
 
-        IVirtualActor<TActor> Get<TActor>() where TActor : class;
-        IVirtualActor<TActor> GetTransient<TActor>() where TActor : class;
+        IVirtualActor<TActor> Get<TActor>() where TActor : class, IInitialize;
+        IVirtualActor<TActor> Use<TActor>() where TActor : class, IInitialize;
+
+        IReadOnlyList<IVirtualActor<TActor>> GetActive<TActor>();
     }
 
 }

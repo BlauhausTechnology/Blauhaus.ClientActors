@@ -5,7 +5,8 @@ namespace Blauhaus.ClientActors.Tests.Suts
 {
     public interface ITestActor : IInitializeById,
         IVoidCommandHandler<MyVoidMessage>,
-        ICommandHandler<MyTestResult, MyTestMessage>
+        ICommandHandler<MyTestResult, MyTestMessage>,
+        IInitialize
     {
         
     }

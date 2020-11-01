@@ -8,7 +8,7 @@ using NUnit.Framework;
 
 namespace Blauhaus.ClientActors.Tests.ActorFactoryTests
 {
-    public class GetTests : BaseActorTest<VirtualActorFactory>
+    public class GetByIdTests : BaseActorTest<VirtualActorFactory>
     {
 
         private MockBuilder<ITestActor> MockTestActor => AddMock<ITestActor>().Invoke();
@@ -24,26 +24,39 @@ namespace Blauhaus.ClientActors.Tests.ActorFactoryTests
         public async Task WHEN_VirtualActor_does_not_exist_SHOULD_create_and_initialize_one()
         {
             //Act
-            Sut.Get<ITestActor>();
+            Sut.GetById<ITestActor>("myId");
             await Task.Delay(10); //delay because initialization happens asyncronousmly
 
             //Assert
-            MockTestActor.Mock.Verify(x => x.InitializeAsync());
+            MockTestActor.Mock.Verify(x => x.InitializeAsync("myId"));
         }
 
         [Test]
         public async Task WHEN_VirtualActor_does_exist_SHOULD_return_it()
         {
             //Arrange
-            Sut.Get<ITestActor>();
+            Sut.GetById<ITestActor>("myId");
 
             //Act
-            Sut.Get<ITestActor>();
+            Sut.GetById<ITestActor>("myId");
             await Task.Delay(10); //delay because initialization happens asyncronousmly
 
             //Assert
-            MockTestActor.Mock.Verify(x => x.InitializeAsync(), Times.Once);
+            MockTestActor.Mock.Verify(x => x.InitializeAsync("myId"), Times.Once);
         }
-         
+
+        [Test]
+        public async Task WHEN_different_VirtualActor_exists_SHOULD_create_new_one()
+        {
+            //Arrange
+            Sut.GetById<ITestActor>("myId");
+
+            //Act
+            Sut.GetById<ITestActor>("newId");
+            await Task.Delay(10); //delay because initialization happens asyncronousmly
+
+            //Assert
+            MockTestActor.Mock.Verify(x => x.InitializeAsync(It.IsAny<string>()), Times.Exactly(2));
+        }
     }
 }
