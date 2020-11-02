@@ -2,7 +2,7 @@
 
 namespace Blauhaus.ClientActors.Tests.Suts
 {
-    public interface ITestActor : IInitializeById
+    public interface ITestActor : IActor
     {
         public string ExtraProperty { get; }
     }

@@ -58,6 +58,28 @@ namespace Blauhaus.ClientActors.Tests.ActorContainerTests
             MockTestActor.Mock.Verify(x => x.InitializeAsync("myId"), Times.Exactly(2));
             Assert.That(result, Is.EqualTo(MockTestActor.Object));
         }
+
+        [Test]
+        public async Task WHEN_Multiple_Ids_given_should_create_new_without_caching_and_return_existing()
+        {
+            //Arrange
+            await Sut.GetAsync("1");
+            await Sut.GetAsync("2");
+            await Sut.UseAsync("7");
+
+            //Act
+            var result = await Sut.UseAsync(new []{"1", "2", "3"});
+
+            //Assert
+            MockTestActor.Mock.Verify(x => x.InitializeAsync("1"), Times.Once);
+            MockTestActor.Mock.Verify(x => x.InitializeAsync("2"), Times.Once);
+            MockTestActor.Mock.Verify(x => x.InitializeAsync("3"), Times.Once);
+            Assert.That(result.Count, Is.EqualTo(3));
+            var cached = await Sut.GetActiveAsync();
+            Assert.That(cached.Count, Is.EqualTo(2));
+
+        }
+
          
     }
 }

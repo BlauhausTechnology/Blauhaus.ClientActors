@@ -8,7 +8,7 @@ using Blauhaus.Ioc.Abstractions;
 
 namespace Blauhaus.ClientActors.Manager
 {
-    public sealed class ActorContainer<TActor> : BaseActor, IActorContainer<TActor> where TActor : class, IInitializeById
+    public sealed class ActorContainer<TActor> : BaseActor, IActorContainer<TActor> where TActor : class, IActor
     {
         private readonly IServiceLocator _serviceLocator;
         private readonly Dictionary<string, TActor> _actorCache = new Dictionary<string, TActor>();
@@ -36,6 +36,28 @@ namespace Blauhaus.ClientActors.Manager
             });
         }
 
+        public Task<IReadOnlyList<TActor>> GetAsync(IEnumerable<string> actorIds)
+        {
+            return DoAsync(async () =>
+            {
+                var actorsToReturn = new List<TActor>();
+
+                foreach (var actorId in actorIds)
+                {
+                    if (_actorCache.TryGetValue(actorId, out var existingActor))
+                    {
+                        actorsToReturn.Add(existingActor);
+                    }
+                    else
+                    {
+                        actorsToReturn.Add(await GetAsync(actorId));
+                    }
+                }
+
+                return (IReadOnlyList<TActor>) actorsToReturn;
+            });
+        }
+
         public Task<TActor> UseAsync(string actorId)
         {
             return DoAsync(async () =>
@@ -49,6 +71,28 @@ namespace Blauhaus.ClientActors.Manager
                 await newActor.InitializeAsync(actorId);
 
                 return newActor;
+            });
+        }
+
+        public Task<IReadOnlyList<TActor>> UseAsync(IEnumerable<string> actorIds)
+        {
+            return DoAsync(async () =>
+            {
+                var actorsToReturn = new List<TActor>();
+
+                foreach (var actorId in actorIds)
+                {
+                    if (_actorCache.TryGetValue(actorId, out var existingActor))
+                    {
+                        actorsToReturn.Add(existingActor);
+                    }
+                    else
+                    {
+                        actorsToReturn.Add(await UseAsync(actorId));
+                    }
+                }
+
+                return (IReadOnlyList<TActor>) actorsToReturn;
             });
         }
 
@@ -70,6 +114,46 @@ namespace Blauhaus.ClientActors.Manager
             return DoAsync(() => Task.FromResult<IReadOnlyList<TActor>>(_actorCache.Values
                 .Where(predicate.Invoke) 
                 .ToList()));
+        }
+
+        public Task RemoveAllAsync()
+        {
+            return DoAsync(async () =>
+            {
+                foreach (var actor in _actorCache)
+                {
+                    await actor.Value.DisposeAsync();
+                }
+                _actorCache.Clear();
+            });
+        }
+
+        public Task RemoveAsync(IEnumerable<string> requiredIds)
+        {
+            return DoAsync(async () =>
+            {
+                foreach (var requiredId in requiredIds)
+                {
+                    if (_actorCache.TryGetValue(requiredId, out var actorToReove))
+                    {
+                        await actorToReove.DisposeAsync();
+                        _actorCache.Remove(requiredId);
+                    }
+                } 
+            });
+        }
+
+        public Task RemoveAsync(Func<TActor, bool> predicate)
+        {
+            return DoAsync(async () =>
+            {
+                var actorsToRemove = _actorCache.Where(x => predicate(x.Value)).ToList();
+                foreach (var actorToRemove in actorsToRemove)
+                {
+                    await actorToRemove.Value.DisposeAsync();
+                    _actorCache.Remove(actorToRemove.Key);
+                }
+            });
         }
     }
 }

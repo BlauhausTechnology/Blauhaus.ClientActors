@@ -31,7 +31,7 @@ namespace Blauhaus.ClientActors.Tests.ActorContainerTests
         }
 
         [Test]
-        public async Task WHEN_VirtualActor_does_exist_SHOULD_return_it()
+        public async Task WHEN_Actor_does_exist_SHOULD_return_it()
         {
             //Arrange
             await Sut.GetAsync("myId");
@@ -42,6 +42,24 @@ namespace Blauhaus.ClientActors.Tests.ActorContainerTests
             //Assert
             MockTestActor.Mock.Verify(x => x.InitializeAsync("myId"), Times.Once);
             Assert.That(result, Is.EqualTo(MockTestActor.Object));
+        }
+
+        [Test]
+        public async Task WHEN_Multiple_Ids_given_should_create_and_cache_new_and_just_return_existing()
+        {
+            //Arrange
+            await Sut.GetAsync("1");
+            await Sut.GetAsync("2");
+            await Sut.UseAsync("7");
+
+            //Act
+            var result = await Sut.GetAsync(new []{"1", "2", "3"});
+
+            //Assert
+            MockTestActor.Mock.Verify(x => x.InitializeAsync("1"), Times.Once);
+            MockTestActor.Mock.Verify(x => x.InitializeAsync("2"), Times.Once);
+            MockTestActor.Mock.Verify(x => x.InitializeAsync("3"), Times.Once);
+            Assert.That(result.Count, Is.EqualTo(3));
         }
          
     }
