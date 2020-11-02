@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Blauhaus.ClientActors.Abstractions;
-using Blauhaus.ClientActors.StandaloneActors;
 using Blauhaus.Ioc.Abstractions;
 
-namespace Blauhaus.ClientActors.Manager
+namespace Blauhaus.ClientActors
 {
     public sealed class ActorContainer<TActor> : BaseActor, IActorContainer<TActor> where TActor : class, IActor
     {

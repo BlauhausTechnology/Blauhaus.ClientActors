@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Blauhaus.ClientActors.Manager;
 using Blauhaus.ClientActors.Tests._Base;
 using Blauhaus.ClientActors.Tests.Suts;
 using Blauhaus.Ioc.TestHelpers;

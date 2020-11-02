@@ -1,5 +1,4 @@
 ﻿using Blauhaus.ClientActors.Abstractions;
-using Blauhaus.ClientActors.Manager;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 

@@ -3,7 +3,6 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Blauhaus.ClientActors.Abstractions;
-using Blauhaus.ClientActors.StandaloneActors;
 using Blauhaus.Domain.Abstractions.CommandHandlers;
 using Blauhaus.Ioc.Abstractions;
 using Blauhaus.Responses;
