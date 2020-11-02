@@ -20,7 +20,7 @@ namespace Blauhaus.ClientActors.Tests.VirtualActorTests._Base
         {
             base.Setup();
             
-            Services.AddSingleton<TestActor>();
+            Services.AddSingleton<TestVirtualActor>();
             Services.AddSingleton<ExceptionActor>();
             ActorId = Guid.NewGuid().ToString();
         }

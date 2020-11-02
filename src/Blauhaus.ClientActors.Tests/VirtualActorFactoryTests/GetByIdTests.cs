@@ -6,12 +6,12 @@ using Blauhaus.TestHelpers.MockBuilders;
 using Moq;
 using NUnit.Framework;
 
-namespace Blauhaus.ClientActors.Tests.ActorFactoryTests
+namespace Blauhaus.ClientActors.Tests.VirtualActorFactoryTests
 {
     public class GetByIdTests : BaseActorTest<VirtualActorFactory>
     {
 
-        private MockBuilder<ITestActor> MockTestActor => AddMock<ITestActor>().Invoke();
+        private MockBuilder<ITestVirtualActor> MockTestActor => AddMock<ITestVirtualActor>().Invoke();
         private MockBuilder<IGenericTestActor<int>> MockGenericIntTestActor => AddMock<IGenericTestActor<int>>().Invoke();
         private MockBuilder<IGenericTestActor<string>> MockGenericStringTestActor => AddMock<IGenericTestActor<string>>().Invoke();
 
@@ -28,7 +28,7 @@ namespace Blauhaus.ClientActors.Tests.ActorFactoryTests
         public async Task WHEN_VirtualActor_does_not_exist_SHOULD_create_and_initialize_one()
         {
             //Act
-            Sut.GetById<ITestActor>("myId");
+            Sut.GetById<ITestVirtualActor>("myId");
             await Task.Delay(10); //delay because initialization happens asyncronousmly
 
             //Assert
@@ -39,10 +39,10 @@ namespace Blauhaus.ClientActors.Tests.ActorFactoryTests
         public async Task WHEN_VirtualActor_does_exist_SHOULD_return_it()
         {
             //Arrange
-            Sut.GetById<ITestActor>("myId");
+            Sut.GetById<ITestVirtualActor>("myId");
 
             //Act
-            Sut.GetById<ITestActor>("myId");
+            Sut.GetById<ITestVirtualActor>("myId");
             await Task.Delay(10); //delay because initialization happens asyncronousmly
 
             //Assert

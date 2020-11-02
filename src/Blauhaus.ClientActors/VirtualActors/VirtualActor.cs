@@ -10,7 +10,7 @@ using Blauhaus.Responses;
 
 namespace Blauhaus.ClientActors.VirtualActors
 {
-    public class VirtualActor<TActor> : BaseStandaloneActor, IVirtualActor<TActor>  
+    public class VirtualActor<TActor> : BaseActor, IVirtualActor<TActor>  
     {
         private readonly TActor _actor;
 

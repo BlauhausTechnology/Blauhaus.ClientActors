@@ -9,7 +9,7 @@ using NUnit.Framework;
 namespace Blauhaus.ClientActors.Tests.VirtualActorTests
 {
     [TestFixture]
-    public class InvokeAsyncTests : BaseVirtualActorTest<TestActor>
+    public class InvokeAsyncTests : BaseVirtualActorTest<TestVirtualActor>
     {
         public class Tasks : InvokeAsyncTests
         {

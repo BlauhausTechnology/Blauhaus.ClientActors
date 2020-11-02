@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Blauhaus.ClientActors.Abstractions;
@@ -60,6 +61,17 @@ namespace Blauhaus.ClientActors.VirtualActors
             if (_actorsWithId.TryGetValue(typeof(TActor), out var activeActors))
             {
                 return activeActors.Select(x => (VirtualActor<TActor>) x.Value).ToList();
+            }
+            return new List<IVirtualActor<TActor>>();
+        }
+
+        public IReadOnlyList<IVirtualActor<TActor>> GetActive<TActor>(Expression<Func<string, bool>> predicate)
+        {
+            if (_actorsWithId.TryGetValue(typeof(TActor), out var activeActors))
+            {
+                return activeActors
+                    .Where(x => predicate.Compile().Invoke(x.Key))
+                    .Select(x => (VirtualActor<TActor>) x.Value).ToList();
             }
             return new List<IVirtualActor<TActor>>();
         }
