@@ -21,6 +21,9 @@ namespace Blauhaus.ClientActors.Abstractions
          
         Task<IReadOnlyList<TActor>> GetActiveAsync(Func<TActor, bool> predicate);
 
+        Task ReloadActiveAsync();
+        Task ReloadIfActiveAsync(IEnumerable<string> actorIds);
+
         Task RemoveAllAsync();
         Task RemoveAsync(IEnumerable<string> actorIds);
         Task RemoveAsync(Func<TActor, bool> predicate);

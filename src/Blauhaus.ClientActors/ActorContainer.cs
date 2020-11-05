@@ -115,6 +115,30 @@ namespace Blauhaus.ClientActors
                 .ToList()));
         }
 
+        public Task ReloadActiveAsync()
+        {
+            return DoAsync(() =>
+            { 
+                return Task.WhenAll(_actorCache.Values
+                    .Select(activeActor => activeActor.ReloadAsync()).ToList());
+            });
+        }
+
+        public Task ReloadIfActiveAsync(IEnumerable<string> actorIds)
+        {
+            return DoAsync(() =>
+            {
+                var reloadTasks = new List<Task>();
+
+                foreach (var keyValuePair in _actorCache.Where(x => actorIds.Contains(x.Key)))
+                {
+                    reloadTasks.Add(keyValuePair.Value.ReloadAsync());
+                }
+
+                return Task.WhenAll(reloadTasks);
+            });
+        }
+
         public Task RemoveAllAsync()
         {
             return DoAsync(async () =>
