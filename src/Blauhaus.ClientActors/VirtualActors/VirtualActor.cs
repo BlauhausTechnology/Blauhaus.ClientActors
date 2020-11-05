@@ -3,159 +3,119 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Blauhaus.ClientActors.Abstractions;
-using Blauhaus.ClientActors.StandaloneActors;
 using Blauhaus.Domain.Abstractions.CommandHandlers;
 using Blauhaus.Ioc.Abstractions;
 using Blauhaus.Responses;
-using IActor = Blauhaus.ClientActors.Abstractions.IActor;
 
 namespace Blauhaus.ClientActors.VirtualActors
 {
-    public class VirtualActor<TActor> : BaseStandaloneActor, IVirtualActor<TActor> where TActor : class, IActor
+    public class VirtualActor<TActor> : BaseActor, IVirtualActor<TActor>  
     {
-        private readonly IServiceLocator _serviceLocator;
-        private readonly string _id;
-        private readonly VirtualActorCache _virtualActorCache;
-        private readonly CancellationToken _token = CancellationToken.None;
+        private readonly TActor _actor;
 
-        public VirtualActor(IServiceLocator serviceLocator, string id)
+        public VirtualActor(TActor actor)
         {
-            _serviceLocator = serviceLocator;
-            _id = id;
-            _virtualActorCache = serviceLocator.Resolve<VirtualActorCache>();
+            _actor = actor;
         }
          
-        public async Task InvokeAsync(Expression<Func<TActor, Func<Task>>> handler)
+         
+        public async Task InvokeAsync(Expression<Func<TActor, Func<Task>>> handler, CancellationToken token = default)
         {
             await DoAsync(async () =>
             {
-                var actor = await GetActorAsync();
-                var actorFunction = handler.Compile().Invoke(actor);
+                var actorFunction = handler.Compile().Invoke(_actor);
                 await actorFunction.Invoke();
-            }, _token);
+            }, token);
         }
         
-        public async Task<TResponse> InvokeAsync<TResponse>(Expression<Func<TActor, Func<Task<TResponse>>>> handler)
+        public async Task<TResponse> InvokeAsync<TResponse>(Expression<Func<TActor, Func<Task<TResponse>>>> handler, CancellationToken token = default)
         {
             return await DoAsync(async () =>
             {
-                var actor = await GetActorAsync();
-                var actorFunction = handler.Compile().Invoke(actor);
+                var actorFunction = handler.Compile().Invoke(_actor);
                 return await actorFunction.Invoke();
-            }, _token);
+            }, token);
         }
         
-        public async Task InvokeAsync<TMessage>(Expression<Func<TActor, Func<TMessage, Task>>> handler, TMessage message)
+        public async Task InvokeAsync<TMessage>(Expression<Func<TActor, Func<TMessage, Task>>> handler, TMessage message, CancellationToken token = default)
         {
-            await DoAsync(async () =>
-            {
-                var actor = await GetActorAsync();
-                var actorFunction = handler.Compile().Invoke(actor);
+            await DoAsync(() =>
+            { 
+                var actorFunction = handler.Compile().Invoke(_actor);
                 return actorFunction.Invoke(message);
-            });
+            }, token);
         }
         
-        public async Task<TResponse> InvokeAsync<TResponse, TMessage>(Expression<Func<TActor, Func<TMessage, Task<TResponse>>>> handler, TMessage message)
+        public async Task<TResponse> InvokeAsync<TResponse, TMessage>(Expression<Func<TActor, Func<TMessage, Task<TResponse>>>> handler, TMessage message, CancellationToken token = default)
         {
             return await DoAsync(async () =>
-            {
-                var actor = await GetActorAsync();
-                var actorFunction = handler.Compile().Invoke(actor);
+            { 
+                var actorFunction = handler.Compile().Invoke(_actor);
                 return await actorFunction.Invoke(message);
-            }, _token);
+            }, token);
         }
 
-        public async Task InvokeAsync(Expression<Func<TActor, Action>> handler)
+        public async Task InvokeAsync(Expression<Func<TActor, Action>> handler, CancellationToken token = default)
         {
-            await DoAsync(async () =>
-            {
-                var actor = await GetActorAsync();
-                var actorFunction = handler.Compile().Invoke(actor);
+            await DoAsync(() =>
+            { 
+                var actorFunction = handler.Compile().Invoke(_actor);
                 actorFunction.Invoke();
-            }, _token);
+            }, token);
         }
         
-        public async Task<TResponse> InvokeAsync<TResponse>(Expression<Func<TActor, Func<TResponse>>> handler)
+        public async Task<TResponse> InvokeAsync<TResponse>(Expression<Func<TActor, Func<TResponse>>> handler, CancellationToken token = default)
         {
-            return await DoAsync(async () =>
-            {
-                var actor = await GetActorAsync();
-                var actorFunction = handler.Compile().Invoke(actor);
+            return await DoAsync(() =>
+            { 
+                var actorFunction = handler.Compile().Invoke(_actor);
                 return actorFunction.Invoke();
-            }, _token);
+            }, token);
         }
         
-        public async Task InvokeAsync<TMessage>(Expression<Func<TActor, Action<TMessage>>> handler, TMessage message)
+        public async Task InvokeAsync<TMessage>(Expression<Func<TActor, Action<TMessage>>> handler, TMessage message, CancellationToken token = default)
         {
-            await DoAsync(async () =>
-            {
-                var actor = await GetActorAsync();
-                var actorFunction = handler.Compile().Invoke(actor);
+            await DoAsync(() =>
+            { 
+                var actorFunction = handler.Compile().Invoke(_actor);
                 actorFunction.Invoke(message);
-            }, _token);
+            }, token);
         }
         
-        public async Task<TResponse> InvokeAsync<TResponse, TMessage>(Expression<Func<TActor, Func<TMessage, TResponse>>> handler, TMessage message)
+        public async Task<TResponse> InvokeAsync<TResponse, TMessage>(Expression<Func<TActor, Func<TMessage, TResponse>>> handler, TMessage message, CancellationToken token = default)
         {
-            return await DoAsync(async () =>
-            {
-                var actor = await GetActorAsync();
-                var actorFunction = handler.Compile().Invoke(actor);
+            return await DoAsync(() =>
+            { 
+                var actorFunction = handler.Compile().Invoke(_actor);
                 return actorFunction.Invoke(message);
-            }, _token);
+            }, token);
         }
 
-        public async Task<Response> HandleVoidAsync<TCommand>(TCommand command, CancellationToken token) where TCommand : notnull
+        public async Task<Response> HandleVoidAsync<TCommand>(TCommand command, CancellationToken token = default) where TCommand : notnull
         {
             return await DoAsync(async () =>
-            {
-                var actor = await GetActorAsync();
+            { 
                 // ReSharper disable once SuspiciousTypeConversion.Global
-                if (!(actor is IVoidCommandHandler<TCommand> handler))
+                if (!(_actor is IVoidCommandHandler<TCommand> handler))
                 {
                     throw new InvalidOperationException($"{typeof(TActor).Name} must implement IVoidCommandHandler<{typeof(TCommand).Name}> to be a valid handler for {typeof(TCommand).Name}");
                 }
                 return  await handler.HandleAsync(command, token);
-            }, _token);
+            }, token);
         }
 
-        public async Task<Response<TResponse>> HandleAsync<TResponse, TCommand>(TCommand command, CancellationToken token) where TCommand : notnull
+        public async Task<Response<TResponse>> HandleAsync<TResponse, TCommand>(TCommand command, CancellationToken token = default) where TCommand : notnull
         {
             return await DoAsync(async () =>
-            {
-                var actor = await GetActorAsync();
+            { 
                 // ReSharper disable once SuspiciousTypeConversion.Global
-                if (!(actor is ICommandHandler<TResponse, TCommand> handler))
+                if (!(_actor is ICommandHandler<TResponse, TCommand> handler))
                 {
                     throw new InvalidOperationException($"{typeof(TActor).Name} must implement ICommandHandler<{typeof(TResponse).Name}, {typeof(TCommand).Name}> to be a valid handler for {typeof(TCommand).Name}");
                 }
                 return  await handler.HandleAsync(command, token);
-            }, _token);
+            }, token);
         }
-
-        private async ValueTask<TActor> GetActorAsync()
-        {
-            var existingActor = _virtualActorCache.Get<TActor>(_id);
-            if (existingActor != null)
-            {
-                return existingActor;
-            }
-
-            var newActor = _serviceLocator.Resolve<TActor>();
-            await newActor.InitializeAsync(_id);
-            _virtualActorCache.Add(_id, newActor);
-            return newActor;
-        }
-        
-        public override async ValueTask DisposeAsync()
-        {
-            if (_virtualActorCache.TryRemove<TActor>(_id, out var actorToRemove))
-            {
-                await actorToRemove.ShutdownAsync();
-            }
-
-            await base.DisposeAsync();
-        }
-
+          
     }
 }

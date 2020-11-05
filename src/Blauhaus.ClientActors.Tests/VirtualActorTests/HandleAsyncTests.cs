@@ -8,7 +8,7 @@ using NUnit.Framework;
 namespace Blauhaus.ClientActors.Tests.VirtualActorTests
 {
     [TestFixture]
-    public class HandleAsyncTests : BaseVirtualActorTest<TestActor>
+    public class HandleAsyncTests : BaseVirtualActorTest<TestVirtualActor>
     {
         public class WithResponse : InvokeAsyncTests
         {

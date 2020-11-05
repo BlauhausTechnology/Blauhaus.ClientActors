@@ -7,7 +7,7 @@ using Blauhaus.ClientActors.Abstractions;
 namespace Blauhaus.ClientActors.Tests.Suts
 { 
 
-    public class ExceptionActor : IActor
+    public class ExceptionActor : IInitializeById
     {
 
         private readonly List<int> _numbers = new List<int>();
