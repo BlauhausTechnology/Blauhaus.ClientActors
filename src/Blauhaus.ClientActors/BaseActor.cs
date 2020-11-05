@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 using Winton.Extensions.Threading.Actor;
 using IActor = Winton.Extensions.Threading.Actor.IActor;
 
-namespace Blauhaus.ClientActors.StandaloneActors
+namespace Blauhaus.ClientActors
 {
-    public abstract class BaseStandaloneActor : IAsyncDisposable
+    public abstract class BaseActor : IAsyncDisposable
     {
         private Actor? _backingHandler;
 

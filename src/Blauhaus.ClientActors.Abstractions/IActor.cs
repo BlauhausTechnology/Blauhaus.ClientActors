@@ -1,10 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System;
 
 namespace Blauhaus.ClientActors.Abstractions
 {
-    public interface IActor 
+    public interface IActor : IAsyncDisposable, IInitializeById
     {
-        Task InitializeAsync(string id);
-        Task ShutdownAsync();
+        
     }
 }
