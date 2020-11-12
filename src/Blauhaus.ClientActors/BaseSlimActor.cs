@@ -12,13 +12,24 @@ namespace Blauhaus.ClientActors
         {
             return Task.CompletedTask;
         }
-
-        protected Task DoAsync(Action action, CancellationToken cancellationToken = default)
+        protected void Do(Action action)
         {
             _lock.Wait();
             try
             {
-                return Task.Run(action.Invoke);
+                action.Invoke();
+            }
+            finally
+            {
+                _lock.Release();
+            }
+        }
+        protected T Do<T>(Func<T> function)
+        {
+            _lock.Wait();
+            try
+            {
+                return function.Invoke();
             }
             finally
             {
@@ -26,12 +37,12 @@ namespace Blauhaus.ClientActors
             }
         }
 
-        protected Task<T> DoAsync<T>(Func<T> function, CancellationToken cancellationToken = default)
+        protected async Task DoAsync(Func<Task> asyncAction)
         {
-            _lock.Wait();
+            await _lock.WaitAsync();
             try
             {
-                return Task.Run(function.Invoke);
+                await asyncAction.Invoke();
             }
             finally
             {
@@ -39,25 +50,12 @@ namespace Blauhaus.ClientActors
             }
         }
 
-        protected Task DoAsync(Func<Task> asyncAction, CancellationToken cancellationToken = default)
+        protected async Task<T> DoAsync<T>(Func<Task<T>> asyncFunction) 
         {
-            _lock.Wait();
+            await _lock.WaitAsync();
             try
             {
-                return Task.Run(async ()=> await asyncAction.Invoke());
-            }
-            finally
-            {
-                _lock.Release();
-            }
-        }
-
-        protected Task<T> DoAsync<T>(Func<Task<T>> asyncFunction, CancellationToken cancellationToken = default) 
-        {
-            _lock.Wait();
-            try
-            {
-                return Task.Run(async ()=> await asyncFunction.Invoke());
+                return await asyncFunction.Invoke();
             }
             finally
             {
