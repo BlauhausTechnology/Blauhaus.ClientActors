@@ -37,7 +37,11 @@ namespace Blauhaus.ClientActors
         protected Task DoAsync(Action action, CancellationToken cancellationToken = default) => Handler.Enqueue(action, cancellationToken);
         protected Task<T> DoAsync<T>(Func<T> function, CancellationToken cancellationToken = default) => Handler.Enqueue(function, cancellationToken);
         protected Task DoAsync(Func<Task> asyncAction, CancellationToken cancellationToken = default) => Handler.Enqueue(asyncAction, cancellationToken);
+        protected Task DoOneAtATimeAsync(Func<Task> asyncAction, CancellationToken cancellationToken = default) => Handler.Enqueue(async  () => 
+            await asyncAction.Invoke().WhileActorPaused(), cancellationToken);
         protected Task<T> DoAsync<T>(Func<Task<T>> asyncFunction, CancellationToken cancellationToken = default) => Handler.Enqueue(asyncFunction, cancellationToken);
+        protected Task<T> DoOneAtATimeAsync<T>(Func<Task<T>> asyncFunction, CancellationToken cancellationToken = default) => Handler.Enqueue(async  () => 
+            await asyncFunction.Invoke().WhileActorPaused(), cancellationToken);
         
         protected virtual void Shutdown()
         {
