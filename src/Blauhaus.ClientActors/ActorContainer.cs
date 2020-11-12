@@ -20,19 +20,7 @@ namespace Blauhaus.ClientActors
 
         public Task<TActor> GetAsync(string actorId)
         {
-            return DoAsync(async () =>
-            {
-                if (_actorCache.TryGetValue(actorId, out var existingActor))
-                {
-                    return existingActor;
-                }
-
-                var newActor = _serviceLocator.Resolve<TActor>();
-                await newActor.InitializeAsync(actorId);
-                _actorCache[actorId] = newActor;
-
-                return newActor;
-            });
+            return DoAsync(async () => await GetActorAsync(actorId)); 
         }
 
         public Task<IReadOnlyList<TActor>> GetAsync(IEnumerable<string> actorIds)
@@ -49,7 +37,8 @@ namespace Blauhaus.ClientActors
                     }
                     else
                     {
-                        actorsToReturn.Add(await GetAsync(actorId));
+                        var actorToReturn = await GetActorAsync(actorId);
+                        actorsToReturn.Add(actorToReturn);
                     }
                 }
 
@@ -87,7 +76,7 @@ namespace Blauhaus.ClientActors
                     }
                     else
                     {
-                        actorsToReturn.Add(await UseAsync(actorId));
+                        actorsToReturn.Add(await UseActorAsync(actorId));
                     }
                 }
 
@@ -178,5 +167,34 @@ namespace Blauhaus.ClientActors
                 }
             });
         }
+
+        
+        private async Task<TActor> GetActorAsync(string actorId)
+        {
+            if (_actorCache.TryGetValue(actorId, out var existingActor))
+            {
+                return existingActor;
+            }
+
+            var newActor = _serviceLocator.Resolve<TActor>();
+            await newActor.InitializeAsync(actorId);
+            _actorCache[actorId] = newActor;
+
+            return newActor;
+        }
+
+        private async Task<TActor> UseActorAsync(string actorId)
+        {
+            if (_actorCache.TryGetValue(actorId, out var existingActor))
+            {
+                return existingActor;
+            }
+
+            var newActor = _serviceLocator.Resolve<TActor>();
+            await newActor.InitializeAsync(actorId);
+
+            return newActor;
+        }
+
     }
 }

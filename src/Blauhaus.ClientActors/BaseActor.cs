@@ -9,7 +9,7 @@ namespace Blauhaus.ClientActors
     public abstract class BaseActor : IAsyncDisposable
     {
         private Actor? _backingHandler;
-        private SemaphoreSlim _lock = new SemaphoreSlim(1);
+        private readonly SemaphoreSlim _lock = new SemaphoreSlim(1);
 
         private IActor Handler
         {
@@ -95,6 +95,7 @@ namespace Blauhaus.ClientActors
         public virtual async ValueTask DisposeAsync()
         {
             await Handler.Stop();
+            _lock.Dispose();
         }
     }
 }
