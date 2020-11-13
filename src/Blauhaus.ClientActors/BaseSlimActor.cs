@@ -7,11 +7,7 @@ namespace Blauhaus.ClientActors
     public abstract class BaseSlimActor : IAsyncDisposable
     {
         private readonly SemaphoreSlim _lock = new SemaphoreSlim(1);
-         
-        protected virtual Task InitializeAsync()
-        {
-            return Task.CompletedTask;
-        }
+          
         protected void Do(Action action)
         {
             _lock.Wait();
@@ -62,10 +58,7 @@ namespace Blauhaus.ClientActors
                 _lock.Release();
             }
         }
-        
-        protected virtual void Shutdown()
-        {
-        }
+         
 
         public virtual ValueTask DisposeAsync()
         {

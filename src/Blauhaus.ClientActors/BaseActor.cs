@@ -9,7 +9,6 @@ namespace Blauhaus.ClientActors
     public abstract class BaseActor : IAsyncDisposable
     {
         private Actor? _backingHandler;
-        private readonly SemaphoreSlim _lock = new SemaphoreSlim(1);
 
         private IActor Handler
         {
@@ -35,57 +34,17 @@ namespace Blauhaus.ClientActors
             return Task.CompletedTask;
         }
 
-        protected Task DoAsync(Action action, CancellationToken cancellationToken = default) => Handler.Enqueue(() =>
-        {
-            _lock.Wait();
-            try
-            {
-                action.Invoke();
-            }
-            finally
-            {
-                _lock.Release();
-            }
-        }, cancellationToken);
+        protected Task DoAsync(Action action, CancellationToken cancellationToken = default) 
+            => Handler.Enqueue(action.Invoke, cancellationToken);
 
-        protected Task<T> DoAsync<T>(Func<T> function, CancellationToken cancellationToken = default) => Handler.Enqueue(() =>
-        {
-            _lock.Wait();
-            try
-            {
-                return function.Invoke();
-            }
-            finally
-            {
-                _lock.Release();
-            }
-        }, cancellationToken);
+        protected Task<T> DoAsync<T>(Func<T> function, CancellationToken cancellationToken = default) 
+            => Handler.Enqueue(function.Invoke, cancellationToken);
 
-        protected Task DoAsync(Func<Task> asyncAction, CancellationToken cancellationToken = default) => Handler.Enqueue(async () =>
-        {
-            _lock.Wait();
-            try
-            {
-                await asyncAction.Invoke();
-            }
-            finally
-            {
-                _lock.Release();
-            }
-        }, cancellationToken);
+        protected Task DoAsync(Func<Task> asyncAction, CancellationToken cancellationToken = default) 
+            => Handler.Enqueue(async () => await asyncAction.Invoke(), cancellationToken);
 
-        protected Task<T> DoAsync<T>(Func<Task<T>> asyncFunction, CancellationToken cancellationToken = default) => Handler.Enqueue(async () =>
-        {
-            _lock.Wait();
-            try
-            {
-                return await asyncFunction.Invoke();
-            }
-            finally
-            {
-                _lock.Release();
-            }
-        }, cancellationToken);
+        protected Task<T> DoAsync<T>(Func<Task<T>> asyncFunction, CancellationToken cancellationToken = default) 
+            => Handler.Enqueue(async () => await asyncFunction.Invoke(), cancellationToken);
 
         
         protected virtual void Shutdown()
@@ -95,7 +54,6 @@ namespace Blauhaus.ClientActors
         public virtual async ValueTask DisposeAsync()
         {
             await Handler.Stop();
-            _lock.Dispose();
         }
     }
 }
