@@ -1,41 +1,14 @@
 ﻿using System;
 using System.Threading;
-using System.Threading.Tasks;
-using Winton.Extensions.Threading.Actor;
-using IActor = Winton.Extensions.Threading.Actor.IActor;
+using System.Threading.Tasks; 
 
 namespace Blauhaus.ClientActors
 {
     public abstract class BaseBlockingActor : IAsyncDisposable
     {
-        private Actor? _backingHandler;
         private readonly SemaphoreSlim _lock = new SemaphoreSlim(1);
-
-        private IActor Handler
-        {
-            get
-            {
-                if (_backingHandler == null)
-                {
-                    _backingHandler = new Actor();
-                    
-                    _backingHandler
-                        .WithStartWork(InitializeAsync)
-                        .WithStopWork(Shutdown);
-
-                    Handler.Start();
-                }
-
-                return _backingHandler;
-            }
-        }
-         
-        protected virtual Task InitializeAsync()
-        {
-            return Task.CompletedTask;
-        }
-
-        protected Task DoAsync(Action action, CancellationToken cancellationToken = default) => Handler.Enqueue(() =>
+          
+        protected void Do(Action action)
         {
             _lock.Wait();
             try
@@ -46,9 +19,8 @@ namespace Blauhaus.ClientActors
             {
                 _lock.Release();
             }
-        }, cancellationToken);
-
-        protected Task<T> DoAsync<T>(Func<T> function, CancellationToken cancellationToken = default) => Handler.Enqueue(() =>
+        }
+        protected T Do<T>(Func<T> function)
         {
             _lock.Wait();
             try
@@ -59,11 +31,11 @@ namespace Blauhaus.ClientActors
             {
                 _lock.Release();
             }
-        }, cancellationToken);
+        }
 
-        protected Task DoAsync(Func<Task> asyncAction, CancellationToken cancellationToken = default) => Handler.Enqueue(async () =>
+        protected async Task DoAsync(Func<Task> asyncAction)
         {
-            _lock.Wait();
+            await _lock.WaitAsync();
             try
             {
                 await asyncAction.Invoke();
@@ -72,11 +44,11 @@ namespace Blauhaus.ClientActors
             {
                 _lock.Release();
             }
-        }, cancellationToken);
+        }
 
-        protected Task<T> DoAsync<T>(Func<Task<T>> asyncFunction, CancellationToken cancellationToken = default) => Handler.Enqueue(async () =>
+        protected async Task<T> DoAsync<T>(Func<Task<T>> asyncFunction) 
         {
-            _lock.Wait();
+            await _lock.WaitAsync();
             try
             {
                 return await asyncFunction.Invoke();
@@ -85,17 +57,13 @@ namespace Blauhaus.ClientActors
             {
                 _lock.Release();
             }
-        }, cancellationToken);
-
-        
-        protected virtual void Shutdown()
-        {
         }
+         
 
-        public virtual async ValueTask DisposeAsync()
+        public virtual ValueTask DisposeAsync()
         {
-            await Handler.Stop();
             _lock.Dispose();
+            return new ValueTask();
         }
     }
 }
