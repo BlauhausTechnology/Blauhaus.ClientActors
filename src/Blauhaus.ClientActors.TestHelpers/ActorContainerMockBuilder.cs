@@ -23,6 +23,8 @@ namespace Blauhaus.ClientActors.TestHelpers
             if (id == null)
             {
                 Mock.Setup(x => x.GetAsync(It.IsAny<string>())).ReturnsAsync(actor);
+                Mock.Setup(x => x.GetAsync(It.IsAny<IEnumerable<string>>()))
+                    .ReturnsAsync(new List<TActor>{actor});
             }
             else
             {
@@ -42,6 +44,8 @@ namespace Blauhaus.ClientActors.TestHelpers
             if (id == null)
             {
                 Mock.Setup(x => x.UseAsync(It.IsAny<string>())).ReturnsAsync(actor);
+                Mock.Setup(x => x.UseAsync(It.IsAny<IEnumerable<string>>()))
+                    .ReturnsAsync(new List<TActor>{actor});
             }
             else
             {

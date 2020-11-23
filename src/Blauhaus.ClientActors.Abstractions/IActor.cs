@@ -2,7 +2,7 @@
 
 namespace Blauhaus.ClientActors.Abstractions
 {
-    public interface IActor : IAsyncDisposable, IInitializeById
+    public interface IActor : IAsyncDisposable, IInitializeById, IReloadable
     {
         
     }
