@@ -9,6 +9,9 @@ namespace Blauhaus.ClientActors
     public abstract class BaseActor : IAsyncDisposable
     {
         private Actor? _backingHandler;
+        private SemaphoreSlim? _lock;
+
+        private SemaphoreSlim Lock => _lock ??= new SemaphoreSlim(1);
 
         private IActor Handler
         {
@@ -46,6 +49,70 @@ namespace Blauhaus.ClientActors
         protected Task<T> DoAsync<T>(Func<Task<T>> asyncFunction, CancellationToken cancellationToken = default) 
             => Handler.Enqueue(async () => await asyncFunction.Invoke(), cancellationToken);
 
+        protected Task DoAndBlockAsync(Action action)
+        {
+            return DoAsync(() =>
+            {
+                Lock.Wait();
+                try
+                {
+                    action.Invoke();
+                }
+                finally
+                {
+                    Lock.Release();
+                }
+            });
+        }
+
+        protected Task<T> DoAndBlockAsync<T>(Func<T> function)
+        {
+            return DoAsync(() =>
+            {
+                Lock.Wait();
+                try
+                {
+                    return function.Invoke();
+                }
+                finally
+                {
+                    Lock.Release();
+                }
+            });
+             
+        }
+        
+        protected Task DoAndBlockAsync(Func<Task> asyncAction)
+        {
+            return DoAsync(async () =>
+            {
+                await Lock.WaitAsync();
+                try
+                {
+                    await asyncAction.Invoke();
+                }
+                finally
+                {
+                    Lock.Release();
+                }
+            });
+        }
+
+        protected Task<T> DoAndBlockAsync<T>(Func<Task<T>> asyncFunction) 
+        {
+           return DoAsync(async () =>
+           {
+               await Lock.WaitAsync();
+               try
+               {
+                   return await asyncFunction.Invoke();
+               }
+               finally
+               {
+                   Lock.Release();
+               }
+           });
+        }
         
         protected virtual void Shutdown()
         {
