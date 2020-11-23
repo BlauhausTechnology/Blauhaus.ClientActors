@@ -8,32 +8,6 @@ namespace Blauhaus.ClientActors.Tests.ActorTests
 {
     public class InvokeDoAsyncTests
     {
-        [Test] 
-        public async Task HOULD_invoke_methods_in_given_sequence()
-        {
-            //Arrange
-            var sut = new TestBaseActor();
-
-            //Act
-            var tasks = new List<Task>();
-            for (var i = 0; i < 50; i++)
-            {
-                tasks.Add(Task.Run(async () => await sut.InvokeDoAsync()));
-            }
-            await Task.WhenAll(tasks);
-
-            //Assert 
-            Assert.That(sut.UsedThreadIds.Count, Is.EqualTo(1));
-            Assert.That(sut.Numbers.Count, Is.EqualTo(50));
-            Assert.That(sut.Numbers.SequenceEqual(Enumerable.Range(0, 50)));
-            
-            for (var i = 1; i < 50; i++)
-            {
-                var previousStart = sut.StartTimeTicks[i - 1];
-                var thisStartTime = sut.StartTimeTicks[i];
-                Assert.That(thisStartTime > previousStart);
-            }
-            await sut.DisposeAsync();
-        }
+      
     }
 }

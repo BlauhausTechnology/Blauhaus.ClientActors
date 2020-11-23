@@ -15,23 +15,23 @@ namespace Blauhaus.ClientActors.Tests.Suts
 
         public List<long> StartTimeTicks = new List<long>();
          
-        public Task InvokeDoAsync()
+        public Task InvokeDoAsync(int callIndex)
         { 
             return DoAsync(async () =>
             {
-                await Execute();
+                await Execute(callIndex);
             });
         }
 
-        public Task InvokeDoAndBlockAsync()
+        public Task InvokeDoAndBlockAsync(int callIndex)
         { 
             return DoAndBlockAsync(async () =>
             {
-                await Execute();
+                await Execute(callIndex);
             });
         }
 
-        private async Task Execute()
+        private async Task Execute(int callIndex)
         {
             await Task.Delay(1);
             StartTimeTicks.Add(DateTime.Now.Ticks);
@@ -39,7 +39,7 @@ namespace Blauhaus.ClientActors.Tests.Suts
             Numbers.Add(Count++);
             UsedThreadIds.Add(Thread.CurrentThread.ManagedThreadId);
 
-            Console.WriteLine($"Thread: {Thread.CurrentThread.ManagedThreadId}. Invoked: {Count}");
+            Console.WriteLine($"Thread: {Thread.CurrentThread.ManagedThreadId}. Invoked: {Count}. Call index: {callIndex}");
         }
 
         public Task InitializeAsync(string id)
