@@ -20,12 +20,12 @@ namespace Blauhaus.ClientActors
 
         public Task<TActor> GetAsync(string actorId)
         {
-            return DoAsync(async () => await GetActorAsync(actorId)); 
+            return DoAndBlockAsync(async () => await GetActorAsync(actorId)); 
         }
 
         public Task<IReadOnlyList<TActor>> GetAsync(IEnumerable<string> actorIds)
         {
-            return DoAsync(async () =>
+            return DoAndBlockAsync(async () =>
             {
                 var actorsToReturn = new List<TActor>();
 
@@ -48,7 +48,7 @@ namespace Blauhaus.ClientActors
 
         public Task<TActor> UseAsync(string actorId)
         {
-            return DoAsync(async () =>
+            return DoAndBlockAsync(async () =>
             {
                 if (_actorCache.TryGetValue(actorId, out var existingActor))
                 {
@@ -64,7 +64,7 @@ namespace Blauhaus.ClientActors
 
         public Task<IReadOnlyList<TActor>> UseAsync(IEnumerable<string> actorIds)
         {
-            return DoAsync(async () =>
+            return DoAndBlockAsync(async () =>
             {
                 var actorsToReturn = new List<TActor>();
 
@@ -86,27 +86,26 @@ namespace Blauhaus.ClientActors
 
         public Task<IReadOnlyList<TActor>> GetActiveAsync()
         {
-            return DoAsync(() => Task.FromResult<IReadOnlyList<TActor>>(_actorCache.Values.ToList()));
+            return DoAndBlockAsync(() => (IReadOnlyList<TActor>)_actorCache.Values.ToList());
         }
 
         public Task<IReadOnlyList<TActor>> GetActiveAsync(IEnumerable<string> requiredIds)
         {
-            return DoAsync(() => Task.FromResult<IReadOnlyList<TActor>>(_actorCache
+            return DoAndBlockAsync(() => (IReadOnlyList<TActor>)_actorCache
                 .Where(x => requiredIds.Contains(x.Key))
                 .Select(x => x.Value)
-                .ToList()));
+                .ToList());
         }
 
         public Task<IReadOnlyList<TActor>> GetActiveAsync(Func<TActor, bool> predicate)
         {
-            return DoAsync(() => Task.FromResult<IReadOnlyList<TActor>>(_actorCache.Values
-                .Where(predicate.Invoke) 
-                .ToList()));
+            return DoAndBlockAsync(() => (IReadOnlyList<TActor>)_actorCache
+                .Values.Where(predicate.Invoke).ToList());
         }
 
         public Task ReloadActiveAsync()
         {
-            return DoAsync(() =>
+            return DoAndBlockAsync(() =>
             { 
                 return Task.WhenAll(_actorCache.Values
                     .Select(activeActor => activeActor.ReloadAsync()).ToList());
@@ -115,7 +114,7 @@ namespace Blauhaus.ClientActors
 
         public Task ReloadIfActiveAsync(IEnumerable<string> actorIds)
         {
-            return DoAsync(() =>
+            return DoAndBlockAsync(() =>
             {
                 var reloadTasks = new List<Task>();
 
@@ -130,7 +129,7 @@ namespace Blauhaus.ClientActors
 
         public Task RemoveAllAsync()
         {
-            return DoAsync(async () =>
+            return DoAndBlockAsync(async () =>
             {
                 foreach (var actor in _actorCache)
                 {
@@ -142,7 +141,7 @@ namespace Blauhaus.ClientActors
 
         public Task RemoveAsync(IEnumerable<string> requiredIds)
         {
-            return DoAsync(async () =>
+            return DoAndBlockAsync(async () =>
             {
                 foreach (var requiredId in requiredIds)
                 {
@@ -157,7 +156,7 @@ namespace Blauhaus.ClientActors
 
         public Task RemoveAsync(Func<TActor, bool> predicate)
         {
-            return DoAsync(async () =>
+            return DoAndBlockAsync(async () =>
             {
                 var actorsToRemove = _actorCache.Where(x => predicate(x.Value)).ToList();
                 foreach (var actorToRemove in actorsToRemove)
