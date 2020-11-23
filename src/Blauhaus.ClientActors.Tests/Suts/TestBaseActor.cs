@@ -17,7 +17,7 @@ namespace Blauhaus.ClientActors.Tests.Suts
          
         public Task InvokeDoAsync(int callIndex)
         { 
-            return DoAsync(async () =>
+            return InvokeInterleavedAsync(async () =>
             {
                 await Execute(callIndex);
             });
@@ -25,7 +25,7 @@ namespace Blauhaus.ClientActors.Tests.Suts
 
         public Task InvokeDoAndBlockAsync(int callIndex)
         { 
-            return DoAndBlockAsync(async () =>
+            return InvokeAsync(async () =>
             {
                 await Execute(callIndex);
             });

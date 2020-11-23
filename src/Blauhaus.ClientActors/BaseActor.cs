@@ -7,7 +7,7 @@ namespace Blauhaus.ClientActors
 {
     public abstract class BaseActor : IAsyncDisposable
     {
-        private readonly Actor? _handler;
+        private readonly Actor _handler;
         private readonly SemaphoreSlim _lock; 
 
 
@@ -30,21 +30,21 @@ namespace Blauhaus.ClientActors
             return Task.CompletedTask;
         }
 
-        protected Task DoAsync(Action action, CancellationToken cancellationToken = default) 
+        protected Task InvokeInterleavedAsync(Action action, CancellationToken cancellationToken = default) 
             => _handler.Enqueue(action.Invoke, cancellationToken);
 
-        protected Task<T> DoAsync<T>(Func<T> function, CancellationToken cancellationToken = default) 
+        protected Task<T> InvokeInterleavedAsync<T>(Func<T> function, CancellationToken cancellationToken = default) 
             => _handler.Enqueue(function.Invoke, cancellationToken);
 
-        protected Task DoAsync(Func<Task> asyncAction, CancellationToken cancellationToken = default) 
+        protected Task InvokeInterleavedAsync(Func<Task> asyncAction, CancellationToken cancellationToken = default) 
             => _handler.Enqueue(async () => await asyncAction.Invoke(), cancellationToken);
 
-        protected Task<T> DoAsync<T>(Func<Task<T>> asyncFunction, CancellationToken cancellationToken = default) 
+        protected Task<T> InvokeInterleavedAsync<T>(Func<Task<T>> asyncFunction, CancellationToken cancellationToken = default) 
             => _handler.Enqueue(async () => await asyncFunction.Invoke(), cancellationToken);
 
-        protected Task DoAndBlockAsync(Action action)
+        protected Task InvokeAsync(Action action)
         {
-            return DoAsync(() =>
+            return InvokeInterleavedAsync(() =>
             {
                 _lock.Wait();
                 try
@@ -58,9 +58,9 @@ namespace Blauhaus.ClientActors
             });
         }
 
-        protected Task<T> DoAndBlockAsync<T>(Func<T> function)
+        protected Task<T> InvokeAsync<T>(Func<T> function)
         {
-            return DoAsync(() =>
+            return InvokeInterleavedAsync(() =>
             {
                 _lock.Wait();
                 try
@@ -75,9 +75,9 @@ namespace Blauhaus.ClientActors
              
         }
         
-        protected Task DoAndBlockAsync(Func<Task> asyncAction)
+        protected Task InvokeAsync(Func<Task> asyncAction)
         {
-            return DoAsync(async () =>
+            return InvokeInterleavedAsync(async () =>
             {
                 await _lock.WaitAsync();
                 try
@@ -91,9 +91,9 @@ namespace Blauhaus.ClientActors
             });
         }
 
-        protected Task<T> DoAndBlockAsync<T>(Func<Task<T>> asyncFunction) 
+        protected Task<T> InvokeAsync<T>(Func<Task<T>> asyncFunction) 
         {
-           return DoAsync(async () =>
+           return InvokeInterleavedAsync(async () =>
            {
                await _lock.WaitAsync();
                try
