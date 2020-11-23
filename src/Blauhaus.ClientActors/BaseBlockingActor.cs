@@ -8,6 +8,8 @@ namespace Blauhaus.ClientActors
     {
         private readonly SemaphoreSlim _lock = new SemaphoreSlim(1);
           
+        //todo make this an execution option inside BaseActor instead of a separate class and write some tests!!!!
+
         protected void Do(Action action)
         {
             _lock.Wait();

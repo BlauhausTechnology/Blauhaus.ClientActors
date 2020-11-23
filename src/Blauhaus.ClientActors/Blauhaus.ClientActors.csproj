@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Blauhaus.Domain.Abstractions" Version="0.14.1" />
+    <PackageReference Include="Blauhaus.Domain.Abstractions" Version="0.14.3" />
     <PackageReference Include="Blauhaus.Ioc.Abstractions" Version="1.2.4" />
     <PackageReference Include="Blauhaus.Responses" Version="0.3.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
