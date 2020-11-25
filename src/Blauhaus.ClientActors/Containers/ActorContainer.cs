@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Blauhaus.ClientActors.Abstractions;
+using Blauhaus.ClientActors.Actors;
 using Blauhaus.Ioc.Abstractions;
 
-namespace Blauhaus.ClientActors
+namespace Blauhaus.ClientActors.Containers
 {
-    public sealed class ActorContainer<TActor> : BaseActor, IActorContainer<TActor> where TActor : class, IActor
+    public class ActorContainer<TActor, TId> : BaseActor, IActorContainer<TActor, TId> 
+        where TActor : class, IActor<TId>
     {
         private readonly IServiceLocator _serviceLocator;
-        private readonly Dictionary<string, TActor> _actorCache = new Dictionary<string, TActor>();
+        private readonly Dictionary<TId, TActor> _actorCache = new Dictionary<TId, TActor>();
 
         public ActorContainer(
             IServiceLocator serviceLocator)
@@ -18,12 +20,12 @@ namespace Blauhaus.ClientActors
             _serviceLocator = serviceLocator;
         }
 
-        public Task<TActor> GetAsync(string actorId)
+        public Task<TActor> GetAsync(TId actorId)
         {
             return InvokeAsync(async () => await GetActorAsync(actorId)); 
         }
 
-        public Task<IReadOnlyList<TActor>> GetAsync(IEnumerable<string> actorIds)
+        public Task<IReadOnlyList<TActor>> GetAsync(IEnumerable<TId> actorIds)
         {
             return InvokeAsync(async () =>
             {
@@ -46,7 +48,7 @@ namespace Blauhaus.ClientActors
             });
         }
 
-        public Task<TActor> UseAsync(string actorId)
+        public Task<TActor> UseAsync(TId actorId)
         {
             return InvokeAsync(async () =>
             {
@@ -62,7 +64,7 @@ namespace Blauhaus.ClientActors
             });
         }
 
-        public Task<IReadOnlyList<TActor>> UseAsync(IEnumerable<string> actorIds)
+        public Task<IReadOnlyList<TActor>> UseAsync(IEnumerable<TId> actorIds)
         {
             return InvokeAsync(async () =>
             {
@@ -89,7 +91,7 @@ namespace Blauhaus.ClientActors
             return InvokeAsync(() => (IReadOnlyList<TActor>)_actorCache.Values.ToList());
         }
 
-        public Task<IReadOnlyList<TActor>> GetActiveAsync(IEnumerable<string> requiredIds)
+        public Task<IReadOnlyList<TActor>> GetActiveAsync(IEnumerable<TId> requiredIds)
         {
             return InvokeAsync(() => (IReadOnlyList<TActor>)_actorCache
                 .Where(x => requiredIds.Contains(x.Key))
@@ -112,7 +114,7 @@ namespace Blauhaus.ClientActors
             });
         }
 
-        public Task ReloadIfActiveAsync(IEnumerable<string> actorIds)
+        public Task ReloadIfActiveAsync(IEnumerable<TId> actorIds)
         {
             return InvokeAsync(() =>
             {
@@ -139,7 +141,7 @@ namespace Blauhaus.ClientActors
             });
         }
 
-        public Task RemoveAsync(IEnumerable<string> requiredIds)
+        public Task RemoveAsync(IEnumerable<TId> requiredIds)
         {
             return InvokeAsync(async () =>
             {
@@ -168,7 +170,7 @@ namespace Blauhaus.ClientActors
         }
 
         
-        private async Task<TActor> GetActorAsync(string actorId)
+        protected async Task<TActor> GetActorAsync(TId actorId)
         {
             if (_actorCache.TryGetValue(actorId, out var existingActor))
             {
@@ -182,7 +184,7 @@ namespace Blauhaus.ClientActors
             return newActor;
         }
 
-        private async Task<TActor> UseActorAsync(string actorId)
+        private async Task<TActor> UseActorAsync(TId actorId)
         {
             if (_actorCache.TryGetValue(actorId, out var existingActor))
             {
@@ -195,5 +197,6 @@ namespace Blauhaus.ClientActors
             return newActor;
         }
 
+        
     }
 }

@@ -1,15 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Blauhaus.ClientActors.Containers;
 using Blauhaus.ClientActors.Tests._Base;
 using Blauhaus.ClientActors.Tests.Suts;
 using Blauhaus.Ioc.TestHelpers;
 using Blauhaus.TestHelpers.MockBuilders;
 using NUnit.Framework;
 
-namespace Blauhaus.ClientActors.Tests.ActorContainerTests
+namespace Blauhaus.ClientActors.Tests.Containers.ActorContainerTests
 {
-    public class GetActiveAsyncTests : BaseActorTest<ActorContainer<ITestActor>>
+    public class GetActiveAsyncTests : BaseActorTest<ActorContainer<ITestActor, string>>
     {
         protected MockBuilder<ITestActor> MockTestActor => AddMock<ITestActor>().Invoke();
 

@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Blauhaus.ClientActors.Abstractions;
+using Blauhaus.ClientActors.Actors;
 
 namespace Blauhaus.ClientActors.Tests.Suts
 {
-    public class TestBaseActor : BaseActor, IActor
+    public class TestBaseActor : BaseActor, IActor<string>
     {
         public  int Count;
         public List<int> Numbers = new List<int>();

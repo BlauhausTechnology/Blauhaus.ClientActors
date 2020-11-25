@@ -1,8 +1,10 @@
 ﻿using System;
+using Blauhaus.Common.Utils.Contracts;
 
 namespace Blauhaus.ClientActors.Abstractions
 {
-    public interface IActor : IAsyncDisposable, IInitializeById, IReloadable
+
+    public interface IActor<in TId> : IAsyncDisposable, IInitialize<TId>, IReloadable
     {
         
     }

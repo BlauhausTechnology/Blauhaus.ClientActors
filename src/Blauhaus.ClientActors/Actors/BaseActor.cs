@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Winton.Extensions.Threading.Actor;
 
-namespace Blauhaus.ClientActors
+namespace Blauhaus.ClientActors.Actors
 {
     public abstract class BaseActor : IAsyncDisposable
     {
@@ -16,11 +16,9 @@ namespace Blauhaus.ClientActors
             _lock = new SemaphoreSlim(1);
 
             _handler = new Actor();
-
             _handler
                 .WithStartWork(InitializeAsync)
                 .WithStopWork(Shutdown);
-
             _handler.Start();
         }
          

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Blauhaus.ClientActors.Tests.Suts;
 using NUnit.Framework;
 
-namespace Blauhaus.ClientActors.Tests.ActorTests
+namespace Blauhaus.ClientActors.Tests.Actors.ActorTests
 {
     public class DoAsyncTests
     {

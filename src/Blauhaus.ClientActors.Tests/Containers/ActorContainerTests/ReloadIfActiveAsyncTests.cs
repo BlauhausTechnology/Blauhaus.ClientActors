@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using Blauhaus.ClientActors.Containers;
 using Blauhaus.ClientActors.Tests._Base;
 using Blauhaus.ClientActors.Tests.Suts;
 using Blauhaus.Ioc.TestHelpers;
@@ -8,9 +8,9 @@ using Blauhaus.TestHelpers.MockBuilders;
 using Moq;
 using NUnit.Framework;
 
-namespace Blauhaus.ClientActors.Tests.ActorContainerTests
+namespace Blauhaus.ClientActors.Tests.Containers.ActorContainerTests
 {
-    public class ReloadActiveAsyncTests : BaseActorTest<ActorContainer<ITestActor>>
+    public class ReloadIfActiveAsyncTests : BaseActorTest<ActorContainer<ITestActor, string>>
     {
         protected MockBuilder<ITestActor> MockTestActor => AddMock<ITestActor>().Invoke();
 
@@ -22,7 +22,7 @@ namespace Blauhaus.ClientActors.Tests.ActorContainerTests
         }
 
         [Test]
-        public async Task WHEN_call_reload_on_all_()
+        public async Task WHEN_call_reload_on_active_actors_with_matching_ids()
         {
             //Arrange
             var mockActiveActor1 = new MockBuilder<ITestActor>();
@@ -40,7 +40,7 @@ namespace Blauhaus.ClientActors.Tests.ActorContainerTests
             await Sut.GetAsync("2"); 
 
             //Act
-            await Sut.ReloadActiveAsync();
+            await Sut.ReloadIfActiveAsync(new List<string>{"1", "2", "3"});
 
             //Assert
             mockActiveActor1.Mock.Verify(x => x.ReloadAsync(), Times.Once);
