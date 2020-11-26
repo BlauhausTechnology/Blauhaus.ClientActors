@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Blauhaus.ClientActors.Abstractions;
 using Blauhaus.Common.Utils.Contracts;
 using Moq;
@@ -27,6 +28,13 @@ namespace Blauhaus.ClientActors.TestHelpers
         {
             Mock.Setup(x => x.GetModelsAsync(It.IsAny<IEnumerable<TId>>()))
                 .ReturnsAsync(new List<TModel>{model});
+            return this;
+        }
+        
+        public ModelActorContainerMockBuilder<TActor, TId, TModel> Where_GetModelsAsync_returns(IReadOnlyList<TModel> models)
+        {
+            Mock.Setup(x => x.GetModelsAsync(It.IsAny<IEnumerable<TId>>()))
+                .ReturnsAsync(models);
             return this;
         }
     }
