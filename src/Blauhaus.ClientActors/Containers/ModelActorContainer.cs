@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Blauhaus.ClientActors.Abstractions;
 using Blauhaus.Common.Utils.Contracts;
@@ -20,6 +21,21 @@ namespace Blauhaus.ClientActors.Containers
             {
                 var actor = await GetActorAsync(id);
                 return await actor.GetModelAsync();
+            });
+        }
+
+        public Task<IReadOnlyList<TModel>> GetModelsAsync(IEnumerable<TId> actorIds)
+        {
+            return InvokeAsync(async () =>
+            {
+                var actors = await GetActorsAsync(actorIds);
+
+                var getModelTasks = new List<Task<TModel>>();
+                foreach (var modelActor in actors)
+                {
+                    getModelTasks.Add(modelActor.GetModelAsync());
+                }
+                return (IReadOnlyList<TModel>) await Task.WhenAll(getModelTasks);
             });
         }
 

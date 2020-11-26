@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Timers;
 using Blauhaus.Common.Utils.Contracts;
@@ -10,6 +11,7 @@ namespace Blauhaus.ClientActors.Abstractions
         where TModel : IId<TId>
     {
         Task<TModel> GetModelAsync(TId id);
+        Task<IReadOnlyList<TModel>> GetModelsAsync(IEnumerable<TId> actorIds);
         Task<IDisposable> SubscribeAsync(TId id, Func<TModel, Task> handler);
     }
 }

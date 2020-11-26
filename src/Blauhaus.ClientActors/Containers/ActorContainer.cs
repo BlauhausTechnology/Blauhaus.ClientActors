@@ -27,25 +27,7 @@ namespace Blauhaus.ClientActors.Containers
 
         public Task<IReadOnlyList<TActor>> GetAsync(IEnumerable<TId> actorIds)
         {
-            return InvokeAsync(async () =>
-            {
-                var actorsToReturn = new List<TActor>();
-
-                foreach (var actorId in actorIds)
-                {
-                    if (_actorCache.TryGetValue(actorId, out var existingActor))
-                    {
-                        actorsToReturn.Add(existingActor);
-                    }
-                    else
-                    {
-                        var actorToReturn = await GetActorAsync(actorId);
-                        actorsToReturn.Add(actorToReturn);
-                    }
-                }
-
-                return (IReadOnlyList<TActor>) actorsToReturn;
-            });
+            return InvokeAsync(async () => await GetActorsAsync(actorIds));
         }
 
         public Task<TActor> UseOneAsync(TId actorId)
@@ -182,6 +164,17 @@ namespace Blauhaus.ClientActors.Containers
             _actorCache[actorId] = newActor;
 
             return newActor;
+        }
+
+        protected async Task<IReadOnlyList<TActor>> GetActorsAsync(IEnumerable<TId> ids)
+        {
+            var getActorTasks = new List<Task<TActor>>();
+            foreach (var actorId in ids)
+            {
+                getActorTasks.Add(GetActorAsync(actorId));
+            }
+
+            return await Task.WhenAll(getActorTasks);
         }
 
         private async Task<TActor> UseActorAsync(TId actorId)
