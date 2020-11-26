@@ -66,13 +66,14 @@ namespace Blauhaus.ClientActors.Tests.Actors.ModelActorTests
                 resultTwo = testModel;
                 return Task.CompletedTask;
             });
+            resultTwo = null;
             token.Dispose();
 
             //Act
             await Sut.ReloadAsync(); 
 
             //Assert
-            Assert.That(resultTwo, Is.Null);
+            Assert.That(resultTwo == null);
         }
     }
 }

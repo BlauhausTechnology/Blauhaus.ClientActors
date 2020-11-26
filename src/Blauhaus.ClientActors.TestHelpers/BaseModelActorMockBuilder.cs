@@ -16,7 +16,7 @@ namespace Blauhaus.ClientActors.TestHelpers
         
         private readonly List<Func<TModel, Task>> _handlers = new List<Func<TModel, Task>>();
 
-        public TBuilder Where_GetAsync_returns(TModel model)
+        public TBuilder Where_GetModelAsync_returns(TModel model)
         {
             Mock.Setup(x => x.GetModelAsync())
                 .ReturnsAsync(model);

@@ -31,21 +31,18 @@ namespace Blauhaus.ClientActors.Actors
 
         public Task<IDisposable> SubscribeAsync(Func<TModel, Task> handler)
         {
-            return InvokeAsync(() =>
+            return InvokeAsync(async () =>
             {
                 _subscribers.Add(handler);
+                var model = await GetOrLoadModelAsync();
+                await handler.Invoke(model);
                 return (IDisposable) new ActionDisposable(() => _subscribers.Remove(handler));
             });
         }
 
         private async Task<TModel> GetOrLoadModelAsync()
         {
-            if (_model == null)
-            {
-                _model = await LoadModelAsync();
-            }
-
-            return _model;
+            return _model ??= await LoadModelAsync();
         }
 
         private Task UpdateSubscribersAsync(TModel model)
