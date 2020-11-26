@@ -2,11 +2,12 @@
 using System.Threading.Tasks;
 using Blauhaus.ClientActors.Abstractions;
 using Blauhaus.ClientDatabase.Sqlite.Service;
+using Blauhaus.Common.Utils.Contracts;
 using SQLite;
 
 namespace Blauhaus.ClientActors.Sqlite
 {
-    public abstract class SqliteActor : IInitializeById
+    public abstract class SqliteActor : IInitialize<string>
     {
         private readonly ISqliteDatabaseService _sqliteDatabaseService;
         private SQLiteAsyncConnection _connection;
