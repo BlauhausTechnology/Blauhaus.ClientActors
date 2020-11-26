@@ -13,7 +13,8 @@ namespace Blauhaus.ClientActors.Actors
     {
         private TModel? _model;
         
-        private readonly List<Func<TModel, Task>> _subscribers = new List<Func<TModel, Task>>();
+        
+        private readonly Dictionary<Type, List<Func<object, Task>>> _subscribers = new Dictionary<Type, List<Func<object, Task>>>();
 
         public Task<TModel> GetModelAsync()
         {
@@ -28,32 +29,15 @@ namespace Blauhaus.ClientActors.Actors
                 await UpdateSubscribersAsync(_model);
             });
         }
-
+         
         public Task<IDisposable> SubscribeAsync(Func<TModel, Task> handler)
         {
-            return InvokeAsync(async () =>
-            {
-                _subscribers.Add(handler);
-                var model = await GetOrLoadModelAsync();
-                await handler.Invoke(model);
-                return (IDisposable) new ActionDisposable(() => _subscribers.Remove(handler));
-            });
+            return InvokeAsync(async () => await SubscribeAsync<TModel>(handler, GetOrLoadModelAsync));
         }
 
         private async Task<TModel> GetOrLoadModelAsync()
         {
             return _model ??= await LoadModelAsync();
-        }
-
-        private Task UpdateSubscribersAsync(TModel model)
-        {
-            if (_subscribers.Count > 0)
-            {
-                var tasks = _subscribers.Select(handler => handler.Invoke(model)).ToList();
-                return Task.WhenAll(tasks);
-            }
-
-            return Task.CompletedTask;
         }
 
         protected abstract Task<TModel> LoadModelAsync();

@@ -1,15 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Blauhaus.Common.Utils.Disposables;
 using Winton.Extensions.Threading.Actor;
 
 namespace Blauhaus.ClientActors.Actors
 {
-    public abstract class BaseActor : IAsyncDisposable
+    public abstract class BaseActor : BasePublisher, IAsyncDisposable
     {
         private readonly Actor _handler;
         private readonly SemaphoreSlim _lock; 
-
+        
 
         protected BaseActor()
         {
@@ -113,5 +115,6 @@ namespace Blauhaus.ClientActors.Actors
         {
             await _handler.Stop();
         }
+
     }
 }
