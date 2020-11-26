@@ -7,7 +7,7 @@ namespace Blauhaus.ClientActors.Actors
 {
     public abstract class BaseIdActor<TId> : BaseActor, IActor<TId>
     {
-        private TId? _id;
+        private TId _id;
         protected TId Id
         {
             get

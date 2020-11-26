@@ -9,7 +9,7 @@ using Blauhaus.Common.Utils.Disposables;
 namespace Blauhaus.ClientActors.Actors
 {
     public abstract class BaseModelActor<TId, TModel> : BaseIdActor<TId>, IModelActor<TId, TModel>
-        where TModel : IId<TId>
+        where TModel : class, IId<TId>
     {
         private TModel? _model;
         
