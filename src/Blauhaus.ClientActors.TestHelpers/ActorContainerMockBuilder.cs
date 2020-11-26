@@ -97,6 +97,16 @@ namespace Blauhaus.ClientActors.TestHelpers
         {
             Mock.Verify(x => x.GetAsync(It.Is<IEnumerable<TId>>(y => y.Contains(id))));
         }
+        
+        public void Verify_GetAsync_NOT(TId id)
+        {
+            Mock.Verify(x => x.GetAsync(It.Is<IEnumerable<TId>>(y => !y.Contains(id))));
+        }
+        
+        public void Verify_GetAsync_Count(int count)
+        {
+            Mock.Verify(x => x.GetAsync(It.Is<IEnumerable<TId>>(y => y.Count() == count)));
+        }
 
 
     }
