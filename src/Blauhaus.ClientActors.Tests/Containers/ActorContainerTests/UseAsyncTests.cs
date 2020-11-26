@@ -23,7 +23,7 @@ namespace Blauhaus.ClientActors.Tests.Containers.ActorContainerTests
         public async Task WHEN_Actor_does_not_yet_exist_SHOULD_create_and_initialize_one()
         {
             //Act
-            var result = await Sut.UseAsync("myId");
+            var result = await Sut.UseOneAsync("myId");
 
             //Assert
             MockTestActor.Mock.Verify(x => x.InitializeAsync("myId"));
@@ -34,10 +34,10 @@ namespace Blauhaus.ClientActors.Tests.Containers.ActorContainerTests
         public async Task WHEN_Actor_has_been_got_before_SHOULD_not_recreate_it()
         {
             //Arrange
-            await Sut.GetAsync("myId");
+            await Sut.GetOneAsync("myId");
 
             //Act
-            var result = await Sut.UseAsync("myId");
+            var result = await Sut.UseOneAsync("myId");
 
             //Assert
             MockTestActor.Mock.Verify(x => x.InitializeAsync("myId"), Times.Exactly(1));
@@ -49,10 +49,10 @@ namespace Blauhaus.ClientActors.Tests.Containers.ActorContainerTests
         public async Task WHEN_Actor_has_been_used_before_SHOULD_create_and_initialize_one_anyway()
         {
             //Arrange
-            await Sut.UseAsync("myId");
+            await Sut.UseOneAsync("myId");
 
             //Act
-            var result = await Sut.UseAsync("myId");
+            var result = await Sut.UseOneAsync("myId");
 
             //Assert
             MockTestActor.Mock.Verify(x => x.InitializeAsync("myId"), Times.Exactly(2));
@@ -63,9 +63,9 @@ namespace Blauhaus.ClientActors.Tests.Containers.ActorContainerTests
         public async Task WHEN_Multiple_Ids_given_should_create_new_without_caching_and_return_existing()
         {
             //Arrange
-            await Sut.GetAsync("1");
-            await Sut.GetAsync("2");
-            await Sut.UseAsync("7");
+            await Sut.GetOneAsync("1");
+            await Sut.GetOneAsync("2");
+            await Sut.UseOneAsync("7");
 
             //Act
             var result = await Sut.UseAsync(new []{"1", "2", "3"});

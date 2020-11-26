@@ -36,8 +36,8 @@ namespace Blauhaus.ClientActors.Tests.Containers.ActorContainerTests
                     mockActiveActor3.Object,
                 });
             AddService(mockServiceLocator.Object);
-            await Sut.GetAsync("1"); 
-            await Sut.GetAsync("2"); 
+            await Sut.GetOneAsync("1"); 
+            await Sut.GetOneAsync("2"); 
 
             //Act
             await Sut.ReloadIfActiveAsync(new List<string>{"1", "2", "3"});

@@ -25,10 +25,10 @@ namespace Blauhaus.ClientActors.Tests.Containers.ActorContainerTests
         public async Task SHOULD_return_activated_actors()
         {
             //Arrange
-            await Sut.GetAsync("1"); 
-            await Sut.GetAsync("2"); 
-            await Sut.GetAsync("3"); 
-            await Sut.UseAsync("4"); 
+            await Sut.GetOneAsync("1"); 
+            await Sut.GetOneAsync("2"); 
+            await Sut.GetOneAsync("3"); 
+            await Sut.UseOneAsync("4"); 
 
             //Act
             var result = await Sut.GetActiveAsync();
@@ -41,12 +41,12 @@ namespace Blauhaus.ClientActors.Tests.Containers.ActorContainerTests
         public async Task WHN_Ids_are_given_SHOULD_only_return_actors_that_match()
         {
             //Arrange
-            await Sut.GetAsync("1"); 
-            await Sut.GetAsync("2"); 
-            await Sut.GetAsync("3"); 
-            await Sut.GetAsync("4"); 
-            await Sut.GetAsync("5"); 
-            await Sut.UseAsync("6"); 
+            await Sut.GetOneAsync("1"); 
+            await Sut.GetOneAsync("2"); 
+            await Sut.GetOneAsync("3"); 
+            await Sut.GetOneAsync("4"); 
+            await Sut.GetOneAsync("5"); 
+            await Sut.UseOneAsync("6"); 
 
             //Act
             var result = await Sut.GetActiveAsync(new []{"3", "4"});
@@ -68,10 +68,10 @@ namespace Blauhaus.ClientActors.Tests.Containers.ActorContainerTests
                     new MockBuilder<ITestActor>().With(x => x.ExtraProperty, "domino").Object,
                 });
             AddService(mockServiceLocator.Object);
-            await Sut.GetAsync("1"); 
-            await Sut.GetAsync("2"); 
-            await Sut.GetAsync("3"); 
-            await Sut.GetAsync("4");  
+            await Sut.GetOneAsync("1"); 
+            await Sut.GetOneAsync("2"); 
+            await Sut.GetOneAsync("3"); 
+            await Sut.GetOneAsync("4");  
 
             //Act
             var result = await Sut.GetActiveAsync(x => x.ExtraProperty.Contains("d"));

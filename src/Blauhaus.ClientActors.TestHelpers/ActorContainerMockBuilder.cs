@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Blauhaus.ClientActors.Abstractions;
 using Blauhaus.TestHelpers.MockBuilders;
 using Moq;
@@ -17,28 +18,26 @@ namespace Blauhaus.ClientActors.TestHelpers
         where TBuilder : BaseActorContainerMockBuilder<TBuilder, TContainer, TActor, TId>
         where TContainer : class, IActorContainer<TActor, TId>
     {
-        private static readonly List<TActor> _empty = new List<TActor>();
+        private static readonly List<TActor> Empty = new List<TActor>();
 
         protected BaseActorContainerMockBuilder()
         {
-            Where_GetActiveAsync_returns(_empty);
-            Where_GetAsync_returns(_empty);
-            Where_GetAsync_returns(new Mock<TActor>().Object);
-            Where_UseAsync_returns(_empty);
-            Where_UseAsync_returns(new Mock<TActor>().Object);
+            Where_GetActiveAsync_returns(Empty);
+            Where_GetAsync_returns(Empty);
+            Where_GetOneAsync_returns(new Mock<TActor>().Object);
+            Where_UseAsync_returns(Empty);
+            Where_UseOneAsync_returns(new Mock<TActor>().Object);
         }
 
-        public TBuilder Where_GetAsync_returns(TActor actor, TId id = default)
+        public TBuilder Where_GetOneAsync_returns(TActor actor, TId id = default)
         {
             if (id == null)
             {
-                Mock.Setup(x => x.GetAsync(It.IsAny<TId>())).ReturnsAsync(actor);
-                Mock.Setup(x => x.GetAsync(It.IsAny<IEnumerable<TId>>()))
-                    .ReturnsAsync(new List<TActor>{actor});
+                Mock.Setup(x => x.GetOneAsync(It.IsAny<TId>())).ReturnsAsync(actor); 
             }
             else
             {
-                Mock.Setup(x => x.GetAsync(id)).ReturnsAsync(actor);
+                Mock.Setup(x => x.GetOneAsync(id)).ReturnsAsync(actor);
             }
             return (TBuilder) this;
         }
@@ -48,18 +47,22 @@ namespace Blauhaus.ClientActors.TestHelpers
                 .ReturnsAsync(actors);
             return (TBuilder) this;
         }
+        public TBuilder Where_GetAsync_returns(TActor actor)
+        {
+            Mock.Setup(x => x.GetAsync(It.IsAny<IEnumerable<TId>>()))
+                .ReturnsAsync(new List<TActor>{actor});
+            return (TBuilder) this;
+        }
 
-        public TBuilder Where_UseAsync_returns(TActor actor, TId id = default)
+        public TBuilder Where_UseOneAsync_returns(TActor actor, TId id = default)
         {
             if (id == null)
             {
-                Mock.Setup(x => x.UseAsync(It.IsAny<TId>())).ReturnsAsync(actor);
-                Mock.Setup(x => x.UseAsync(It.IsAny<IEnumerable<TId>>()))
-                    .ReturnsAsync(new List<TActor>{actor});
+                Mock.Setup(x => x.UseOneAsync(It.IsAny<TId>())).ReturnsAsync(actor); 
             }
             else
             {
-                Mock.Setup(x => x.UseAsync(id)).ReturnsAsync(actor);
+                Mock.Setup(x => x.UseOneAsync(id)).ReturnsAsync(actor);
             }
             return (TBuilder) this;
         }
@@ -67,6 +70,12 @@ namespace Blauhaus.ClientActors.TestHelpers
         {
             Mock.Setup(x => x.UseAsync(It.IsAny<IEnumerable<TId>>()))
                 .ReturnsAsync(actors);
+            return (TBuilder) this;
+        }
+        public TBuilder Where_UseAsync_returns(TActor actor)
+        {
+            Mock.Setup(x => x.UseAsync(It.IsAny<IEnumerable<TId>>()))
+                .ReturnsAsync(new List<TActor>{actor});
             return (TBuilder) this;
         }
 
@@ -77,5 +86,18 @@ namespace Blauhaus.ClientActors.TestHelpers
             Mock.Setup(x => x.GetActiveAsync(It.IsAny<IEnumerable<TId>>())).ReturnsAsync(actors);
             return (TBuilder) this;
         }
+
+
+        public void Verify_GetOneAsync(TId id)
+        {
+            Mock.Verify(x => x.GetOneAsync(id));
+        }
+
+        public void Verify_GetAsync(TId id)
+        {
+            Mock.Verify(x => x.GetAsync(It.Is<IEnumerable<TId>>(y => y.Contains(id))));
+        }
+
+
     }
 }

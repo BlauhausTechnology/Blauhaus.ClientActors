@@ -23,7 +23,7 @@ namespace Blauhaus.ClientActors.Tests.Containers.ActorContainerTests
         public async Task WHEN_Actor_does_not_yet_exist_SHOULD_create_and_initialize_one()
         {
             //Act
-            var result = await Sut.GetAsync("myId");
+            var result = await Sut.GetOneAsync("myId");
 
             //Assert
             MockTestActor.Mock.Verify(x => x.InitializeAsync("myId"));
@@ -34,10 +34,10 @@ namespace Blauhaus.ClientActors.Tests.Containers.ActorContainerTests
         public async Task WHEN_Actor_does_exist_SHOULD_return_it()
         {
             //Arrange
-            await Sut.GetAsync("myId");
+            await Sut.GetOneAsync("myId");
 
             //Act
-            var result = await Sut.GetAsync("myId");
+            var result = await Sut.GetOneAsync("myId");
 
             //Assert
             MockTestActor.Mock.Verify(x => x.InitializeAsync("myId"), Times.Once);
@@ -48,9 +48,9 @@ namespace Blauhaus.ClientActors.Tests.Containers.ActorContainerTests
         public async Task WHEN_Multiple_Ids_given_should_create_and_cache_new_and_just_return_existing()
         {
             //Arrange
-            await Sut.GetAsync("1");
-            await Sut.GetAsync("2");
-            await Sut.UseAsync("7");
+            await Sut.GetOneAsync("1");
+            await Sut.GetOneAsync("2");
+            await Sut.UseOneAsync("7");
 
             //Act
             var result = await Sut.GetAsync(new []{"1", "2", "3"});

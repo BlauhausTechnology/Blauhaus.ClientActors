@@ -8,11 +8,11 @@ namespace Blauhaus.ClientActors.Abstractions
      
     public interface IActorContainer<TActor, in TId> where TActor : class, IActor<TId>
     { 
-        Task<TActor> GetAsync(TId actorId);
+        Task<TActor> GetOneAsync(TId actorId);
         Task<IReadOnlyList<TActor>> GetAsync(IEnumerable<TId> actorIds);
 
          
-        Task<TActor> UseAsync(TId actorId);
+        Task<TActor> UseOneAsync(TId actorId);
         Task<IReadOnlyList<TActor>> UseAsync(IEnumerable<TId> actorIds);
 
          

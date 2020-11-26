@@ -20,7 +20,7 @@ namespace Blauhaus.ClientActors.Containers
             _serviceLocator = serviceLocator;
         }
 
-        public Task<TActor> GetAsync(TId actorId)
+        public Task<TActor> GetOneAsync(TId actorId)
         {
             return InvokeAsync(async () => await GetActorAsync(actorId)); 
         }
@@ -48,7 +48,7 @@ namespace Blauhaus.ClientActors.Containers
             });
         }
 
-        public Task<TActor> UseAsync(TId actorId)
+        public Task<TActor> UseOneAsync(TId actorId)
         {
             return InvokeAsync(async () =>
             {
