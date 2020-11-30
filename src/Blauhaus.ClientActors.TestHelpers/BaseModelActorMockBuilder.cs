@@ -8,13 +8,12 @@ using Moq;
 
 namespace Blauhaus.ClientActors.TestHelpers
 {
-    public abstract class BaseModelActorMockBuilder<TBuilder, TActor, TId, TModel> : BaseMockBuilder<TBuilder, TActor> 
+    public abstract class BaseModelActorMockBuilder<TBuilder, TActor, TId, TModel> : BaseAsyncPublisherMockBuilder<TBuilder, TActor, TModel> 
         where TBuilder : BaseModelActorMockBuilder<TBuilder, TActor, TId, TModel> 
         where TActor : class, IModelActor<TId, TModel>
         where TModel : IHasId<TId>
     {
         
-        private readonly List<Func<TModel, Task>> _handlers = new List<Func<TModel, Task>>();
 
         public TBuilder Where_GetModelAsync_returns(TModel model)
         {
@@ -22,27 +21,6 @@ namespace Blauhaus.ClientActors.TestHelpers
                 .ReturnsAsync(model);
             return (TBuilder) this;
         }
-         
-
-        public Mock<IDisposable> AllowMockSubscriptions()
-        {
-            var mockToken = new Mock<IDisposable>();
-
-            Mock.Setup(x => x.SubscribeAsync(It.IsAny<Func<TModel, Task>>()))
-                .Callback((Func<TModel, Task> handler) =>
-                {
-                    _handlers.Add(handler);
-                }).ReturnsAsync(mockToken.Object);
-
-            return mockToken;
-        }
-
-        public async Task PublishMockSubscriptionAsync(TModel model)
-        {
-            foreach (var handler in _handlers)
-            {
-                await handler.Invoke(model);
-            }
-        }
+          
     }
 }
