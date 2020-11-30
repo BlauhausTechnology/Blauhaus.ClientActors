@@ -5,7 +5,7 @@ using Blauhaus.Common.Utils.Contracts;
 
 namespace Blauhaus.ClientActors.Tests.Suts
 {
-    public class TestActor : BaseActor, IInitialize<string>
+    public class TestActor : BaseActor, IAsyncInitializable<string>
     {
         public Task InitializeAsync(string id)
         {

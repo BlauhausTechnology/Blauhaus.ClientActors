@@ -11,7 +11,7 @@ namespace Blauhaus.ClientActors.TestHelpers
     public abstract class BaseModelActorMockBuilder<TBuilder, TActor, TId, TModel> : BaseMockBuilder<TBuilder, TActor> 
         where TBuilder : BaseModelActorMockBuilder<TBuilder, TActor, TId, TModel> 
         where TActor : class, IModelActor<TId, TModel>
-        where TModel : IId<TId>
+        where TModel : IHasId<TId>
     {
         
         private readonly List<Func<TModel, Task>> _handlers = new List<Func<TModel, Task>>();

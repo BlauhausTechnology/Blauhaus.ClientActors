@@ -4,8 +4,8 @@ using Blauhaus.Common.Utils.Contracts;
 
 namespace Blauhaus.ClientActors.Abstractions
 {
-    public interface IModelActor<in TId, TModel> : IActor<TId> , IPublish<TModel>
-        where TModel : IId<TId>
+    public interface IModelActor<in TId, TModel> : IActor<TId> , IAsyncPublisher<TModel>
+        where TModel : IHasId<TId>
     {
 
         Task<TModel> GetModelAsync();

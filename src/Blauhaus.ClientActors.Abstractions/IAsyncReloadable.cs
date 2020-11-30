@@ -2,7 +2,7 @@
 
 namespace Blauhaus.ClientActors.Abstractions
 {
-    public interface IReloadable
+    public interface IAsyncReloadable
     {
         Task ReloadAsync();
     }

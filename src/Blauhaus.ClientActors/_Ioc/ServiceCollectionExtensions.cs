@@ -22,7 +22,7 @@ namespace Blauhaus.ClientActors._Ioc
         public static IServiceCollection AddModelActor<TActor, TActorImplementation, TId, TModel>(this IServiceCollection services)
             where TActor : class, IModelActor<TId, TModel> 
             where TActorImplementation : class, TActor
-            where TModel : IId<TId>
+            where TModel : IHasId<TId>
         {
             services.TryAddSingleton<IModelActorContainer<TActor, TId, TModel>, ModelActorContainer<TActor, TId, TModel>>();
             services.AddTransient<TActor, TActorImplementation>();  

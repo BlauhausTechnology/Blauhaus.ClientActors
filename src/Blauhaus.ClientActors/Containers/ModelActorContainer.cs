@@ -9,7 +9,7 @@ namespace Blauhaus.ClientActors.Containers
 {
     public class ModelActorContainer<TActor, TId, TModel> : ActorContainer<TActor, TId>, IModelActorContainer<TActor, TId, TModel>
         where TActor : class, IModelActor<TId, TModel> 
-        where TModel : IId<TId>
+        where TModel : IHasId<TId>
     {
         public ModelActorContainer(IServiceLocator serviceLocator) : base(serviceLocator)
         {

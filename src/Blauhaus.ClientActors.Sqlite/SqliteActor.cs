@@ -7,7 +7,7 @@ using SQLite;
 
 namespace Blauhaus.ClientActors.Sqlite
 {
-    public abstract class SqliteActor : IInitialize<string>
+    public abstract class SqliteActor : IAsyncInitializable<string>
     {
         private readonly ISqliteDatabaseService _sqliteDatabaseService;
         private SQLiteAsyncConnection _connection;
@@ -22,8 +22,7 @@ namespace Blauhaus.ClientActors.Sqlite
         public async Task InitializeAsync(string key)
         {
             Key = key;
-            _connection = await _sqliteDatabaseService.GetDatabaseConnectionAsync();
-            await _connection.RunInTransactionAsync(LoadData);
+            await _sqliteDatabaseService.AsyncConnection.RunInTransactionAsync(LoadData);
         }
 
         public Task ShutdownAsync()

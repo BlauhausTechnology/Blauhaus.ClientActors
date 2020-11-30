@@ -8,7 +8,7 @@ namespace Blauhaus.ClientActors.Abstractions
 {
     public interface IModelActorContainer<TActor, in TId, TModel> : IActorContainer<TActor, TId> 
         where TActor : class, IModelActor<TId, TModel> 
-        where TModel : IId<TId>
+        where TModel : IHasId<TId>
     {
         Task<TModel> GetModelAsync(TId id);
         Task<IReadOnlyList<TModel>> GetModelsAsync(IEnumerable<TId> actorIds);
