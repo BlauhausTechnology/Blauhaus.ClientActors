@@ -25,7 +25,7 @@ namespace Blauhaus.ClientActors.Actors
         {
             return InvokeAsync(async () =>
             {
-                await ReloadModelAsync();
+                await ReloadSelfAsync();
             });
         }
          
@@ -40,10 +40,11 @@ namespace Blauhaus.ClientActors.Actors
         }
 
         
-        protected async Task ReloadModelAsync()
+        protected async Task<TModel> ReloadSelfAsync()
         {
             _model = await LoadModelAsync();
             await UpdateSubscribersAsync(_model);
+            return _model;
         }
 
 
