@@ -13,8 +13,6 @@ namespace Blauhaus.ClientActors.Actors
     {
         private TModel? _model;
         
-        
-        private readonly Dictionary<Type, List<Func<object, Task>>> _subscribers = new Dictionary<Type, List<Func<object, Task>>>();
 
         public Task<TModel> GetModelAsync()
         {
