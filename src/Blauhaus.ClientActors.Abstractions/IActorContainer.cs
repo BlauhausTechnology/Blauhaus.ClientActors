@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 namespace Blauhaus.ClientActors.Abstractions
 {
      
-    public interface IActorContainer<TActor, in TId> where TActor : class, IActor<TId>
+    public interface IActorContainer<TActor, in TId> 
+        where TActor : class, IActor<TId>
     { 
         Task<TActor> GetOneAsync(TId actorId);
         Task<IReadOnlyList<TActor>> GetAsync(IEnumerable<TId> actorIds);

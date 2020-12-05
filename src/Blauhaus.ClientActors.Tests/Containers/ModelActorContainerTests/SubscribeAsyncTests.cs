@@ -38,7 +38,7 @@ namespace Blauhaus.ClientActors.Tests.Containers.ModelActorContainerTests
             Func<ITestModel, Task> handler = model => Task.CompletedTask;
 
             //Act
-            var result = await Sut.SubscribeAsync(_id, handler);
+            var result = await Sut.SubscribeToModelAsync(_id, handler);
 
             //Assert
             MockTestActor.Mock.Verify(x => x.InitializeAsync(_id));
@@ -51,10 +51,10 @@ namespace Blauhaus.ClientActors.Tests.Containers.ModelActorContainerTests
         {
             //Arrange
             Func<ITestModel, Task> handler = model => Task.CompletedTask;
-            await Sut.SubscribeAsync(_id, handler);
+            await Sut.SubscribeToModelAsync(_id, handler);
 
             //Act
-            var result = await Sut.SubscribeAsync(_id, handler);
+            var result = await Sut.SubscribeToModelAsync(_id, handler);
 
             //Assert
             MockTestActor.Mock.Verify(x => x.InitializeAsync(_id), Times.Once);

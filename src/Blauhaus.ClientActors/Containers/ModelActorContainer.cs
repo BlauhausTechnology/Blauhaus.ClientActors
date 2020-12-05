@@ -39,7 +39,7 @@ namespace Blauhaus.ClientActors.Containers
             });
         }
 
-        public Task<IDisposable> SubscribeAsync(TId id, Func<TModel, Task> handler)
+        public Task<IDisposable> SubscribeToModelAsync(TId id, Func<TModel, Task> handler)
         {
             return InvokeAsync(async () =>
             {

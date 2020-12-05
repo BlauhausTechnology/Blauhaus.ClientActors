@@ -6,12 +6,12 @@ using Blauhaus.Common.Utils.Contracts;
 
 namespace Blauhaus.ClientActors.Abstractions
 {
-    public interface IModelActorContainer<TActor, in TId, TModel> : IActorContainer<TActor, TId> 
+    public interface IModelActorContainer<TActor, in TId, TModel> : IActorContainer<TActor, TId>
         where TActor : class, IModelActor<TId, TModel> 
         where TModel : IHasId<TId>
     {
         Task<TModel> GetModelAsync(TId id);
         Task<IReadOnlyList<TModel>> GetModelsAsync(IEnumerable<TId> actorIds);
-        Task<IDisposable> SubscribeAsync(TId id, Func<TModel, Task> handler);
+        Task<IDisposable> SubscribeToModelAsync(TId id, Func<TModel, Task> handler);
     }
 }
