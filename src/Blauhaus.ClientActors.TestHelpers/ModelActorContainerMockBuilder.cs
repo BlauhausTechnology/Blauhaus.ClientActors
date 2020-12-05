@@ -41,12 +41,12 @@ namespace Blauhaus.ClientActors.TestHelpers
             return this;
         }
 
-        public Mock<IDisposable> Where_SubscribeAsync_publishes_immediately(TId id, TModel update)
+        public Mock<IDisposable> Where_SubscribeToModelAsync_publishes_immediately(TId id, TModel update)
         {
             var mockToken = new Mock<IDisposable>();
 
             Mock.Setup(x => x.SubscribeToModelAsync(id, It.IsAny<Func<TModel, Task>>()))
-                .Callback((Func<TModel, Task> handler) =>
+                .Callback((TId givenId, Func<TModel, Task> handler) =>
                 {
                     handler.Invoke(update);
                 }).ReturnsAsync(mockToken.Object);
@@ -54,13 +54,13 @@ namespace Blauhaus.ClientActors.TestHelpers
             return mockToken;
         }
 
-        public Mock<IDisposable> Where_SubscribeAsync_publishes_sequence(TId id, IEnumerable<TModel> updates)
+        public Mock<IDisposable> Where_SubscribeToModelAsync_publishes_sequence(TId id, IEnumerable<TModel> updates)
         {
             var mockToken = new Mock<IDisposable>();
             var queue = new Queue<TModel>(updates);
 
             Mock.Setup(x => x.SubscribeToModelAsync(id, It.IsAny<Func<TModel, Task>>()))
-                .Callback((Func<TModel, Task> handler) =>
+                .Callback((TId givenId, Func<TModel, Task> handler) =>
                 {
                     handler.Invoke(queue.Dequeue());
                 }).ReturnsAsync(mockToken.Object);
@@ -73,7 +73,7 @@ namespace Blauhaus.ClientActors.TestHelpers
             var mockToken = new Mock<IDisposable>();
 
             Mock.Setup(x => x.SubscribeToModelAsync(id, It.IsAny<Func<TModel, Task>>()))
-                .Callback((Func<TModel, Task> handler) =>
+                .Callback((TId givenId, Func<TModel, Task> handler) =>
                 {
                     _handlers.Add(handler);
                 }).ReturnsAsync(mockToken.Object);
