@@ -113,6 +113,7 @@ namespace Blauhaus.ClientActors.Actors
 
         public virtual async ValueTask DisposeAsync()
         {
+            Console.Out.WriteLine($"\n {this.GetType().Name} Disposing! \n");
             await _handler.Stop();
         }
 
