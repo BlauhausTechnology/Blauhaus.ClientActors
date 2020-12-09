@@ -9,7 +9,7 @@ namespace Blauhaus.ClientActors.Actors
 {
     public abstract class BaseActor : BasePublisher, IAsyncDisposable
     {
-        private readonly Actor _handler;
+        private Actor? _handler;
         private readonly SemaphoreSlim _lock; 
         
 
@@ -46,14 +46,14 @@ namespace Blauhaus.ClientActors.Actors
         {
             return InvokeInterleavedAsync(() =>
             {
-     //           _lock.Wait();
+                _lock.Wait();
                 try
                 {
                     action.Invoke();
                 }
                 finally
                 {
-     //               _lock.Release();
+                    _lock.Release();
                 }
             });
         }
@@ -62,14 +62,14 @@ namespace Blauhaus.ClientActors.Actors
         {
             return InvokeInterleavedAsync(() =>
             {
-       //         _lock.Wait();
+                _lock.Wait();
                 try
                 {
                     return function.Invoke();
                 }
                 finally
                 {
-         //           _lock.Release();
+                    _lock.Release();
                 }
             });
              
@@ -79,14 +79,14 @@ namespace Blauhaus.ClientActors.Actors
         {
             return InvokeInterleavedAsync(async () =>
             {
-                //await _lock.WaitAsync();
+                await _lock.WaitAsync();
                 try
                 {
                     await asyncAction.Invoke();
                 }
                 finally
                 {
-                 //   _lock.Release();
+                    _lock.Release();
                 }
             });
         }
@@ -95,14 +95,14 @@ namespace Blauhaus.ClientActors.Actors
         {
            return InvokeInterleavedAsync(async () =>
            {
-              // await _lock.WaitAsync();
+               await _lock.WaitAsync();
                try
                {
                    return await asyncFunction.Invoke();
                }
                finally
                {
-                  // _lock.Release();
+                   _lock.Release();
                }
            });
         }
@@ -113,8 +113,8 @@ namespace Blauhaus.ClientActors.Actors
 
         public virtual async ValueTask DisposeAsync()
         {
-            Console.Out.WriteLine($"\n {this.GetType().Name} Disposing! \n");
             await _handler.Stop();
+            _handler = null;
         }
 
     }
