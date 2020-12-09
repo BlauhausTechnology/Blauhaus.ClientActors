@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Blauhaus.Common.Utils.Disposables;
 using Winton.Extensions.Threading.Actor;
 
 namespace Blauhaus.ClientActors.Actors
 {
     public abstract class BaseActor : BasePublisher, IAsyncDisposable
     {
-        private Actor? _handler;
+        private readonly Actor _handler;
         private readonly SemaphoreSlim _lock; 
         
 
@@ -30,21 +28,23 @@ namespace Blauhaus.ClientActors.Actors
             return Task.CompletedTask;
         }
 
-        protected Task InvokeInterleavedAsync(Action action, CancellationToken cancellationToken = default) 
+        protected Task InvokeAsync(Action action, CancellationToken cancellationToken = default) 
             => _handler.Enqueue(action.Invoke, cancellationToken);
 
-        protected Task<T> InvokeInterleavedAsync<T>(Func<T> function, CancellationToken cancellationToken = default) 
+        protected Task<T> InvokeAsync<T>(Func<T> function, CancellationToken cancellationToken = default) 
             => _handler.Enqueue(function.Invoke, cancellationToken);
 
-        protected Task InvokeInterleavedAsync(Func<Task> asyncAction, CancellationToken cancellationToken = default) 
+        protected Task InvokeAsync(Func<Task> asyncAction, CancellationToken cancellationToken = default) 
             => _handler.Enqueue(async () => await asyncAction.Invoke(), cancellationToken);
 
-        protected Task<T> InvokeInterleavedAsync<T>(Func<Task<T>> asyncFunction, CancellationToken cancellationToken = default) 
+        protected Task<T> InvokeAsync<T>(Func<Task<T>> asyncFunction, CancellationToken cancellationToken = default) 
             => _handler.Enqueue(async () => await asyncFunction.Invoke(), cancellationToken);
 
-        protected Task InvokeAsync(Action action)
+        protected Task InvokeAndLockAsync(Action action)
         {
-            return InvokeInterleavedAsync(() =>
+            //this locking behaviours causes some, er, locking sometimes and should be avoided. 
+
+            return InvokeAsync(() =>
             {
                 _lock.Wait();
                 try
@@ -58,9 +58,9 @@ namespace Blauhaus.ClientActors.Actors
             });
         }
 
-        protected Task<T> InvokeAsync<T>(Func<T> function)
+        protected Task<T> InvokeAndLockAsync<T>(Func<T> function)
         {
-            return InvokeInterleavedAsync(() =>
+            return InvokeAsync(() =>
             {
                 _lock.Wait();
                 try
@@ -75,9 +75,9 @@ namespace Blauhaus.ClientActors.Actors
              
         }
         
-        protected Task InvokeAsync(Func<Task> asyncAction)
+        protected Task InvokeAndLockAsync(Func<Task> asyncAction)
         {
-            return InvokeInterleavedAsync(async () =>
+            return InvokeAsync(async () =>
             {
                 await _lock.WaitAsync();
                 try
@@ -91,9 +91,9 @@ namespace Blauhaus.ClientActors.Actors
             });
         }
 
-        protected Task<T> InvokeAsync<T>(Func<Task<T>> asyncFunction) 
+        protected Task<T> InvokeAndLockAsync<T>(Func<Task<T>> asyncFunction) 
         {
-           return InvokeInterleavedAsync(async () =>
+           return InvokeAsync(async () =>
            {
                await _lock.WaitAsync();
                try
@@ -114,7 +114,6 @@ namespace Blauhaus.ClientActors.Actors
         public virtual async ValueTask DisposeAsync()
         {
             await _handler.Stop();
-            _handler = null;
         }
 
     }
