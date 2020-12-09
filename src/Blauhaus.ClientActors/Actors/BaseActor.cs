@@ -46,14 +46,14 @@ namespace Blauhaus.ClientActors.Actors
         {
             return InvokeInterleavedAsync(() =>
             {
-                _lock.Wait();
+     //           _lock.Wait();
                 try
                 {
                     action.Invoke();
                 }
                 finally
                 {
-                    _lock.Release();
+     //               _lock.Release();
                 }
             });
         }
@@ -62,14 +62,14 @@ namespace Blauhaus.ClientActors.Actors
         {
             return InvokeInterleavedAsync(() =>
             {
-                _lock.Wait();
+       //         _lock.Wait();
                 try
                 {
                     return function.Invoke();
                 }
                 finally
                 {
-                    _lock.Release();
+         //           _lock.Release();
                 }
             });
              
@@ -79,14 +79,14 @@ namespace Blauhaus.ClientActors.Actors
         {
             return InvokeInterleavedAsync(async () =>
             {
-                await _lock.WaitAsync();
+                //await _lock.WaitAsync();
                 try
                 {
                     await asyncAction.Invoke();
                 }
                 finally
                 {
-                    _lock.Release();
+                 //   _lock.Release();
                 }
             });
         }
@@ -95,14 +95,14 @@ namespace Blauhaus.ClientActors.Actors
         {
            return InvokeInterleavedAsync(async () =>
            {
-               await _lock.WaitAsync();
+              // await _lock.WaitAsync();
                try
                {
                    return await asyncFunction.Invoke();
                }
                finally
                {
-                   _lock.Release();
+                  // _lock.Release();
                }
            });
         }
