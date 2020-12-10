@@ -7,9 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Blauhaus.Domain.Abstractions" Version="0.14.4" />
+    <PackageReference Include="Blauhaus.Domain.Abstractions" Version="0.15.0" />
     <PackageReference Include="Blauhaus.Ioc.Abstractions" Version="1.2.4" />
-    <PackageReference Include="Blauhaus.Responses" Version="0.3.2" />
+    <PackageReference Include="Blauhaus.Responses" Version="0.3.5" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
     <PackageReference Include="Winton.Extensions.Threading.Actor" Version="1.7.0" />
   </ItemGroup>

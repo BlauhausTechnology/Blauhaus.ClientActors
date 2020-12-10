@@ -10,7 +10,7 @@ namespace Blauhaus.ClientActors.Actors
         
         private Dictionary<Type, List<Func<object, Task>>>? _subscriptions;
 
-        protected async Task<IDisposable> SubscribeAsync<T>(Func<T, Task> handler, Func<Task<T>> loader)
+        protected async Task<IDisposable> SubscribeAsync<T>(Func<T, Task> handler, Func<Task<T>>? initialLoader = null)
         {
 
             _subscriptions ??= new Dictionary<Type, List<Func<object, Task>>>();
@@ -24,14 +24,17 @@ namespace Blauhaus.ClientActors.Actors
 
             _subscriptions[typeof(T)].Add(subscription);
 
-            var model = await loader.Invoke();
-
-            if (model != null)
+            if (initialLoader != null)
             {
-                await subscription.Invoke(model);
+                var initialUpdate = await initialLoader.Invoke();
+
+                if (initialUpdate != null)
+                {
+                    await subscription.Invoke(initialUpdate);
+                }
             }
 
-            return (IDisposable) new ActionDisposable(() =>
+            return new ActionDisposable(() =>
             {
                 _subscriptions[typeof(T)].Remove(subscription);
             });
