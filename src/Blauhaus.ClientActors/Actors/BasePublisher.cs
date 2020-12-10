@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Blauhaus.Common.Utils.Disposables;
 
@@ -45,7 +46,7 @@ namespace Blauhaus.ClientActors.Actors
             if (_subscriptions != null  && _subscriptions.Count > 0 && update != null)
             {
                 var tasks = new List<Task>();
-                foreach (var sub in _subscriptions)
+                foreach (var sub in _subscriptions.Where(sub => sub.Key == typeof(T) || sub.Key.IsInstanceOfType(typeof(T))))
                 {
                     foreach (var subscription in sub.Value)
                     {
