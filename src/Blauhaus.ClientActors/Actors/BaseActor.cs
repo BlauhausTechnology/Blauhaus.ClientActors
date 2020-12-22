@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Blauhaus.Common.Utils.Disposables;
 using Winton.Extensions.Threading.Actor;
 
 namespace Blauhaus.ClientActors.Actors

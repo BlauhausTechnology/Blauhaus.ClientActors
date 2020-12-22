@@ -16,5 +16,12 @@ namespace Blauhaus.ClientActors.TestHelpers.Extensions
         {
             return mocks.AddMock<ModelActorContainerMockBuilder<TActor, TId, TModel>, IModelActorContainer<TActor, TId, TModel>>();
         }
+        
+        public static Func<ModelActorContainerMockBuilder<TActor, Guid, TModel>> AddMockModelActorContainer<TActor, TModel>(this MockContainer mocks) 
+            where TActor : class, IModelActor<Guid, TModel> 
+            where TModel : IHasId<Guid>
+        {
+            return mocks.AddMock<ModelActorContainerMockBuilder<TActor, Guid, TModel>, IModelActorContainer<TActor, Guid, TModel>>();
+        }
     }
 }
