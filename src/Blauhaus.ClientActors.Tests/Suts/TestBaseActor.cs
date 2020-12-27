@@ -45,6 +45,7 @@ namespace Blauhaus.ClientActors.Tests.Suts
 
         public Task InitializeAsync(string id)
         {
+            Id = id;
             return Task.CompletedTask;
         }
 
@@ -52,5 +53,7 @@ namespace Blauhaus.ClientActors.Tests.Suts
         {
             return Task.CompletedTask;
         }
+
+        public string Id { get; private set; }
     }
 }

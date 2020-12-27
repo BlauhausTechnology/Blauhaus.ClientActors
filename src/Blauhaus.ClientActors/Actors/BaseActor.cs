@@ -18,17 +18,10 @@ namespace Blauhaus.ClientActors.Actors
 
             _handler = new Actor();
             _handler
-                .WithStartWork(InitializeAsync)
                 .WithStopWork(Shutdown);
             _handler.Start();
         }
-         
-         
-        protected virtual Task InitializeAsync()
-        {
-            return Task.CompletedTask;
-        }
-
+          
         protected Task InvokeAsync(Action action, CancellationToken cancellationToken = default) 
             => _handler.Enqueue(action.Invoke, cancellationToken);
 

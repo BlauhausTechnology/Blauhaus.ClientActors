@@ -8,7 +8,7 @@ namespace Blauhaus.ClientActors.Actors
     public abstract class BaseIdActor<TId> : BaseActor, IActor<TId>
     {
         private TId? _id;
-        protected TId Id
+        public TId Id
         {
             get
             {
@@ -21,6 +21,11 @@ namespace Blauhaus.ClientActors.Actors
         public Task InitializeAsync(TId id)
         {
             _id = id;
+            return OnInitializedAsync(id);
+        }
+
+        protected virtual Task OnInitializedAsync(TId id)
+        {
             return Task.CompletedTask;
         }
 
