@@ -18,9 +18,10 @@ namespace Blauhaus.ClientActors.TestHelpers
         public TBuilder Where_GetModelAsync_returns(TModel model)
         {
             Mock.Setup(x => x.GetModelAsync())
-                .ReturnsAsync(model);
+                .ReturnsAsync(() => model);
             return (TBuilder) this;
         }
+
           
     }
 }
