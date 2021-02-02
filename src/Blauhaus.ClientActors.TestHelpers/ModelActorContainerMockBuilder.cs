@@ -56,10 +56,10 @@ namespace Blauhaus.ClientActors.TestHelpers
             return this;
         }
         
-        public ModelActorContainerMockBuilder<TActor, TId, TModel> Where_GetModelsAsync_returns(Func<TModel> model)
+        public ModelActorContainerMockBuilder<TActor, TId, TModel> Where_GetModelsAsync_returns(Func<TModel> modelFactory)
         {
             Mock.Setup(x => x.GetModelsAsync(It.IsAny<IEnumerable<TId>>()))
-                .ReturnsAsync(new List<TModel>{model.Invoke()});
+                .ReturnsAsync(new List<TModel>{modelFactory.Invoke()});
             return this;
         }
         
@@ -78,6 +78,19 @@ namespace Blauhaus.ClientActors.TestHelpers
                 .Callback((TId givenId, Func<TModel, Task> handler) =>
                 {
                     handler.Invoke(update);
+                }).ReturnsAsync(mockToken.Object);
+
+            return mockToken;
+        }
+        
+        public Mock<IDisposable> Where_SubscribeToModelAsync_publishes_immediately(TId id, Func<TModel> modelFactory)
+        {
+            var mockToken = new Mock<IDisposable>();
+
+            Mock.Setup(x => x.SubscribeToModelAsync(id, It.IsAny<Func<TModel, Task>>()))
+                .Callback((TId givenId, Func<TModel, Task> handler) =>
+                {
+                   handler.Invoke(modelFactory.Invoke());
                 }).ReturnsAsync(mockToken.Object);
 
             return mockToken;
