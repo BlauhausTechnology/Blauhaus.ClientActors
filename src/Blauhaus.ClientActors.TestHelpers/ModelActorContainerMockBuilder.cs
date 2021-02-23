@@ -77,6 +77,7 @@ namespace Blauhaus.ClientActors.TestHelpers
             Mock.Setup(x => x.SubscribeToModelAsync(id, It.IsAny<Func<TModel, Task>>()))
                 .Callback((TId givenId, Func<TModel, Task> handler) =>
                 {
+                    _handlers.Add(handler);
                     handler.Invoke(update);
                 }).ReturnsAsync(mockToken.Object);
 
@@ -90,7 +91,8 @@ namespace Blauhaus.ClientActors.TestHelpers
             Mock.Setup(x => x.SubscribeToModelAsync(id, It.IsAny<Func<TModel, Task>>()))
                 .Callback((TId givenId, Func<TModel, Task> handler) =>
                 {
-                   handler.Invoke(modelFactory.Invoke());
+                    _handlers.Add(handler);
+                    handler.Invoke(modelFactory.Invoke());
                 }).ReturnsAsync(mockToken.Object);
 
             return mockToken;
@@ -104,24 +106,25 @@ namespace Blauhaus.ClientActors.TestHelpers
             Mock.Setup(x => x.SubscribeToModelAsync(id, It.IsAny<Func<TModel, Task>>()))
                 .Callback((TId givenId, Func<TModel, Task> handler) =>
                 {
+                    _handlers.Add(handler);
                     handler.Invoke(queue.Dequeue());
                 }).ReturnsAsync(mockToken.Object);
 
             return mockToken;
         }
         
-        public Mock<IDisposable> AllowMockSubscriptions(TId id)
-        {
-            var mockToken = new Mock<IDisposable>();
+        //public Mock<IDisposable> AllowMockSubscriptions(TId id)
+        //{
+        //    var mockToken = new Mock<IDisposable>();
 
-            Mock.Setup(x => x.SubscribeToModelAsync(id, It.IsAny<Func<TModel, Task>>()))
-                .Callback((TId givenId, Func<TModel, Task> handler) =>
-                {
-                    _handlers.Add(handler);
-                }).ReturnsAsync(mockToken.Object);
+        //    Mock.Setup(x => x.SubscribeToModelAsync(id, It.IsAny<Func<TModel, Task>>()))
+        //        .Callback((TId givenId, Func<TModel, Task> handler) =>
+        //        {
+        //            _handlers.Add(handler);
+        //        }).ReturnsAsync(mockToken.Object);
 
-            return mockToken;
-        }
+        //    return mockToken;
+        //}
 
         public async Task PublishMockSubscriptionAsync(TModel model)
         {
