@@ -113,18 +113,19 @@ namespace Blauhaus.ClientActors.TestHelpers
             return mockToken;
         }
         
-        //public Mock<IDisposable> AllowMockSubscriptions(TId id)
-        //{
-        //    var mockToken = new Mock<IDisposable>();
+        [Obsolete("Mock subscriptions are allowed by default when configuring any return value")]
+        public Mock<IDisposable> AllowMockSubscriptions(TId id)
+        {
+            var mockToken = new Mock<IDisposable>();
 
-        //    Mock.Setup(x => x.SubscribeToModelAsync(id, It.IsAny<Func<TModel, Task>>()))
-        //        .Callback((TId givenId, Func<TModel, Task> handler) =>
-        //        {
-        //            _handlers.Add(handler);
-        //        }).ReturnsAsync(mockToken.Object);
+            Mock.Setup(x => x.SubscribeToModelAsync(id, It.IsAny<Func<TModel, Task>>()))
+                .Callback((TId givenId, Func<TModel, Task> handler) =>
+                {
+                    _handlers.Add(handler);
+                }).ReturnsAsync(mockToken.Object);
 
-        //    return mockToken;
-        //}
+            return mockToken;
+        }
 
         public async Task PublishMockSubscriptionAsync(TModel model)
         {
