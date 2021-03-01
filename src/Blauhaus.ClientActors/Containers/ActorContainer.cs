@@ -12,7 +12,7 @@ namespace Blauhaus.ClientActors.Containers
         where TActor : class, IActor<TId>
     {
         private readonly IServiceLocator _serviceLocator;
-        private readonly Dictionary<TId, TActor> _actorCache = new Dictionary<TId, TActor>();
+        private readonly Dictionary<TId, TActor> _actorCache = new();
 
         public ActorContainer(
             IServiceLocator serviceLocator)

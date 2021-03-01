@@ -13,6 +13,7 @@ namespace Blauhaus.ClientActors.Tests.Containers.ActorContainerTests.Base
         {
             base.Setup();
 
+            MockTestActor.With(x => x.ExtraProperty, "MyTestProperty");
             AddService(MockTestActor.Object); 
         }
     }
