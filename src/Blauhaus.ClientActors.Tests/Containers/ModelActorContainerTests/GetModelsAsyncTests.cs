@@ -6,7 +6,6 @@ using Blauhaus.ClientActors.Tests.Suts;
 using Blauhaus.TestHelpers.MockBuilders;
 using Moq;
 using NUnit.Framework;
-using NUnit.Framework.Interfaces;
 
 namespace Blauhaus.ClientActors.Tests.Containers.ModelActorContainerTests
 {

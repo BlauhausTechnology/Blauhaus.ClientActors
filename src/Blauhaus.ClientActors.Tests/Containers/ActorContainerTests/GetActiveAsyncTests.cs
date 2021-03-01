@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Blauhaus.ClientActors.Containers;
-using Blauhaus.ClientActors.Tests._Base;
+using Blauhaus.ClientActors.Tests.Containers.ActorContainerTests.Base;
 using Blauhaus.ClientActors.Tests.Suts;
 using Blauhaus.Ioc.TestHelpers;
 using Blauhaus.TestHelpers.MockBuilders;
@@ -10,16 +9,9 @@ using NUnit.Framework;
 
 namespace Blauhaus.ClientActors.Tests.Containers.ActorContainerTests
 {
-    public class GetActiveAsyncTests : BaseActorTest<ActorContainer<ITestActor, string>>
+    public class GetActiveAsyncTests : BaseActorContainerTest 
     {
-        protected MockBuilder<ITestActor> MockTestActor => AddMock<ITestActor>().Invoke();
-
-        public override void Setup()
-        {
-            base.Setup();
-
-            AddService(MockTestActor.Object); 
-        }
+       
 
         [Test]
         public async Task SHOULD_return_activated_actors()

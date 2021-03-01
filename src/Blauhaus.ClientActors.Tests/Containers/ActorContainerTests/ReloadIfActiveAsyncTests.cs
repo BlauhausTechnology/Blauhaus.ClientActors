@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Blauhaus.ClientActors.Containers;
-using Blauhaus.ClientActors.Tests._Base;
+using Blauhaus.ClientActors.Tests.Containers.ActorContainerTests.Base;
 using Blauhaus.ClientActors.Tests.Suts;
 using Blauhaus.Ioc.TestHelpers;
 using Blauhaus.TestHelpers.MockBuilders;
@@ -10,16 +9,9 @@ using NUnit.Framework;
 
 namespace Blauhaus.ClientActors.Tests.Containers.ActorContainerTests
 {
-    public class ReloadIfActiveAsyncTests : BaseActorTest<ActorContainer<ITestActor, string>>
+    public class ReloadIfActiveAsyncTests : BaseActorContainerTest 
     {
-        protected MockBuilder<ITestActor> MockTestActor => AddMock<ITestActor>().Invoke();
-
-        public override void Setup()
-        {
-            base.Setup();
-
-            AddService(MockTestActor.Object); 
-        }
+        
 
         [Test]
         public async Task WHEN_call_reload_on_active_actors_with_matching_ids()

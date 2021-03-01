@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Blauhaus.ClientActors.Abstractions;
 using Blauhaus.ClientActors.Actors;
 using Blauhaus.Common.Utils.Contracts;
 

@@ -1,23 +1,12 @@
 ﻿using System.Threading.Tasks;
-using Blauhaus.ClientActors.Containers;
-using Blauhaus.ClientActors.Tests._Base;
-using Blauhaus.ClientActors.Tests.Suts;
-using Blauhaus.TestHelpers.MockBuilders;
+using Blauhaus.ClientActors.Tests.Containers.ActorContainerTests.Base;
 using Moq;
 using NUnit.Framework;
 
 namespace Blauhaus.ClientActors.Tests.Containers.ActorContainerTests
 {
-    public class UseAsyncTests : BaseActorTest<ActorContainer<ITestActor, string>>
+    public class UseAsyncTests : BaseActorContainerTest 
     {
-        protected MockBuilder<ITestActor> MockTestActor => AddMock<ITestActor>().Invoke();
-
-        public override void Setup()
-        {
-            base.Setup();
-
-            AddService(MockTestActor.Object); 
-        }
 
         [Test]
         public async Task WHEN_Actor_does_not_yet_exist_SHOULD_create_and_initialize_one()
