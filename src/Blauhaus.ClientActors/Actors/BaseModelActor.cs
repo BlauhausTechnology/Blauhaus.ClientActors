@@ -24,9 +24,9 @@ namespace Blauhaus.ClientActors.Actors
             });
         }
          
-        public Task<IDisposable> SubscribeAsync(Func<TModel, Task> handler, Func<TModel, bool>? filter = null)
+        public Task<IDisposable> SubscribeAsync(Func<TModel, Task> handler)
         {
-            return InvokeAsync(async () => await SubscribeAsync(handler, GetOrLoadModelAsync, filter));
+            return InvokeAsync(async () => await SubscribeAsync(handler, GetOrLoadModelAsync));
         }
 
         private async Task<TModel> GetOrLoadModelAsync()
