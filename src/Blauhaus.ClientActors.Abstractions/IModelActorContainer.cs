@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Timers;
-using Blauhaus.Common.Utils.Contracts;
+using Blauhaus.Common.Abstractions;
 
 namespace Blauhaus.ClientActors.Abstractions
 {

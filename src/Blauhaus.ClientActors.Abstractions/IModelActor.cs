@@ -1,6 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
-using Blauhaus.Common.Utils.Contracts;
+﻿using System.Threading.Tasks;
+using Blauhaus.Common.Abstractions;
 
 namespace Blauhaus.ClientActors.Abstractions
 {

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Blauhaus.ClientActors.Actors;
-using Blauhaus.Common.Utils.Contracts;
+using Blauhaus.Common.Abstractions;
 
 namespace Blauhaus.ClientActors.Tests.Suts
 {

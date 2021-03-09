@@ -1,5 +1,5 @@
 ﻿using System;
-using Blauhaus.Common.Utils.Contracts;
+using Blauhaus.Common.Abstractions;
 
 namespace Blauhaus.ClientActors.Abstractions
 {

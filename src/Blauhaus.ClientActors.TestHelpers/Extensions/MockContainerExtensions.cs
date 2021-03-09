@@ -1,6 +1,6 @@
 ﻿using System;
 using Blauhaus.ClientActors.Abstractions;
-using Blauhaus.Common.Utils.Contracts;
+using Blauhaus.Common.Abstractions;
 using Blauhaus.TestHelpers;
 
 namespace Blauhaus.ClientActors.TestHelpers.Extensions

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Blauhaus.ClientActors.Abstractions;
-using Blauhaus.Common.Utils.Contracts;
-using Blauhaus.TestHelpers.MockBuilders;
+﻿using Blauhaus.ClientActors.Abstractions;
+using Blauhaus.Common.Abstractions;
+using Blauhaus.Common.TestHelpers.MockBuilders;
 using Moq;
 
 namespace Blauhaus.ClientActors.TestHelpers

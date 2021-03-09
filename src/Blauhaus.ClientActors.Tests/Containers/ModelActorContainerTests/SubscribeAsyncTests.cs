@@ -23,7 +23,7 @@ namespace Blauhaus.ClientActors.Tests.Containers.ModelActorContainerTests
             _id = Guid.NewGuid();
 
             _mockTestSubscription = new MockBuilder<IDisposable>();
-            MockTestActor.Mock.Setup(x => x.SubscribeAsync(It.IsAny<Func<ITestModel, Task>>()))
+            MockTestActor.Mock.Setup(x => x.SubscribeAsync(It.IsAny<Func<ITestModel, Task>>(), It.IsAny<Func<ITestModel, bool>>()))
                 .ReturnsAsync(_mockTestSubscription.Object);
 
             AddService(MockTestActor.Object);
@@ -41,7 +41,7 @@ namespace Blauhaus.ClientActors.Tests.Containers.ModelActorContainerTests
 
             //Assert
             MockTestActor.Mock.Verify(x => x.InitializeAsync(_id));
-            MockTestActor.Mock.Verify(x => x.SubscribeAsync(handler));
+            MockTestActor.Mock.Verify(x => x.SubscribeAsync(handler, It.IsAny<Func<ITestModel, bool>>()));
             Assert.That(result, Is.EqualTo(_mockTestSubscription.Object));
         }
 
@@ -57,7 +57,7 @@ namespace Blauhaus.ClientActors.Tests.Containers.ModelActorContainerTests
 
             //Assert
             MockTestActor.Mock.Verify(x => x.InitializeAsync(_id), Times.Once);
-            MockTestActor.Mock.Verify(x => x.SubscribeAsync(handler), Times.Exactly(2));
+            MockTestActor.Mock.Verify(x => x.SubscribeAsync(handler, It.IsAny<Func<ITestModel, bool>>()), Times.Exactly(2));
             Assert.That(result, Is.EqualTo(_mockTestSubscription.Object));
         }
     }

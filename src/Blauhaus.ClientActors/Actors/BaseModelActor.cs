@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Blauhaus.ClientActors.Abstractions;
-using Blauhaus.Common.Utils.Contracts;
-using Blauhaus.Common.Utils.Disposables;
+using Blauhaus.Common.Abstractions;
 
 namespace Blauhaus.ClientActors.Actors
 {
@@ -27,9 +24,9 @@ namespace Blauhaus.ClientActors.Actors
             });
         }
          
-        public Task<IDisposable> SubscribeAsync(Func<TModel, Task> handler)
+        public Task<IDisposable> SubscribeAsync(Func<TModel, Task> handler, Func<TModel, bool>? filter = null)
         {
-            return InvokeAsync(async () => await SubscribeAsync(handler, GetOrLoadModelAsync));
+            return InvokeAsync(async () => await SubscribeAsync(handler, GetOrLoadModelAsync, filter));
         }
 
         private async Task<TModel> GetOrLoadModelAsync()
