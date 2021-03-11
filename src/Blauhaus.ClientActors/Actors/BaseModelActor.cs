@@ -26,7 +26,7 @@ namespace Blauhaus.ClientActors.Actors
          
         public Task<IDisposable> SubscribeAsync(Func<TModel, Task> handler)
         {
-            return InvokeAsync(async () => await SubscribeAsync(handler, GetOrLoadModelAsync));
+            return InvokeAsync(async () => await AddSubscribeAsync(handler, GetOrLoadModelAsync));
         }
 
         private async Task<TModel> GetOrLoadModelAsync()
