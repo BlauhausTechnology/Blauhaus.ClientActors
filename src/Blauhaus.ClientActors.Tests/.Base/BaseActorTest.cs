@@ -4,7 +4,7 @@ using Blauhaus.TestHelpers.BaseTests;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 
-namespace Blauhaus.ClientActors.Tests._Base
+namespace Blauhaus.ClientActors.Tests.Base
 {
     public abstract class BaseActorTest<TSut> : BaseServiceTest<TSut> where TSut : class
     {

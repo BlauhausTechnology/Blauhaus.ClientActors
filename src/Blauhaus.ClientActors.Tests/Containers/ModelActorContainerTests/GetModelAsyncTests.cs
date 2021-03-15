@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Blauhaus.ClientActors.Containers;
-using Blauhaus.ClientActors.Tests._Base;
+using Blauhaus.ClientActors.Tests.Base;
 using Blauhaus.ClientActors.Tests.Suts;
 using Blauhaus.TestHelpers.MockBuilders;
 using Moq;

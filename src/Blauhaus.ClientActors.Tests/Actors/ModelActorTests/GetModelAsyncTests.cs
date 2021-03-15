@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Blauhaus.ClientActors.Tests._Base;
+using Blauhaus.ClientActors.Tests.Base;
 using Blauhaus.ClientActors.Tests.Suts;
 using NUnit.Framework;
 
