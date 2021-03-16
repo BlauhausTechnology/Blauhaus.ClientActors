@@ -42,6 +42,11 @@ namespace Blauhaus.ClientActors.Actors
             return _model;
         }
 
+        protected Task UpdateModelAsync(TModel model)
+        {
+            _model = model;
+            return UpdateSubscribersAsync(_model);
+        }
 
         protected abstract Task<TModel> LoadModelAsync();
     }
