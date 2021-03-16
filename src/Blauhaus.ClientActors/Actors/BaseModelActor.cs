@@ -8,9 +8,8 @@ namespace Blauhaus.ClientActors.Actors
     public abstract class BaseModelActor<TId, TModel> : BaseIdActor<TId>, IModelActor<TId, TModel>
         where TModel : class, IHasId<TId>
     {
-        protected TModel? Model;
+        private TModel? _model;
         
-
         public Task<TModel> GetModelAsync()
         {
             return InvokeAsync(async () => await GetOrLoadModelAsync());
@@ -31,21 +30,25 @@ namespace Blauhaus.ClientActors.Actors
 
         private async Task<TModel> GetOrLoadModelAsync()
         {
-            return Model ??= await LoadModelAsync();
+            return _model ??= await LoadModelAsync();
         }
 
         
         protected async Task<TModel> ReloadSelfAsync()
         {
-            Model = await LoadModelAsync();
-            await UpdateSubscribersAsync(Model);
-            return Model;
+            _model = await LoadModelAsync();
+            await UpdateSubscribersAsync(_model);
+            return _model;
         }
 
-        protected Task UpdateModelAsync(TModel model)
+        protected Task UpdateModelAsync(Func<TModel, TModel> modelUpdater)
         {
-            Model = model;
-            return UpdateSubscribersAsync(Model);
+            if (_model == null)
+            {
+                throw new InvalidOperationException($"{typeof(TModel).Name} cannot be updated as it does not exist");
+            }
+            _model = modelUpdater.Invoke(_model);
+            return UpdateSubscribersAsync(_model);
         }
 
         protected abstract Task<TModel> LoadModelAsync();
