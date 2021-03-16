@@ -8,7 +8,7 @@ namespace Blauhaus.ClientActors.Actors
     public abstract class BaseModelActor<TId, TModel> : BaseIdActor<TId>, IModelActor<TId, TModel>
         where TModel : class, IHasId<TId>
     {
-        private TModel? _model;
+        protected TModel? Model;
         
 
         public Task<TModel> GetModelAsync()
@@ -31,21 +31,21 @@ namespace Blauhaus.ClientActors.Actors
 
         private async Task<TModel> GetOrLoadModelAsync()
         {
-            return _model ??= await LoadModelAsync();
+            return Model ??= await LoadModelAsync();
         }
 
         
         protected async Task<TModel> ReloadSelfAsync()
         {
-            _model = await LoadModelAsync();
-            await UpdateSubscribersAsync(_model);
-            return _model;
+            Model = await LoadModelAsync();
+            await UpdateSubscribersAsync(Model);
+            return Model;
         }
 
         protected Task UpdateModelAsync(TModel model)
         {
-            _model = model;
-            return UpdateSubscribersAsync(_model);
+            Model = model;
+            return UpdateSubscribersAsync(Model);
         }
 
         protected abstract Task<TModel> LoadModelAsync();
