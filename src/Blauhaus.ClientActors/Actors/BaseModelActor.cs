@@ -45,7 +45,7 @@ namespace Blauhaus.ClientActors.Actors
         {
             if (_model == null)
             {
-                throw new InvalidOperationException($"{typeof(TModel).Name} cannot be updated as it does not exist");
+                return Task.CompletedTask;
             }
             _model = modelUpdater.Invoke(_model);
             return UpdateSubscribersAsync(_model);
