@@ -70,7 +70,7 @@ namespace Blauhaus.ClientActors.TestHelpers
             return this;
         }
 
-        public Mock<IDisposable> Where_SubscribeToModelAsync_publishes_immediately(TId id, TModel update)
+        public Mock<IDisposable> Where_SubscribeToModelAsync_publishes_immediately(TModel update, TId id)
         {
             var mockToken = new Mock<IDisposable>();
 
@@ -84,7 +84,7 @@ namespace Blauhaus.ClientActors.TestHelpers
             return mockToken;
         }
         
-        public Mock<IDisposable> Where_SubscribeToModelAsync_publishes_immediately(TId id, Func<TModel> modelFactory)
+        public Mock<IDisposable> Where_SubscribeToModelAsync_publishes_immediately(Func<TModel> modelFactory, TId id)
         {
             var mockToken = new Mock<IDisposable>();
 
@@ -98,7 +98,7 @@ namespace Blauhaus.ClientActors.TestHelpers
             return mockToken;
         }
 
-        public Mock<IDisposable> Where_SubscribeToModelAsync_publishes_sequence(TId id, IEnumerable<TModel> updates)
+        public Mock<IDisposable> Where_SubscribeToModelAsync_publishes_sequence(IEnumerable<TModel> updates, TId id)
         {
             var mockToken = new Mock<IDisposable>();
             var queue = new Queue<TModel>(updates);
