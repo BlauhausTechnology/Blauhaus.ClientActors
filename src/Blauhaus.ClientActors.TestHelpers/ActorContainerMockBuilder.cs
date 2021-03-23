@@ -41,6 +41,18 @@ namespace Blauhaus.ClientActors.TestHelpers
             }
             return (TBuilder) this;
         }
+        public TBuilder Where_GetOneAsync_returns(Func<TActor> actor, TId id = default)
+        {
+            if (id == null)
+            {
+                Mock.Setup(x => x.GetOneAsync(It.IsAny<TId>())).ReturnsAsync(actor.Invoke); 
+            }
+            else
+            {
+                Mock.Setup(x => x.GetOneAsync(id)).ReturnsAsync(actor.Invoke);
+            }
+            return (TBuilder) this;
+        }
         public TBuilder Where_GetAsync_returns(IReadOnlyList<TActor> actors)
         {
             Mock.Setup(x => x.GetAsync(It.IsAny<IEnumerable<TId>>()))
@@ -53,7 +65,19 @@ namespace Blauhaus.ClientActors.TestHelpers
                 .ReturnsAsync(new List<TActor>{actor});
             return (TBuilder) this;
         }
-
+        
+        public TBuilder Where_UseOneAsync_returns(Func<TActor> actor, TId id = default)
+        {
+            if (id == null)
+            {
+                Mock.Setup(x => x.UseOneAsync(It.IsAny<TId>())).ReturnsAsync(actor.Invoke); 
+            }
+            else
+            {
+                Mock.Setup(x => x.UseOneAsync(id)).ReturnsAsync(actor.Invoke);
+            }
+            return (TBuilder) this;
+        }
         public TBuilder Where_UseOneAsync_returns(TActor actor, TId id = default)
         {
             if (id == null)
