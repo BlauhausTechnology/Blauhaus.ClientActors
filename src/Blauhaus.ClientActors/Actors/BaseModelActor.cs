@@ -41,14 +41,13 @@ namespace Blauhaus.ClientActors.Actors
             return _model;
         }
 
-        protected Task UpdateModelAsync(Func<TModel, TModel> modelUpdater)
+        protected async Task<TModel> UpdateModelAsync(Func<TModel, TModel> modelUpdater)
         {
-            if (_model == null)
-            {
-                return Task.CompletedTask;
-            }
-            _model = modelUpdater.Invoke(_model);
-            return UpdateSubscribersAsync(_model);
+            var model = await GetOrLoadModelAsync();
+            
+            _model = modelUpdater.Invoke(model);
+            await UpdateSubscribersAsync(_model);
+            return _model;
         }
 
         protected abstract Task<TModel> LoadModelAsync();
