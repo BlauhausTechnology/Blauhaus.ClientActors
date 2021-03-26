@@ -28,7 +28,7 @@ namespace Blauhaus.ClientActors.Actors
             return InvokeAsync(async () => await AddSubscribeAsync(handler, GetOrLoadModelAsync));
         }
 
-        private async Task<TModel> GetOrLoadModelAsync()
+        protected async Task<TModel> GetOrLoadModelAsync()
         {
             return _model ??= await LoadModelAsync();
         }

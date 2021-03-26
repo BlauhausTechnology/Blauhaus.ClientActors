@@ -4,7 +4,7 @@ using Blauhaus.Common.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace Blauhaus.ClientActors._Ioc
+namespace Blauhaus.ClientActors.Ioc
 {
     public static class ServiceCollectionExtensions
     { 
