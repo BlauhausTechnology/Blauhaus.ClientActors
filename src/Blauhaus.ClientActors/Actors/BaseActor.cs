@@ -33,74 +33,7 @@ namespace Blauhaus.ClientActors.Actors
 
         protected Task<T> InvokeAsync<T>(Func<Task<T>> asyncFunction, CancellationToken cancellationToken = default) 
             => _handler.Enqueue(async () => await asyncFunction.Invoke(), cancellationToken);
-
-        protected Task InvokeAndLockAsync(Action action)
-        {
-            //this locking behaviours causes some, er, locking sometimes and should be avoided. 
-
-            return InvokeAsync(() =>
-            {
-                _lock.Wait();
-                try
-                {
-                    action.Invoke();
-                }
-                finally
-                {
-                    _lock.Release();
-                }
-            });
-        }
-
-        protected Task<T> InvokeAndLockAsync<T>(Func<T> function)
-        {
-            return InvokeAsync(() =>
-            {
-                _lock.Wait();
-                try
-                {
-                    return function.Invoke();
-                }
-                finally
-                {
-                    _lock.Release();
-                }
-            });
-             
-        }
-        
-        protected Task InvokeAndLockAsync(Func<Task> asyncAction)
-        {
-            return InvokeAsync(async () =>
-            {
-                await _lock.WaitAsync();
-                try
-                {
-                    await asyncAction.Invoke();
-                }
-                finally
-                {
-                    _lock.Release();
-                }
-            });
-        }
-
-        protected Task<T> InvokeAndLockAsync<T>(Func<Task<T>> asyncFunction) 
-        {
-           return InvokeAsync(async () =>
-           {
-               await _lock.WaitAsync();
-               try
-               {
-                   return await asyncFunction.Invoke();
-               }
-               finally
-               {
-                   _lock.Release();
-               }
-           });
-        }
-        
+         
         protected virtual void Shutdown()
         {
         }
