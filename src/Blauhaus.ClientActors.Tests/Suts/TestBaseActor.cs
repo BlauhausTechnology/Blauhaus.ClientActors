@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Blauhaus.ClientActors.Abstractions;
+using Blauhaus.ClientActors.Actors;
 
 namespace Blauhaus.ClientActors.Tests.Suts
 {
-    public class TestBaseActor : BaseActor, IActor
+    public class TestBaseActor : BaseActor, IActor<string>
     {
         public  int Count;
         public List<int> Numbers = new List<int>();
@@ -17,7 +18,7 @@ namespace Blauhaus.ClientActors.Tests.Suts
          
         public Task InvokeDoAsync(int callIndex)
         { 
-            return DoAsync(async () =>
+            return InvokeAsync(async () =>
             {
                 await Execute(callIndex);
             });
@@ -25,7 +26,7 @@ namespace Blauhaus.ClientActors.Tests.Suts
 
         public Task InvokeDoAndBlockAsync(int callIndex)
         { 
-            return DoAndBlockAsync(async () =>
+            return InvokeAndLockAsync(async () =>
             {
                 await Execute(callIndex);
             });
@@ -44,6 +45,7 @@ namespace Blauhaus.ClientActors.Tests.Suts
 
         public Task InitializeAsync(string id)
         {
+            Id = id;
             return Task.CompletedTask;
         }
 
@@ -51,5 +53,7 @@ namespace Blauhaus.ClientActors.Tests.Suts
         {
             return Task.CompletedTask;
         }
+
+        public string Id { get; private set; }
     }
 }

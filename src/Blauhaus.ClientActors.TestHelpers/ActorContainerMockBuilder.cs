@@ -1,71 +1,137 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Blauhaus.ClientActors.Abstractions;
 using Blauhaus.TestHelpers.MockBuilders;
 using Moq;
 
 namespace Blauhaus.ClientActors.TestHelpers
 {
-    public class ActorContainerMockBuilder<TActor> : BaseMockBuilder<ActorContainerMockBuilder<TActor>, IActorContainer<TActor>> where TActor : class, IActor
+
+    public class ActorContainerMockBuilder<TActor, TId> : BaseActorContainerMockBuilder<ActorContainerMockBuilder<TActor, TId>, IActorContainer<TActor, TId>, TActor, TId>
+        where TActor : class, IActor<TId> 
     {
-        private static List<TActor> _empty = new List<TActor>();
-        public ActorContainerMockBuilder()
+    }
+
+    public abstract class BaseActorContainerMockBuilder<TBuilder, TContainer, TActor, TId> : BaseMockBuilder<TBuilder, TContainer>
+        where TActor : class, IActor<TId>
+        where TBuilder : BaseActorContainerMockBuilder<TBuilder, TContainer, TActor, TId>
+        where TContainer : class, IActorContainer<TActor, TId>
+    {
+        private static readonly List<TActor> Empty = new List<TActor>();
+
+        protected BaseActorContainerMockBuilder()
         {
-            Where_GetActiveAsync_returns(_empty);
-            Where_GetAsync_returns(_empty);
-            Where_GetAsync_returns(new Mock<TActor>().Object);
-            Where_UseAsync_returns(_empty);
-            Where_UseAsync_returns(new Mock<TActor>().Object);
+            Where_GetActiveAsync_returns(Empty);
+            Where_GetAsync_returns(Empty);
+            Where_GetOneAsync_returns(new Mock<TActor>().Object);
+            Where_UseAsync_returns(Empty);
+            Where_UseOneAsync_returns(new Mock<TActor>().Object);
         }
 
-        public ActorContainerMockBuilder<TActor> Where_GetAsync_returns(TActor actor, string id = null)
+        public TBuilder Where_GetOneAsync_returns(TActor actor, TId id = default)
         {
-            if (id == null)
+            if (id.Equals(default(TId)))
             {
-                Mock.Setup(x => x.GetAsync(It.IsAny<string>())).ReturnsAsync(actor);
-                Mock.Setup(x => x.GetAsync(It.IsAny<IEnumerable<string>>()))
-                    .ReturnsAsync(new List<TActor>{actor});
+                Mock.Setup(x => x.GetOneAsync(It.IsAny<TId>())).ReturnsAsync(actor); 
             }
             else
             {
-                Mock.Setup(x => x.GetAsync(id)).ReturnsAsync(actor);
+                Mock.Setup(x => x.GetOneAsync(id)).ReturnsAsync(actor);
             }
-            return this;
+            return (TBuilder) this;
         }
-        public ActorContainerMockBuilder<TActor> Where_GetAsync_returns(IReadOnlyList<TActor> actors)
+        public TBuilder Where_GetOneAsync_returns(Func<TActor> actor, TId id = default)
         {
-            Mock.Setup(x => x.GetAsync(It.IsAny<IEnumerable<string>>()))
-                .ReturnsAsync(actors);
-            return this;
-        }
-
-        public ActorContainerMockBuilder<TActor> Where_UseAsync_returns(TActor actor, string id = null)
-        {
-            if (id == null)
+            if (id.Equals(default(TId)))
             {
-                Mock.Setup(x => x.UseAsync(It.IsAny<string>())).ReturnsAsync(actor);
-                Mock.Setup(x => x.UseAsync(It.IsAny<IEnumerable<string>>()))
-                    .ReturnsAsync(new List<TActor>{actor});
+                Mock.Setup(x => x.GetOneAsync(It.IsAny<TId>())).ReturnsAsync(actor.Invoke); 
             }
             else
             {
-                Mock.Setup(x => x.UseAsync(id)).ReturnsAsync(actor);
+                Mock.Setup(x => x.GetOneAsync(id)).ReturnsAsync(actor.Invoke);
             }
-            return this;
+            return (TBuilder) this;
         }
-        public ActorContainerMockBuilder<TActor> Where_UseAsync_returns(IReadOnlyList<TActor> actors)
+        public TBuilder Where_GetAsync_returns(IReadOnlyList<TActor> actors)
         {
-            Mock.Setup(x => x.UseAsync(It.IsAny<IEnumerable<string>>()))
+            Mock.Setup(x => x.GetAsync(It.IsAny<IEnumerable<TId>>()))
                 .ReturnsAsync(actors);
-            return this;
+            return (TBuilder) this;
+        }
+        public TBuilder Where_GetAsync_returns(TActor actor)
+        {
+            Mock.Setup(x => x.GetAsync(It.IsAny<IEnumerable<TId>>()))
+                .ReturnsAsync(new List<TActor>{actor});
+            return (TBuilder) this;
+        }
+        
+        public TBuilder Where_UseOneAsync_returns(Func<TActor> actor, TId id = default)
+        {
+            if (id.Equals(default(TId)))
+            {
+                Mock.Setup(x => x.UseOneAsync(It.IsAny<TId>())).ReturnsAsync(actor.Invoke); 
+            }
+            else
+            {
+                Mock.Setup(x => x.UseOneAsync(id)).ReturnsAsync(actor.Invoke);
+            }
+            return (TBuilder) this;
+        }
+        public TBuilder Where_UseOneAsync_returns(TActor actor, TId id = default)
+        {
+            if (id.Equals(default(TId)))
+            {
+                Mock.Setup(x => x.UseOneAsync(It.IsAny<TId>())).ReturnsAsync(actor); 
+            }
+            else
+            {
+                Mock.Setup(x => x.UseOneAsync(id)).ReturnsAsync(actor);
+            }
+            return (TBuilder) this;
+        }
+        public TBuilder Where_UseAsync_returns(IReadOnlyList<TActor> actors)
+        {
+            Mock.Setup(x => x.UseAsync(It.IsAny<IEnumerable<TId>>()))
+                .ReturnsAsync(actors);
+            return (TBuilder) this;
+        }
+        public TBuilder Where_UseAsync_returns(TActor actor)
+        {
+            Mock.Setup(x => x.UseAsync(It.IsAny<IEnumerable<TId>>()))
+                .ReturnsAsync(new List<TActor>{actor});
+            return (TBuilder) this;
         }
 
-        public ActorContainerMockBuilder<TActor> Where_GetActiveAsync_returns(IReadOnlyList<TActor> actors)
+        public TBuilder Where_GetActiveAsync_returns(IReadOnlyList<TActor> actors)
         {
             Mock.Setup(x => x.GetActiveAsync()).ReturnsAsync(actors);
             Mock.Setup(x => x.GetActiveAsync(It.IsAny<Func<TActor, bool>>())).ReturnsAsync(actors);
-            Mock.Setup(x => x.GetActiveAsync(It.IsAny<IEnumerable<string>>())).ReturnsAsync(actors);
-            return this;
+            Mock.Setup(x => x.GetActiveAsync(It.IsAny<IEnumerable<TId>>())).ReturnsAsync(actors);
+            return (TBuilder) this;
         }
+
+
+        public void Verify_GetOneAsync(TId id)
+        {
+            Mock.Verify(x => x.GetOneAsync(id));
+        }
+
+        public void Verify_GetAsync(TId id)
+        {
+            Mock.Verify(x => x.GetAsync(It.Is<IEnumerable<TId>>(y => y.Contains(id))));
+        }
+        
+        public void Verify_GetAsync_NOT(TId id)
+        {
+            Mock.Verify(x => x.GetAsync(It.Is<IEnumerable<TId>>(y => !y.Contains(id))));
+        }
+        
+        public void Verify_GetAsync_Count(int count)
+        {
+            Mock.Verify(x => x.GetAsync(It.Is<IEnumerable<TId>>(y => y.Count() == count)));
+        }
+
+
     }
 }
