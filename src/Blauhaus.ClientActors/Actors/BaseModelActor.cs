@@ -12,12 +12,12 @@ namespace Blauhaus.ClientActors.Actors
         
         public Task<TModel> GetModelAsync()
         {
-            return InvokeInterleavedAsync(async () => await GetOrLoadModelAsync());
+            return InvokeAsync(async () => await GetOrLoadModelAsync());
         }
 
         public override Task ReloadAsync()
         {
-            return InvokeInterleavedAsync(async () =>
+            return InvokeAsync(async () =>
             {
                 await ReloadSelfAsync();
             });

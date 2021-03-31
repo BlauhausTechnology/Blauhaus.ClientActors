@@ -22,17 +22,17 @@ namespace Blauhaus.ClientActors.Containers
 
         public Task<TActor> GetOneAsync(TId actorId)
         {
-            return InvokeInterleavedAsync(async () => await GetActorAsync(actorId)); 
+            return InvokeAsync(async () => await GetActorAsync(actorId)); 
         }
 
         public Task<IReadOnlyList<TActor>> GetAsync(IEnumerable<TId> actorIds)
         {
-            return InvokeInterleavedAsync(async () => await GetActorsAsync(actorIds));
+            return InvokeAsync(async () => await GetActorsAsync(actorIds));
         }
 
         public Task<TActor> UseOneAsync(TId actorId)
         {
-            return InvokeInterleavedAsync(async () =>
+            return InvokeAsync(async () =>
             {
                 if (_actorCache.TryGetValue(actorId, out var existingActor))
                 {
@@ -48,7 +48,7 @@ namespace Blauhaus.ClientActors.Containers
 
         public Task<IReadOnlyList<TActor>> UseAsync(IEnumerable<TId> actorIds)
         {
-            return InvokeInterleavedAsync(async () =>
+            return InvokeAsync(async () =>
             {
                 var actorsToReturn = new List<TActor>();
 
@@ -70,12 +70,12 @@ namespace Blauhaus.ClientActors.Containers
 
         public Task<IReadOnlyList<TActor>> GetActiveAsync()
         {
-            return InvokeInterleavedAsync(() => (IReadOnlyList<TActor>)_actorCache.Values.ToList());
+            return InvokeAsync(() => (IReadOnlyList<TActor>)_actorCache.Values.ToList());
         }
 
         public Task<IReadOnlyList<TActor>> GetActiveAsync(IEnumerable<TId> requiredIds)
         {
-            return InvokeInterleavedAsync(() => (IReadOnlyList<TActor>)_actorCache
+            return InvokeAsync(() => (IReadOnlyList<TActor>)_actorCache
                 .Where(x => requiredIds.Contains(x.Key))
                 .Select(x => x.Value)
                 .ToList());
@@ -83,13 +83,13 @@ namespace Blauhaus.ClientActors.Containers
 
         public Task<IReadOnlyList<TActor>> GetActiveAsync(Func<TActor, bool> predicate)
         {
-            return InvokeInterleavedAsync(() => (IReadOnlyList<TActor>)_actorCache
+            return InvokeAsync(() => (IReadOnlyList<TActor>)_actorCache
                 .Values.Where(predicate.Invoke).ToList());
         }
 
         public Task ReloadActiveAsync()
         {
-            return InvokeInterleavedAsync(() =>
+            return InvokeAsync(() =>
             { 
                 return Task.WhenAll(_actorCache.Values
                     .Select(activeActor => activeActor.ReloadAsync()).ToList());
@@ -98,7 +98,7 @@ namespace Blauhaus.ClientActors.Containers
 
         public Task ReloadIfActiveAsync(IEnumerable<TId> actorIds)
         {
-            return InvokeInterleavedAsync(() =>
+            return InvokeAsync(() =>
             {
                 var reloadTasks = new List<Task>();
 
@@ -113,7 +113,7 @@ namespace Blauhaus.ClientActors.Containers
 
         public Task RemoveAllAsync()
         {
-            return InvokeInterleavedAsync(async () =>
+            return InvokeAsync(async () =>
             {
                 foreach (var actor in _actorCache)
                 {
@@ -125,7 +125,7 @@ namespace Blauhaus.ClientActors.Containers
 
         public Task RemoveAsync(TId actorId)
         {
-            return InvokeInterleavedAsync(async () =>
+            return InvokeAsync(async () =>
             {
                 if (_actorCache.TryGetValue(actorId, out var actorToReove))
                 {
@@ -137,7 +137,7 @@ namespace Blauhaus.ClientActors.Containers
 
         public Task RemoveAsync(IEnumerable<TId> requiredIds)
         {
-            return InvokeInterleavedAsync(async () =>
+            return InvokeAsync(async () =>
             {
                 foreach (var requiredId in requiredIds)
                 {
@@ -152,7 +152,7 @@ namespace Blauhaus.ClientActors.Containers
 
         public Task RemoveAsync(Func<TActor, bool> predicate)
         {
-            return InvokeInterleavedAsync(async () =>
+            return InvokeAsync(async () =>
             {
                 var actorsToRemove = _actorCache.Where(x => predicate(x.Value)).ToList();
                 foreach (var actorToRemove in actorsToRemove)

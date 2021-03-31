@@ -22,21 +22,21 @@ namespace Blauhaus.ClientActors.Actors
             _handler.Start();
         }
           
-        protected Task InvokeInterleavedAsync(Action action, CancellationToken cancellationToken = default) 
+        protected Task InvokeAsync(Action action, CancellationToken cancellationToken = default) 
             => _handler.Enqueue(action.Invoke, cancellationToken);
 
-        protected Task<T> InvokeInterleavedAsync<T>(Func<T> function, CancellationToken cancellationToken = default) 
+        protected Task<T> InvokeAsync<T>(Func<T> function, CancellationToken cancellationToken = default) 
             => _handler.Enqueue(function.Invoke, cancellationToken);
 
-        protected Task InvokeInterleavedAsync(Func<Task> asyncAction, CancellationToken cancellationToken = default) 
+        protected Task InvokeAsync(Func<Task> asyncAction, CancellationToken cancellationToken = default) 
             => _handler.Enqueue(async () => await asyncAction.Invoke(), cancellationToken);
 
-        protected Task<T> InvokeInterleavedAsync<T>(Func<Task<T>> asyncFunction, CancellationToken cancellationToken = default) 
+        protected Task<T> InvokeAsync<T>(Func<Task<T>> asyncFunction, CancellationToken cancellationToken = default) 
             => _handler.Enqueue(async () => await asyncFunction.Invoke(), cancellationToken);
          
-        protected Task InvokeAsync(Action action)
+        protected Task InvokeLockedAsync(Action action)
         {
-            return InvokeInterleavedAsync(() =>
+            return InvokeAsync(() =>
             {
                 _lock.Wait();
                 try
@@ -50,9 +50,9 @@ namespace Blauhaus.ClientActors.Actors
             });
         }
 
-        protected Task<T> InvokeAsync<T>(Func<T> function)
+        protected Task<T> InvokeLockedAsync<T>(Func<T> function)
         {
-            return InvokeInterleavedAsync(() =>
+            return InvokeAsync(() =>
             {
                 _lock.Wait();
                 try
@@ -67,9 +67,9 @@ namespace Blauhaus.ClientActors.Actors
              
         }
         
-        protected Task InvokeAsync(Func<Task> asyncAction)
+        protected Task InvokeLockedAsync(Func<Task> asyncAction)
         {
-            return InvokeInterleavedAsync(async () =>
+            return InvokeAsync(async () =>
             {
                 await _lock.WaitAsync();
                 try
@@ -83,9 +83,9 @@ namespace Blauhaus.ClientActors.Actors
             });
         }
 
-        protected Task<T> InvokeAsync<T>(Func<Task<T>> asyncFunction) 
+        protected Task<T> InvokeLockedAsync<T>(Func<Task<T>> asyncFunction) 
         {
-            return InvokeInterleavedAsync(async () =>
+            return InvokeAsync(async () =>
             {
                 await _lock.WaitAsync();
                 try

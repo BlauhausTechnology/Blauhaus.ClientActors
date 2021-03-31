@@ -17,7 +17,7 @@ namespace Blauhaus.ClientActors.Containers
 
         public Task<TModel> GetModelAsync(TId id)
         {
-            return InvokeInterleavedAsync(async () =>
+            return InvokeAsync(async () =>
             {
                 var actor = await GetActorAsync(id);
                 return await actor.GetModelAsync();
@@ -26,7 +26,7 @@ namespace Blauhaus.ClientActors.Containers
 
         public Task<IReadOnlyList<TModel>> GetModelsAsync(IEnumerable<TId> actorIds)
         {
-            return InvokeInterleavedAsync(async () =>
+            return InvokeAsync(async () =>
             {
                 var actors = await GetActorsAsync(actorIds);
 
@@ -41,7 +41,7 @@ namespace Blauhaus.ClientActors.Containers
 
         public Task<IDisposable> SubscribeToModelAsync(TId id, Func<TModel, Task> handler)
         {
-            return InvokeInterleavedAsync(async () =>
+            return InvokeAsync(async () =>
             {
                 var actor = await GetActorAsync(id);
                 return await actor.SubscribeAsync(handler);
