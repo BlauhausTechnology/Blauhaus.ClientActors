@@ -16,7 +16,14 @@ namespace Blauhaus.ClientActors.Tests.Suts
 
         public List<long> StartTimeTicks = new List<long>();
          
-        public Task InvokeDoAsync(int callIndex)
+        public Task InvokeAndBlockAsync(int callIndex)
+        { 
+            return InvokeAndBlockAsync(async () =>
+            {
+                await Execute(callIndex);
+            });
+        }
+        public Task InvokeAsync(int callIndex)
         { 
             return InvokeAsync(async () =>
             {
