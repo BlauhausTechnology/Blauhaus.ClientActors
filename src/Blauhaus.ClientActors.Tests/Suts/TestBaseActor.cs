@@ -18,14 +18,14 @@ namespace Blauhaus.ClientActors.Tests.Suts
          
         public Task InvokeAndBlockAsync(int callIndex)
         { 
-            return InvokeAndBlockAsync(async () =>
+            return InvokeAsync(async () =>
             {
                 await Execute(callIndex);
             });
         }
         public Task InvokeAsync(int callIndex)
         { 
-            return InvokeAsync(async () =>
+            return InvokeInterleavedAsync(async () =>
             {
                 await Execute(callIndex);
             });
