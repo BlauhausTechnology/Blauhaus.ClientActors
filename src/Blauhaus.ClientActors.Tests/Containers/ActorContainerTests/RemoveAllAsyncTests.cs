@@ -48,6 +48,26 @@ namespace Blauhaus.ClientActors.Tests.Containers.ActorContainerTests
             Assert.That(result.Count, Is.EqualTo(3)); 
             MockTestActor.Mock.Verify(x => x.DisposeAsync(), Times.Exactly(2));
         }
+        
+        
+        [Test]
+        public async Task WHEN_Id_is_given_SHOULD_only_remove_and_dispose_that_actor()
+        {
+            //Arrange
+            await Sut.GetOneAsync("1"); 
+            await Sut.GetOneAsync("2"); 
+            await Sut.GetOneAsync("3"); 
+            await Sut.GetOneAsync("4"); 
+            await Sut.GetOneAsync("5"); 
+
+            //Act
+            await Sut.RemoveAsync("3");
+
+            //Assert
+            var result = await Sut.GetActiveAsync();
+            Assert.That(result.Count, Is.EqualTo(4)); 
+            MockTestActor.Mock.Verify(x => x.DisposeAsync(), Times.Exactly(1));
+        }
 
         [Test]
         public async Task WHEN_predicate_is_given_SHOULD_only_remove_and_dispose_actors_that_match()
