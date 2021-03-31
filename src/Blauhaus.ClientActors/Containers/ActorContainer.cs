@@ -123,18 +123,6 @@ namespace Blauhaus.ClientActors.Containers
             });
         }
 
-        public Task RemoveAsync(TId actorId)
-        {
-            return InvokeAsync(async () =>
-            {
-                if (_actorCache.TryGetValue(actorId, out var actorToReove))
-                {
-                    await actorToReove.DisposeAsync();
-                    _actorCache.Remove(actorId);
-                }
-            });
-        }
-
         public Task RemoveAsync(IEnumerable<TId> requiredIds)
         {
             return InvokeAsync(async () =>

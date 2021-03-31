@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Blauhaus.Common.Utils" Version="1.10.1" />
-    <PackageReference Include="Blauhaus.Domain.Abstractions" Version="1.1.15" />
+    <PackageReference Include="Blauhaus.Common.Utils" Version="1.9.13" />
+    <PackageReference Include="Blauhaus.Domain.Abstractions" Version="1.1.14" />
     <PackageReference Include="Blauhaus.Responses" Version="0.3.6" />
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="5.0.0" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />

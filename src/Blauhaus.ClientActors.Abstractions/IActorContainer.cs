@@ -55,10 +55,6 @@ namespace Blauhaus.ClientActors.Abstractions
         /// </summary>
         Task RemoveAllAsync();
         /// <summary>
-        /// Removes from the cache only the actors with the given id. 
-        /// </summary>
-        Task RemoveAsync(TId actorId);
-        /// <summary>
         /// Removes from the cache only the actors with the given ids. 
         /// </summary>
         Task RemoveAsync(IEnumerable<TId> actorIds);
