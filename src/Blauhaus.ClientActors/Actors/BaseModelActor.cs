@@ -22,17 +22,15 @@ namespace Blauhaus.ClientActors.Actors
                 await ReloadSelfAsync();
             });
         }
-         
-        public Task<IDisposable> SubscribeAsync(Func<TModel, Task> handler)
+        public Task<IDisposable> SubscribeAsync(Func<TModel, Task> handler, Func<TModel, bool>? filter = null)
         {
-            return InvokeAsync(async () => await AddSubscribeAsync(handler, GetOrLoadModelAsync));
+            return Task.FromResult(AddSubscriber(handler, filter));
         }
-
+         
         protected async Task<TModel> GetOrLoadModelAsync()
         {
             return _model ??= await LoadModelAsync();
         }
-
         
         protected async Task<TModel> ReloadSelfAsync()
         {
@@ -51,5 +49,6 @@ namespace Blauhaus.ClientActors.Actors
         }
 
         protected abstract Task<TModel> LoadModelAsync();
+
     }
 }
