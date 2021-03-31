@@ -10,7 +10,7 @@ namespace Blauhaus.ClientActors.Tests.Actors.ModelActorTests
     {
  
         [Test]
-        public async Task SHOULD_publishModel()
+        public async Task SHOULD_return_current_model()
         {
             //Arrange
             var id = Guid.NewGuid();
@@ -23,8 +23,6 @@ namespace Blauhaus.ClientActors.Tests.Actors.ModelActorTests
                 result = testModel;
                 return Task.CompletedTask;
             });
-            await Sut.UpdateSubscribersWithCurrentModelAsync();
-
 
             //Assert 
             Assert.That(result.Id, Is.EqualTo(id)); 

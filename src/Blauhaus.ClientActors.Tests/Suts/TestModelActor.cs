@@ -10,10 +10,5 @@ namespace Blauhaus.ClientActors.Tests.Suts
         {
             return Task.FromResult<ITestModel>(new TestModel(Id));
         }
-
-        public async Task UpdateSubscribersWithCurrentModelAsync()
-        {
-            await UpdateModelAsync(x => x);
-        }
     }
 }
