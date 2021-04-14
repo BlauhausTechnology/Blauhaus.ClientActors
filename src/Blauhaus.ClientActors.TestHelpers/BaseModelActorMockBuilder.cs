@@ -6,13 +6,10 @@ using Moq;
 
 namespace Blauhaus.ClientActors.TestHelpers
 {
-    public abstract class BaseModelActorMockBuilder<TBuilder, TActor, TId, TModel> : BaseAsyncPublisherMockBuilder<TBuilder, TActor, TModel> 
-        where TBuilder : BaseModelActorMockBuilder<TBuilder, TActor, TId, TModel> 
-        where TActor : class, IModelActor<TId, TModel>
-        where TModel : IHasId<TId>
+    public abstract class BaseModelActorMockBuilder<TBuilder, TActor, TModel> : BaseAsyncPublisherMockBuilder<TBuilder, TActor, TModel>
+        where TBuilder : BaseModelActorMockBuilder<TBuilder, TActor, TModel>
+        where TActor : class, IModelActor<TModel>
     {
-        
-
         public TBuilder Where_GetModelAsync_returns(TModel model)
         {
             Mock.Setup(x => x.GetModelAsync())
@@ -27,6 +24,13 @@ namespace Blauhaus.ClientActors.TestHelpers
             return (TBuilder) this;
         }
 
+    }
+        
+    public abstract class BaseModelActorMockBuilder<TBuilder, TActor, TId, TModel> : BaseModelActorMockBuilder<TBuilder, TActor, TModel> 
+        where TBuilder : BaseModelActorMockBuilder<TBuilder, TActor, TId, TModel> 
+        where TActor : class, IModelActor<TId, TModel>
+        where TModel : IHasId<TId>
+    {
           
     }
 }
