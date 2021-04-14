@@ -5,28 +5,29 @@ using Blauhaus.Common.Abstractions;
 
 namespace Blauhaus.ClientActors.Actors
 {
-    public abstract class BaseModelActor<TId, TModel> : BaseIdActor<TId>, IModelActor<TId, TModel>
-        where TModel : class, IHasId<TId>
+
+    public abstract class BaseModelActor<TModel> : BaseActor, IModelActor<TModel>
     {
         private TModel? _model;
+        
+        public Task<IDisposable> SubscribeAsync(Func<TModel, Task> handler, Func<TModel, bool>? filter = null)
+        {
+            return Task.FromResult(AddSubscriber(handler, filter));
+        }
         
         public Task<TModel> GetModelAsync()
         {
             return InvokeAsync(async () => await GetOrLoadModelAsync());
         }
-
-        public override Task ReloadAsync()
+        
+        public Task ReloadAsync()
         {
             return InvokeAsync(async () =>
             {
                 await ReloadSelfAsync();
             });
         }
-        public Task<IDisposable> SubscribeAsync(Func<TModel, Task> handler, Func<TModel, bool>? filter = null)
-        {
-            return Task.FromResult(AddSubscriber(handler, filter));
-        }
-         
+        
         protected async Task<TModel> GetOrLoadModelAsync()
         {
             return _model ??= await LoadModelAsync();
@@ -49,6 +50,37 @@ namespace Blauhaus.ClientActors.Actors
         }
 
         protected abstract Task<TModel> LoadModelAsync();
+        
+    }
+    
+    public abstract class BaseModelActor<TId, TModel> : BaseModelActor<TModel>, IModelActor<TId, TModel>
+        where TModel : class, IHasId<TId>
+    {
+
+        private TId? _id;
+        public TId Id
+        {
+            get
+            {
+                if (_id == null)
+                    throw new InvalidOperationException("Actor has not been initialized with an Id");
+                return _id;
+            }
+        }
+
+        public Task InitializeAsync(TId id)
+        {
+            _id = id;
+            return OnInitializedAsync(id);
+        }
+
+        protected virtual Task OnInitializedAsync(TId id)
+        {
+            return Task.CompletedTask;
+        }
+
+        
+
 
     }
 }
