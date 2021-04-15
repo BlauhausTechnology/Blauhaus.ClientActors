@@ -3,7 +3,7 @@ using Blauhaus.Common.Abstractions;
 
 namespace Blauhaus.ClientActors.Abstractions
 { 
-    public interface IModelActor<TModel> : IAsyncPublisher<TModel>
+    public interface IModelActor<TModel> : IAsyncPublisher<TModel>, IAsyncReloadable
     {
         Task<TModel> GetModelAsync();
     }
