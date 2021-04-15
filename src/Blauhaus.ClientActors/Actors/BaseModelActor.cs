@@ -48,9 +48,15 @@ namespace Blauhaus.ClientActors.Actors
             await UpdateSubscribersAsync(_model);
             return _model;
         }
-
-        protected abstract Task<TModel> LoadModelAsync();
         
+        protected void ClearModel()
+        {
+            _model = default;
+        }
+        
+        protected abstract Task<TModel> LoadModelAsync();
+
+
     }
     
     public abstract class BaseModelActor<TId, TModel> : BaseModelActor<TModel>, IModelActor<TId, TModel>
