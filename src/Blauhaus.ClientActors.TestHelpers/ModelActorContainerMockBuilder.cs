@@ -80,7 +80,8 @@ namespace Blauhaus.ClientActors.TestHelpers
                 .ReturnsAsync(models);
             return this;
         }
-
+        
+        [Obsolete("Use getModelAsync / PublishMockSubscriptionAsync because the container never publishes immediately")]
         public ModelActorContainerMockBuilder<TActor, TId, TModel> Where_SubscribeToModelAsync_publishes_immediately(TModel update, TId id)
         {
             Mock.Setup(x => x.SubscribeToModelAsync(id, It.IsAny<Func<TModel, Task>>()))
@@ -93,6 +94,7 @@ namespace Blauhaus.ClientActors.TestHelpers
             return this;
         }
         
+        [Obsolete("Use getModelAsync / PublishMockSubscriptionAsync because the container never publishes immediately")]
         public ModelActorContainerMockBuilder<TActor, TId, TModel> Where_SubscribeToModelAsync_publishes_immediately(Func<TModel> modelFactory, TId id)
         { 
             Mock.Setup(x => x.SubscribeToModelAsync(id, It.IsAny<Func<TModel, Task>>()))
@@ -105,6 +107,7 @@ namespace Blauhaus.ClientActors.TestHelpers
             return this;
         }
 
+        [Obsolete("Use getModelAsync / PublishMockSubscriptionAsync because the container never publishes immediately")]
         public ModelActorContainerMockBuilder<TActor, TId, TModel> Where_SubscribeToModelAsync_publishes_sequence(IEnumerable<TModel> updates, TId id)
         { 
             var queue = new Queue<TModel>(updates);
