@@ -8,7 +8,7 @@ namespace Blauhaus.ClientActors.Actors
 
     public abstract class BaseModelActor<TModel> : BaseActor, IModelActor<TModel>
     {
-        private TModel? _model;
+        protected TModel? Model;
         
         public Task<IDisposable> SubscribeAsync(Func<TModel, Task> handler, Func<TModel, bool>? filter = null)
         {
@@ -30,30 +30,25 @@ namespace Blauhaus.ClientActors.Actors
         
         protected async Task<TModel> GetOrLoadModelAsync()
         {
-            return _model ??= await LoadModelAsync();
+            return Model ??= await LoadModelAsync();
         }
         
         protected async Task<TModel> ReloadSelfAsync()
         {
-            _model = await LoadModelAsync();
-            await UpdateSubscribersAsync(_model);
-            return _model;
+            Model = await LoadModelAsync();
+            await UpdateSubscribersAsync(Model);
+            return Model;
         }
 
         protected async Task<TModel> UpdateModelAsync(Func<TModel, TModel> modelUpdater)
         {
             var model = await GetOrLoadModelAsync();
             
-            _model = modelUpdater.Invoke(model);
-            await UpdateSubscribersAsync(_model);
-            return _model;
+            Model = modelUpdater.Invoke(model);
+            await UpdateSubscribersAsync(Model);
+            return Model;
         }
-        
-        protected void ClearModel()
-        {
-            _model = default;
-        }
-        
+         
         protected abstract Task<TModel> LoadModelAsync();
 
 
