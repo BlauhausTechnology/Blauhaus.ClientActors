@@ -10,7 +10,6 @@ namespace Blauhaus.ClientActors.Actors
     {
         private readonly Actor _handler;
         private readonly SemaphoreSlim _lock; 
-        
 
         protected BaseActor()
         {
