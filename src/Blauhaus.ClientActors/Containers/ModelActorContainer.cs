@@ -93,7 +93,6 @@ namespace Blauhaus.ClientActors.Containers
 
         }
 
-
         protected override async Task HandleNewActorAsync(TActor newActor)
         {
             if (_activeMmodelSubscriptions.Count > 0)
