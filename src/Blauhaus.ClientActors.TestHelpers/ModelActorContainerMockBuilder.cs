@@ -88,7 +88,13 @@ namespace Blauhaus.ClientActors.TestHelpers
                 .ReturnsAsync(models);
             return this;
         }
-
+        
+        public ModelActorContainerMockBuilder<TActor, TId, TModel> Where_GetActiveModelsAsync_returns(TModel model)
+        {
+            Mock.Setup(x => x.GetActiveModelsAsync())
+                .ReturnsAsync(new[] { model });
+            return this;
+        }
         public ModelActorContainerMockBuilder<TActor, TId, TModel> Where_GetActiveModelsAsync_returns(Func<TModel> modelFactory)
         {
             Mock.Setup(x => x.GetActiveModelsAsync())
