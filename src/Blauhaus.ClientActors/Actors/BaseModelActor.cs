@@ -48,6 +48,13 @@ namespace Blauhaus.ClientActors.Actors
             await UpdateSubscribersAsync(Model);
             return Model;
         }
+
+        protected async Task<TModel> SetModelAsync(TModel newModel)
+        {
+            Model = newModel;
+            await UpdateSubscribersAsync(Model);
+            return Model;
+        }
          
         protected abstract Task<TModel> LoadModelAsync();
 

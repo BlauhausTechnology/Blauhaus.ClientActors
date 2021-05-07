@@ -47,5 +47,6 @@ namespace Blauhaus.ClientActors.Containers
                 return await actor.SubscribeAsync(handler);
             });
         }
+         
     }
 }
