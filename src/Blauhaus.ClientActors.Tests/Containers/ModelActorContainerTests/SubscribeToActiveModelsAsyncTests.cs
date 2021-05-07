@@ -91,31 +91,7 @@ namespace Blauhaus.ClientActors.Tests.Containers.ModelActorContainerTests
             MockTestActor.Mock.Verify(x => x.InitializeAsync(_id), Times.Exactly(1));
             MockTestActor.Mock.Verify(x => x.SubscribeAsync(handler, null), Times.Exactly(1));
         }
-
-        [Test]
-        public async Task WHEN_new_actor_is_cached_SHOULD_publish_existing_and_updated_models()
-        {
-            //Arrange
-            var modelOne = new TestModel(Guid.NewGuid());
-            var modelTwo = new TestModel(Guid.NewGuid());
-            MockTestActor.Where_GetModelAsync_returns(modelOne);
-            List<ITestModel> publishedModels = new List<ITestModel>();
-            Func<ITestModel, Task> handler = model =>
-            {
-                publishedModels.Add(model);
-                return Task.CompletedTask;
-            }; 
-
-            //Act
-            await Sut.SubscribeToActiveModelsAsync(handler);
-            await Sut.GetOneAsync(_id);
-            await MockTestActor.PublishMockSubscriptionAsync(modelTwo);
-
-            //Assert
-            Assert.That(publishedModels.Count, Is.EqualTo(2));
-            Assert.That(publishedModels[0], Is.EqualTo(modelOne));
-            Assert.That(publishedModels[1], Is.EqualTo(modelTwo));
-        }
+         
 
         [Test]
         public async Task WHEN_new_actor_is_cached_and_token_is_disposed_SHOULD_unsubscribe_from_it()

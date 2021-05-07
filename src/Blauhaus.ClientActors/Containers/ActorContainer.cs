@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Blauhaus.Analytics.Abstractions.Service;
 using Blauhaus.ClientActors.Abstractions;
 using Blauhaus.ClientActors.Actors;
 using Blauhaus.Ioc.Abstractions;
@@ -12,12 +13,15 @@ namespace Blauhaus.ClientActors.Containers
         where TActor : class, IActor<TId>
     {
         private readonly IServiceLocator _serviceLocator;
+        protected readonly IAnalyticsService AnalyticsService;
         private readonly Dictionary<TId, TActor> _actorCache = new();
 
         public ActorContainer(
-            IServiceLocator serviceLocator)
+            IServiceLocator serviceLocator,
+            IAnalyticsService analyticsService)
         {
             _serviceLocator = serviceLocator;
+            AnalyticsService = analyticsService;
         }
 
         public Task<TActor> GetOneAsync(TId actorId)
@@ -174,6 +178,8 @@ namespace Blauhaus.ClientActors.Containers
             var newActor = _serviceLocator.Resolve<TActor>();
             await newActor.InitializeAsync(actorId);
             _actorCache[actorId] = newActor;
+
+            AnalyticsService.Debug($"New {nameof(TActor)} constructed with Id {actorId}");
 
             await HandleNewActorAsync(newActor);
 

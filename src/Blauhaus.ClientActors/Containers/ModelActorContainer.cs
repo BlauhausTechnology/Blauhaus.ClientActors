@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Blauhaus.Analytics.Abstractions.Service;
 using Blauhaus.ClientActors.Abstractions;
 using Blauhaus.Common.Abstractions;
 using Blauhaus.Common.Utils.Disposables;
@@ -15,7 +16,10 @@ namespace Blauhaus.ClientActors.Containers
 
         private readonly List<Tuple<Disposables, Func<TModel, Task>>> _activeMmodelSubscriptions = new();
 
-        public ModelActorContainer(IServiceLocator serviceLocator) : base(serviceLocator)
+        public ModelActorContainer(
+            IServiceLocator serviceLocator,
+            IAnalyticsService analyticsService) 
+                : base(serviceLocator, analyticsService)
         {
         }
 
@@ -54,8 +58,12 @@ namespace Blauhaus.ClientActors.Containers
                 {
                     getModelTasks.Add(modelActor.GetModelAsync());
                 }
+                
+                var models = await Task.WhenAll(getModelTasks);
+                
+                AnalyticsService.Debug($"Loading {models.Length} {nameof(TModel)} from actors");
 
-                return (IReadOnlyList<TModel>) await Task.WhenAll(getModelTasks);
+                return (IReadOnlyList<TModel>) models;
             });
         }
 
@@ -71,10 +79,14 @@ namespace Blauhaus.ClientActors.Containers
         public async Task<IDisposable> SubscribeToActiveModelsAsync(Func<TModel, Task> handler)
         {
             var disposables = new Disposables();
-            foreach (var activeActor in GetActiveActors())
+
+            var activeActors = GetActiveActors();
+            foreach (var activeActor in activeActors)
             {
                 disposables.Add(await activeActor.SubscribeAsync(handler));
             }
+
+            AnalyticsService.Debug($"Subscribed to {activeActors.Count} actors of type {nameof(TActor)}");
 
             _activeMmodelSubscriptions.Add(new Tuple<Disposables, Func<TModel, Task>>(disposables, handler));
             return disposables;
@@ -84,14 +96,17 @@ namespace Blauhaus.ClientActors.Containers
 
         protected override async Task HandleNewActorAsync(TActor newActor)
         {
-            foreach (var modelSubscription in _activeMmodelSubscriptions)
+            if (_activeMmodelSubscriptions.Count > 0)
             {
-                var disposables = modelSubscription.Item1;
-                var handler = modelSubscription.Item2;
-                disposables.Add(await newActor.SubscribeAsync(handler));
-                var model = await newActor.GetModelAsync();
-                await handler.Invoke(model);
+                foreach (var modelSubscription in _activeMmodelSubscriptions)
+                {
+                    var disposables = modelSubscription.Item1;
+                    var handler = modelSubscription.Item2;
+                    disposables.Add(await newActor.SubscribeAsync(handler)); 
+                }
             }
+            
+            AnalyticsService.Debug($"Added {_activeMmodelSubscriptions.Count} subscriptions to actor of type {nameof(TActor)}");
         }
     }
 }
