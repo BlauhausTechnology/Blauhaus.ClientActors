@@ -175,7 +175,21 @@ namespace Blauhaus.ClientActors.Containers
             await newActor.InitializeAsync(actorId);
             _actorCache[actorId] = newActor;
 
+            await HandleNewActorAsync(newActor);
+
             return newActor;
+        }
+
+        protected virtual Task HandleNewActorAsync(TActor newActor)
+        {
+            return Task.CompletedTask;
+        }
+
+        protected  IReadOnlyList<TActor> GetActiveActors(Func<TActor, bool>? predicate = null)
+        {
+            return predicate == null
+                ? _actorCache.Values.ToArray() 
+                : _actorCache.Values.Where(predicate).ToArray();
         }
 
         protected async Task<IReadOnlyList<TActor>> GetActorsAsync(IEnumerable<TId> ids)

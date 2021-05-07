@@ -7,12 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Mocks\**" />
-    <EmbeddedResource Remove="Mocks\**" />
-    <None Remove="Mocks\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Include=".Base\BaseActorTest.cs" />
     <Compile Include="Containers\ActorContainerTests\.Base\BaseActorContainerTest.cs" />
   </ItemGroup>
@@ -27,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Blauhaus.ClientActors.TestHelpers\Blauhaus.ClientActors.TestHelpers.csproj" />
     <ProjectReference Include="..\Blauhaus.ClientActors\Blauhaus.ClientActors.csproj" />
   </ItemGroup>
 
