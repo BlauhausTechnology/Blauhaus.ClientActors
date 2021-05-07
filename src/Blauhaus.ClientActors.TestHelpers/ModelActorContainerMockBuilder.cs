@@ -63,14 +63,13 @@ namespace Blauhaus.ClientActors.TestHelpers
                 .ReturnsAsync(model.Invoke);
             return this;
         }
+        
         public ModelActorContainerMockBuilder<TActor, TId, TModel> Where_GetModelsAsync_returns(TModel model)
         {
             Mock.Setup(x => x.GetModelsAsync(It.IsAny<IEnumerable<TId>>()))
                 .ReturnsAsync(new List<TModel>{model});
             return this;
         }
-
-        
         public ModelActorContainerMockBuilder<TActor, TId, TModel> Where_GetModelsAsync_returns(Func<TModel> modelFactory)
         {
             Mock.Setup(x => x.GetModelsAsync(It.IsAny<IEnumerable<TId>>()))
@@ -78,6 +77,12 @@ namespace Blauhaus.ClientActors.TestHelpers
             return this;
         }
         public ModelActorContainerMockBuilder<TActor, TId, TModel> Where_GetModelsAsync_returns(IReadOnlyList<TModel> models)
+        {
+            Mock.Setup(x => x.GetModelsAsync(It.IsAny<IEnumerable<TId>>()))
+                .ReturnsAsync(models);
+            return this;
+        }
+        public ModelActorContainerMockBuilder<TActor, TId, TModel> Where_GetModelsAsync_returns(Func<IReadOnlyList<TModel>> models)
         {
             Mock.Setup(x => x.GetModelsAsync(It.IsAny<IEnumerable<TId>>()))
                 .ReturnsAsync(models);
@@ -91,6 +96,12 @@ namespace Blauhaus.ClientActors.TestHelpers
             return this;
         }
         public ModelActorContainerMockBuilder<TActor, TId, TModel> Where_GetActiveModelsAsync_returns(IReadOnlyList<TModel> models)
+        {
+            Mock.Setup(x => x.GetActiveModelsAsync())
+                .ReturnsAsync(models);
+            return this;
+        }
+        public ModelActorContainerMockBuilder<TActor, TId, TModel> Where_GetActiveModelsAsync_returns(Func<IReadOnlyList<TModel>> models)
         {
             Mock.Setup(x => x.GetActiveModelsAsync())
                 .ReturnsAsync(models);
