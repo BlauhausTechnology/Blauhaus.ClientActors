@@ -26,8 +26,8 @@ namespace Blauhaus.ClientActors.TestHelpers
                     _handlers.Add(handler); 
                 }).ReturnsAsync(MockModelToken.Object);
 
-            Mock.Setup(x => x.SubscribeToActiveModelsAsync(It.IsAny<Func<TModel, Task>>()))
-                .Callback((Func<TModel, Task> handler) =>
+            Mock.Setup(x => x.SubscribeToActiveModelsAsync(It.IsAny<Func<TModel, Task>>(), It.IsAny<Func<TModel, bool>>()))
+                .Callback((Func<TModel, Task> handler, Func<TModel, bool> filter) =>
                 {
                     _activeModelHandlers.Add(handler); 
                 }).ReturnsAsync(MockModelToken.Object);
