@@ -14,7 +14,7 @@ namespace Blauhaus.ClientActors.Containers
         where TModel : IHasId<TId>
     {
 
-        private readonly List<Tuple<Disposables, Func<TModel, Task>>> _activeMmodelSubscriptions = new();
+        private readonly List<SavedSubscription> _activeModelSubscriptions = new();
 
         public ModelActorContainer(
             IServiceLocator serviceLocator,
@@ -76,36 +76,53 @@ namespace Blauhaus.ClientActors.Containers
             });
         }
 
-        public async Task<IDisposable> SubscribeToActiveModelsAsync(Func<TModel, Task> handler)
+        public async Task<IDisposable> SubscribeToActiveModelsAsync(Func<TModel, Task> handler, Func<TModel, bool>? filter = null)
         {
             var disposables = new Disposables();
 
             var activeActors = GetActiveActors();
             foreach (var activeActor in activeActors)
             {
-                disposables.Add(await activeActor.SubscribeAsync(handler));
+                disposables.Add(await activeActor.SubscribeAsync(handler, filter));
             }
 
             AnalyticsService.Debug($"Subscribed to {activeActors.Count} actors of type {typeof(TActor).Name}");
 
-            _activeMmodelSubscriptions.Add(new Tuple<Disposables, Func<TModel, Task>>(disposables, handler));
+            _activeModelSubscriptions.Add(new SavedSubscription(disposables, handler, filter));
             return disposables;
 
         }
 
         protected override async Task HandleNewActorAsync(TActor newActor)
         {
-            if (_activeMmodelSubscriptions.Count > 0)
+            if (_activeModelSubscriptions.Count > 0)
             {
-                foreach (var modelSubscription in _activeMmodelSubscriptions)
+                foreach (var modelSubscription in _activeModelSubscriptions)
                 {
-                    var disposables = modelSubscription.Item1;
-                    var handler = modelSubscription.Item2;
-                    disposables.Add(await newActor.SubscribeAsync(handler)); 
+                    var disposables = modelSubscription.Disposables;
+                    var handler = modelSubscription.Handler;
+                    var filter = modelSubscription.Filter;
+                    disposables.Add(await newActor.SubscribeAsync(handler, filter)); 
                 }
             }
             
-            AnalyticsService.Debug($"Added {_activeMmodelSubscriptions.Count} subscriptions to actor of type {typeof(TActor).Name}");
+            AnalyticsService.Debug($"Added {_activeModelSubscriptions.Count} subscriptions to actor of type {typeof(TActor).Name}");
+        }
+
+        
+        private class SavedSubscription
+        {
+            public SavedSubscription(Disposables disposables, Func<TModel, Task> handler, Func<TModel, bool>? filter)
+            {
+                Disposables = disposables;
+                Handler = handler;
+                Filter = filter;
+            }
+
+            public Disposables Disposables { get; }
+            public Func<TModel, Task> Handler { get; }
+            public Func<TModel, bool>? Filter { get; }
         }
     }
+
 }
