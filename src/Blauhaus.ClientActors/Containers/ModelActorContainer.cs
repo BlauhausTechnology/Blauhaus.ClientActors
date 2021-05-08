@@ -61,7 +61,7 @@ namespace Blauhaus.ClientActors.Containers
                 
                 var models = await Task.WhenAll(getModelTasks);
                 
-                AnalyticsService.Debug($"Loading {models.Length} {nameof(TModel)} from actors");
+                AnalyticsService.Debug($"Loading {models.Length} {typeof(TActor).Name} from actors");
 
                 return (IReadOnlyList<TModel>) models;
             });
@@ -86,7 +86,7 @@ namespace Blauhaus.ClientActors.Containers
                 disposables.Add(await activeActor.SubscribeAsync(handler));
             }
 
-            AnalyticsService.Debug($"Subscribed to {activeActors.Count} actors of type {nameof(TActor)}");
+            AnalyticsService.Debug($"Subscribed to {activeActors.Count} actors of type {typeof(TActor).Name}");
 
             _activeMmodelSubscriptions.Add(new Tuple<Disposables, Func<TModel, Task>>(disposables, handler));
             return disposables;
@@ -105,7 +105,7 @@ namespace Blauhaus.ClientActors.Containers
                 }
             }
             
-            AnalyticsService.Debug($"Added {_activeMmodelSubscriptions.Count} subscriptions to actor of type {nameof(TActor)}");
+            AnalyticsService.Debug($"Added {_activeMmodelSubscriptions.Count} subscriptions to actor of type {typeof(TActor).Name}");
         }
     }
 }
