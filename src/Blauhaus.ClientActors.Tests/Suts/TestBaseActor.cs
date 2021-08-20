@@ -18,7 +18,7 @@ namespace Blauhaus.ClientActors.Tests.Suts
          
         public Task InvokeAndBlockAsync(int callIndex)
         { 
-            return InvokeAndBlockAsync(async () =>
+            return InvokeLockedAsync(async () =>
             {
                 await Execute(callIndex);
             });

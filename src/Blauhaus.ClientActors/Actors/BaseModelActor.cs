@@ -5,50 +5,90 @@ using Blauhaus.Common.Abstractions;
 
 namespace Blauhaus.ClientActors.Actors
 {
-    public abstract class BaseModelActor<TId, TModel> : BaseIdActor<TId>, IModelActor<TId, TModel>
-        where TModel : class, IHasId<TId>
+
+    public abstract class BaseModelActor<TModel> : BaseActor, IModelActor<TModel>
     {
-        private TModel? _model;
+        protected TModel? Model;
+        
+        public Task<IDisposable> SubscribeAsync(Func<TModel, Task> handler, Func<TModel, bool>? filter = null)
+        {
+            return Task.FromResult(AddSubscriber(handler, filter));
+        }
         
         public Task<TModel> GetModelAsync()
         {
             return InvokeAsync(async () => await GetOrLoadModelAsync());
         }
-
-        public override Task ReloadAsync()
+        
+        public Task ReloadAsync()
         {
             return InvokeAsync(async () =>
             {
                 await ReloadSelfAsync();
             });
         }
-        public Task<IDisposable> SubscribeAsync(Func<TModel, Task> handler, Func<TModel, bool>? filter = null)
-        {
-            return Task.FromResult(AddSubscriber(handler, filter));
-        }
-         
+        
         protected async Task<TModel> GetOrLoadModelAsync()
         {
-            return _model ??= await LoadModelAsync();
+            return Model ??= await LoadModelAsync();
         }
         
         protected async Task<TModel> ReloadSelfAsync()
         {
-            _model = await LoadModelAsync();
-            await UpdateSubscribersAsync(_model);
-            return _model;
+            Model = await LoadModelAsync();
+            await UpdateSubscribersAsync(Model);
+            return Model;
         }
 
         protected async Task<TModel> UpdateModelAsync(Func<TModel, TModel> modelUpdater)
         {
             var model = await GetOrLoadModelAsync();
             
-            _model = modelUpdater.Invoke(model);
-            await UpdateSubscribersAsync(_model);
-            return _model;
+            Model = modelUpdater.Invoke(model);
+            await UpdateSubscribersAsync(Model);
+            return Model;
         }
 
+        protected async Task<TModel> SetModelAsync(TModel newModel)
+        {
+            Model = newModel;
+            await UpdateSubscribersAsync(Model);
+            return Model;
+        }
+         
         protected abstract Task<TModel> LoadModelAsync();
+
+
+    }
+    
+    public abstract class BaseModelActor<TId, TModel> : BaseModelActor<TModel>, IModelActor<TId, TModel>
+        where TModel : class, IHasId<TId>
+    {
+
+        private TId? _id;
+        public TId Id
+        {
+            get
+            {
+                if (_id == null)
+                    throw new InvalidOperationException("Actor has not been initialized with an Id");
+                return _id;
+            }
+        }
+
+        public Task InitializeAsync(TId id)
+        {
+            _id = id;
+            return OnInitializedAsync(id);
+        }
+
+        protected virtual Task OnInitializedAsync(TId id)
+        {
+            return Task.CompletedTask;
+        }
+
+        
+
 
     }
 }

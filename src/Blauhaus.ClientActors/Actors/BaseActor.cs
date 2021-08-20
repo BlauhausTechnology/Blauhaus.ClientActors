@@ -10,7 +10,6 @@ namespace Blauhaus.ClientActors.Actors
     {
         private readonly Actor _handler;
         private readonly SemaphoreSlim _lock; 
-        
 
         protected BaseActor()
         {
@@ -18,10 +17,16 @@ namespace Blauhaus.ClientActors.Actors
 
             _handler = new Actor();
             _handler
+                .WithStartWork(OnStartUpAsync)
                 .WithStopWork(Shutdown);
             _handler.Start();
         }
-          
+
+        protected virtual Task OnStartUpAsync()
+        {
+            return Task.CompletedTask;
+        }
+
         protected Task InvokeAsync(Action action, CancellationToken cancellationToken = default) 
             => _handler.Enqueue(action.Invoke, cancellationToken);
 
@@ -34,7 +39,7 @@ namespace Blauhaus.ClientActors.Actors
         protected Task<T> InvokeAsync<T>(Func<Task<T>> asyncFunction, CancellationToken cancellationToken = default) 
             => _handler.Enqueue(async () => await asyncFunction.Invoke(), cancellationToken);
          
-        protected Task InvokeAndBlockAsync(Action action)
+        protected Task InvokeLockedAsync(Action action)
         {
             return InvokeAsync(() =>
             {
@@ -50,7 +55,7 @@ namespace Blauhaus.ClientActors.Actors
             });
         }
 
-        protected Task<T> InvokeAndBlockAsync<T>(Func<T> function)
+        protected Task<T> InvokeLockedAsync<T>(Func<T> function)
         {
             return InvokeAsync(() =>
             {
@@ -67,7 +72,7 @@ namespace Blauhaus.ClientActors.Actors
              
         }
         
-        protected Task InvokeAndBlockAsync(Func<Task> asyncAction)
+        protected Task InvokeLockedAsync(Func<Task> asyncAction)
         {
             return InvokeAsync(async () =>
             {
@@ -83,7 +88,7 @@ namespace Blauhaus.ClientActors.Actors
             });
         }
 
-        protected Task<T> InvokeAndBlockAsync<T>(Func<Task<T>> asyncFunction) 
+        protected Task<T> InvokeLockedAsync<T>(Func<Task<T>> asyncFunction) 
         {
             return InvokeAsync(async () =>
             {

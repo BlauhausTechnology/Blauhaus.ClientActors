@@ -9,7 +9,7 @@ using NUnit.Framework;
 
 namespace Blauhaus.ClientActors.Tests.Containers.ModelActorContainerTests
 {
-    public class SubscribeAsyncTests : BaseActorTest<ModelActorContainer<ITestModelActor, Guid, ITestModel>>
+    public class SubscribeToModelAsyncTests : BaseActorTest<ModelActorContainer<ITestModelActor, Guid, ITestModel>>
     {
         private Guid _id;
         private MockBuilder<IDisposable> _mockTestSubscription;
@@ -28,7 +28,6 @@ namespace Blauhaus.ClientActors.Tests.Containers.ModelActorContainerTests
 
             AddService(MockTestActor.Object);
         }
-
         
         [Test]
         public async Task WHEN_Actor_does_not_yet_exist_SHOULD_create_and_subscribe()

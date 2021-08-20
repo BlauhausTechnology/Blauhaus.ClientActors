@@ -11,6 +11,9 @@ namespace Blauhaus.ClientActors.Abstractions
     {
         Task<TModel> GetModelAsync(TId id);
         Task<IReadOnlyList<TModel>> GetModelsAsync(IEnumerable<TId> actorIds);
+        Task<IReadOnlyList<TModel>> GetActiveModelsAsync();
+
         Task<IDisposable> SubscribeToModelAsync(TId id, Func<TModel, Task> handler);
+        Task<IDisposable> SubscribeToActiveModelsAsync(Func<TModel, Task> handler, Func<TModel, bool>? filter = null);
     }
 }
