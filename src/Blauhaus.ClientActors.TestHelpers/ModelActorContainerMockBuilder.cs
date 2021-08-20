@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Blauhaus.ClientActors.Abstractions;
 using Blauhaus.Common.Abstractions;
-using Blauhaus.TestHelpers.Builders._Base;
+using Blauhaus.TestHelpers.Builders.Base;
 using Moq;
 
 namespace Blauhaus.ClientActors.TestHelpers
@@ -13,35 +13,50 @@ namespace Blauhaus.ClientActors.TestHelpers
         where TModel : IHasId<TId>
     {
         private readonly List<Func<TModel, Task>> _handlers = new List<Func<TModel, Task>>();
+        private readonly List<Func<TModel, Task>> _activeModelHandlers = new List<Func<TModel, Task>>();
 
+        public Mock<IDisposable> MockModelToken { get; } = new Mock<IDisposable>();
+        public Mock<IDisposable> MockActiveModelsToken { get; } = new Mock<IDisposable>();
+
+        public ModelActorContainerMockBuilder()
+        {
+            Mock.Setup(x => x.SubscribeToModelAsync(It.IsAny<TId>(), It.IsAny<Func<TModel, Task>>()))
+                .Callback((TId givenId, Func<TModel, Task> handler) =>
+                {
+                    _handlers.Add(handler); 
+                }).ReturnsAsync(MockModelToken.Object);
+
+            Mock.Setup(x => x.SubscribeToActiveModelsAsync(It.IsAny<Func<TModel, Task>>(), It.IsAny<Func<TModel, bool>>()))
+                .Callback((Func<TModel, Task> handler, Func<TModel, bool> filter) =>
+                {
+                    _activeModelHandlers.Add(handler); 
+                }).ReturnsAsync(MockModelToken.Object);
+        }
+        
         public ModelActorContainerMockBuilder<TActor, TId, TModel> Where_GetModelAsync_returns(TModel model)
         {
             Mock.Setup(x => x.GetModelAsync(It.IsAny<TId>())).ReturnsAsync(model);
 
             return this;
         }
-
         public ModelActorContainerMockBuilder<TActor, TId, TModel> Where_GetModelAsync_returns<TModelBuilder>(TModelBuilder modelBuilder) where TModelBuilder : IBuilder<TModelBuilder, TModel>
         {
             Mock.Setup(x => x.GetModelAsync(It.IsAny<TId>())).ReturnsAsync(() => modelBuilder.Object);
 
             return this;
         }
-
         public ModelActorContainerMockBuilder<TActor, TId, TModel> Where_GetModelAsync_returns(Func<TModel> model) 
         {
             Mock.Setup(x => x.GetModelAsync(It.IsAny<TId>())).ReturnsAsync(model.Invoke);
 
             return this;
         }
-
         public ModelActorContainerMockBuilder<TActor, TId, TModel> Where_GetModelAsync_returns(TModel model, TId id)
         {
             Mock.Setup(x => x.GetModelAsync(id))
                 .ReturnsAsync(model);
             return this;
         }
-        
         public ModelActorContainerMockBuilder<TActor, TId, TModel> Where_GetModelAsync_returns(Func<TModel> model, TId id)
         {
             Mock.Setup(x => x.GetModelAsync(id))
@@ -55,76 +70,57 @@ namespace Blauhaus.ClientActors.TestHelpers
                 .ReturnsAsync(new List<TModel>{model});
             return this;
         }
-        
         public ModelActorContainerMockBuilder<TActor, TId, TModel> Where_GetModelsAsync_returns(Func<TModel> modelFactory)
         {
             Mock.Setup(x => x.GetModelsAsync(It.IsAny<IEnumerable<TId>>()))
                 .ReturnsAsync(new List<TModel>{modelFactory.Invoke()});
             return this;
         }
-        
         public ModelActorContainerMockBuilder<TActor, TId, TModel> Where_GetModelsAsync_returns(IReadOnlyList<TModel> models)
         {
             Mock.Setup(x => x.GetModelsAsync(It.IsAny<IEnumerable<TId>>()))
                 .ReturnsAsync(models);
             return this;
         }
-
-        public Mock<IDisposable> Where_SubscribeToModelAsync_publishes_immediately(TModel update, TId id)
+        public ModelActorContainerMockBuilder<TActor, TId, TModel> Where_GetModelsAsync_returns(Func<IReadOnlyList<TModel>> models)
         {
-            var mockToken = new Mock<IDisposable>();
-
-            Mock.Setup(x => x.SubscribeToModelAsync(id, It.IsAny<Func<TModel, Task>>()))
-                .Callback((TId givenId, Func<TModel, Task> handler) =>
-                {
-                    _handlers.Add(handler);
-                    handler.Invoke(update);
-                }).ReturnsAsync(mockToken.Object);
-
-            return mockToken;
+            Mock.Setup(x => x.GetModelsAsync(It.IsAny<IEnumerable<TId>>()))
+                .ReturnsAsync(models);
+            return this;
         }
         
-        public Mock<IDisposable> Where_SubscribeToModelAsync_publishes_immediately(Func<TModel> modelFactory, TId id)
+        public ModelActorContainerMockBuilder<TActor, TId, TModel> Where_GetActiveModelsAsync_returns(TModel model)
         {
-            var mockToken = new Mock<IDisposable>();
-
-            Mock.Setup(x => x.SubscribeToModelAsync(id, It.IsAny<Func<TModel, Task>>()))
-                .Callback((TId givenId, Func<TModel, Task> handler) =>
-                {
-                    _handlers.Add(handler);
-                    handler.Invoke(modelFactory.Invoke());
-                }).ReturnsAsync(mockToken.Object);
-
-            return mockToken;
+            Mock.Setup(x => x.GetActiveModelsAsync())
+                .ReturnsAsync(new[] { model });
+            return this;
         }
-
-        public Mock<IDisposable> Where_SubscribeToModelAsync_publishes_sequence(IEnumerable<TModel> updates, TId id)
+        public ModelActorContainerMockBuilder<TActor, TId, TModel> Where_GetActiveModelsAsync_returns(Func<TModel> modelFactory)
         {
-            var mockToken = new Mock<IDisposable>();
-            var queue = new Queue<TModel>(updates);
-
-            Mock.Setup(x => x.SubscribeToModelAsync(id, It.IsAny<Func<TModel, Task>>()))
-                .Callback((TId givenId, Func<TModel, Task> handler) =>
-                {
-                    _handlers.Add(handler);
-                    handler.Invoke(queue.Dequeue());
-                }).ReturnsAsync(mockToken.Object);
-
-            return mockToken;
+            Mock.Setup(x => x.GetActiveModelsAsync())
+                .ReturnsAsync(new List<TModel>{modelFactory.Invoke()});
+            return this;
+        }
+        public ModelActorContainerMockBuilder<TActor, TId, TModel> Where_GetActiveModelsAsync_returns(IReadOnlyList<TModel> models)
+        {
+            Mock.Setup(x => x.GetActiveModelsAsync())
+                .ReturnsAsync(models);
+            return this;
+        }
+        public ModelActorContainerMockBuilder<TActor, TId, TModel> Where_GetActiveModelsAsync_returns(Func<IReadOnlyList<TModel>> models)
+        {
+            Mock.Setup(x => x.GetActiveModelsAsync())
+                .ReturnsAsync(models);
+            return this;
         }
         
-        [Obsolete("Mock subscriptions are allowed by default when configuring any return value")]
-        public Mock<IDisposable> AllowMockSubscriptions(TId id)
+        
+        public async Task PublishMockActiveModelSubscriptionAsync(TModel model)
         {
-            var mockToken = new Mock<IDisposable>();
-
-            Mock.Setup(x => x.SubscribeToModelAsync(id, It.IsAny<Func<TModel, Task>>()))
-                .Callback((TId givenId, Func<TModel, Task> handler) =>
-                {
-                    _handlers.Add(handler);
-                }).ReturnsAsync(mockToken.Object);
-
-            return mockToken;
+            foreach (var handler in _activeModelHandlers)
+            {
+                await handler.Invoke(model);
+            }
         }
 
         public async Task PublishMockSubscriptionAsync(TModel model)
