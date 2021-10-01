@@ -41,10 +41,13 @@ namespace Blauhaus.ClientActors.Abstractions
         /// </summary>
         Task<IReadOnlyList<TActor>> GetActiveAsync(Func<TActor, bool> predicate);
 
+        [Obsolete("Actors should subscribe to their own updates")]
         /// <summary>
         /// Invokes ReloadAsync on all actors in the cache
         /// </summary>
         Task ReloadActiveAsync();
+        
+        [Obsolete("Actors should subscribe to their own updates")]
         /// <summary>
         /// Invokes ReloadAsync on all actors in the cache matching the given ids. If any ids are not found in the cache, they are ignored. No new actors are created.
         /// </summary>
