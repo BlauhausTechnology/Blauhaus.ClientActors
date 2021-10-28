@@ -179,7 +179,7 @@ namespace Blauhaus.ClientActors.Containers
             await newActor.InitializeAsync(actorId);
             _actorCache[actorId] = newActor;
 
-            AnalyticsService.Debug($"New {nameof(TActor)} constructed with Id {actorId}");
+            AnalyticsService.Debug($"New {typeof(TActor).Name} constructed with Id {actorId}");
 
             await HandleNewActorAsync(newActor);
 
