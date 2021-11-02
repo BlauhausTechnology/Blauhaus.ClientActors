@@ -4,10 +4,10 @@ namespace Blauhaus.ClientActors.Tests.Suts
 {
     public class TestModel : ITestModel
     {
-        public TestModel(Guid id)
+        public TestModel(Guid id, string? randomThing = null)
         {
             Id = id;
-            RandomThing = Guid.NewGuid().ToString();
+            RandomThing = randomThing ?? Guid.NewGuid().ToString();
         }
 
         public Guid Id { get; }
