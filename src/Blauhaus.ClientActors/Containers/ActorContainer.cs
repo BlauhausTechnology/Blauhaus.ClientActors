@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Blauhaus.Analytics.Abstractions.Service;
 using Blauhaus.ClientActors.Abstractions;
 using Blauhaus.ClientActors.Actors;
+using Blauhaus.Domain.Abstractions.Actors;
 using Blauhaus.Ioc.Abstractions;
 
 namespace Blauhaus.ClientActors.Containers

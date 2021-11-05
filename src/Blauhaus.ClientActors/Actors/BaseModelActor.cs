@@ -2,12 +2,37 @@
 using System.Threading.Tasks;
 using Blauhaus.ClientActors.Abstractions;
 using Blauhaus.Common.Abstractions;
+using Blauhaus.Domain.Abstractions.Actors;
 
 namespace Blauhaus.ClientActors.Actors
 {
-
-    public abstract class BaseModelActor<TModel> : BaseActor, IModelActor<TModel>
+     
+    public abstract class BaseModelActor<TModel, TId> : BaseActor, IModelActor<TModel, TId>
+        where TModel : class, IHasId<TId>
     {
+
+        private TId? _id;
+        public TId Id
+        {
+            get
+            {
+                if (_id == null)
+                    throw new InvalidOperationException("Actor has not been initialized with an Id");
+                return _id;
+            }
+        }
+
+        public Task InitializeAsync(TId id)
+        {
+            _id = id;
+            return OnInitializedAsync(id);
+        }
+
+        protected virtual Task OnInitializedAsync(TId id)
+        {
+            return Task.CompletedTask;
+        }
+
         protected TModel? Model;
         
         public Task<IDisposable> SubscribeAsync(Func<TModel, Task> handler, Func<TModel, bool>? filter = null)
@@ -58,36 +83,6 @@ namespace Blauhaus.ClientActors.Actors
          
         protected abstract Task<TModel> LoadModelAsync();
 
-
-    }
-    
-    public abstract class BaseModelActor<TId, TModel> : BaseModelActor<TModel>, IModelActor<TId, TModel>
-        where TModel : class, IHasId<TId>
-    {
-
-        private TId? _id;
-        public TId Id
-        {
-            get
-            {
-                if (_id == null)
-                    throw new InvalidOperationException("Actor has not been initialized with an Id");
-                return _id;
-            }
-        }
-
-        public Task InitializeAsync(TId id)
-        {
-            _id = id;
-            return OnInitializedAsync(id);
-        }
-
-        protected virtual Task OnInitializedAsync(TId id)
-        {
-            return Task.CompletedTask;
-        }
-
-        
 
 
     }

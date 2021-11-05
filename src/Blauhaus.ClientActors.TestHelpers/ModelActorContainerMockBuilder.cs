@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Blauhaus.ClientActors.Abstractions;
 using Blauhaus.Common.Abstractions;
+using Blauhaus.Domain.Abstractions.Actors;
 using Blauhaus.TestHelpers.Builders.Base;
 using Moq;
 
 namespace Blauhaus.ClientActors.TestHelpers
 {
     public class ModelActorContainerMockBuilder<TActor, TId, TModel> : BaseActorContainerMockBuilder<ModelActorContainerMockBuilder<TActor, TId, TModel>, IModelActorContainer<TActor, TId, TModel>, TActor, TId>
-        where TActor : class, IModelActor<TId, TModel>
+        where TActor : class, IModelActor<TModel, TId>
         where TModel : IHasId<TId>
     {
         private readonly List<Func<TModel, Task>> _handlers = new List<Func<TModel, Task>>();

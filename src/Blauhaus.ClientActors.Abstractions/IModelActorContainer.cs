@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Blauhaus.Common.Abstractions;
+using Blauhaus.Domain.Abstractions.Actors;
 
 namespace Blauhaus.ClientActors.Abstractions
 {
     public interface IModelActorContainer<TActor, in TId, TModel> : IActorContainer<TActor, TId>
-        where TActor : class, IModelActor<TId, TModel> 
+        where TActor : class, IModelActor<TModel, TId> 
         where TModel : IHasId<TId>
     {
         Task<TModel> GetModelAsync(TId id);

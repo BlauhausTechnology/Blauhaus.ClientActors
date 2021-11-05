@@ -3,18 +3,19 @@ using System.Threading.Tasks;
 using Blauhaus.ClientActors.Abstractions;
 using Blauhaus.Common.Abstractions;
 using Blauhaus.Common.Utils.Disposables;
+using Blauhaus.Domain.Abstractions.Actors;
 using Blauhaus.Domain.Abstractions.DtoCaches;
 
 namespace Blauhaus.ClientActors.Actors
 {
-    public abstract class BaseDtoModelActor<TModel, TDto, TDtoLoader, TId> : BasePublisher, IDtoModelActor<TModel, TId>
+    public abstract class BaseDtoModelActor<TModel, TDto, TDtoLoader, TId> : BasePublisher, IDtoModelActor<TModel, TDto, TId>
         where TModel : class, IHasId<TId>
         where TDtoLoader : IDtoLoader<TDto, TId>
         where TDto : class, IHasId<TId>
         where TId : IEquatable<TId>
     {
         protected readonly TDtoLoader DtoLoader;
-        protected TId Id = default!;
+        protected TDto Dto = null!;
         private IDisposable? _dtoCacheToken;
         private TModel? _model;
 
@@ -23,17 +24,27 @@ namespace Blauhaus.ClientActors.Actors
             DtoLoader = dtoLoader;
         }
 
+        public TId Id { get; private set; } = default!;
+
         public async Task InitializeAsync(TId id)
         {
             Id = id;
 
             _dtoCacheToken = await DtoLoader.SubscribeAsync(async dto =>
             {
+                Dto = dto;
                 _model = await ConstructModelAsync(dto);
                 await UpdateSubscribersAsync(_model);
-            }, x => x.Id.Equals(Id)); 
+            }, x => x.Id.Equals(Id));
+
+            Dto = await DtoLoader.GetOneAsync(Id);
         }
-        
+
+        public virtual Task<TDto> GetDtoAsync()
+        {
+            return Task.FromResult(Dto);
+        }
+
         protected virtual async Task<TModel> LoadModelAsync()
         {
             var dto = await DtoLoader.GetOneAsync(Id);
@@ -57,10 +68,12 @@ namespace Blauhaus.ClientActors.Actors
         }
 
         protected abstract Task<TModel> ConstructModelAsync(TDto dto);
-
-        public void Dispose()
+         
+        public ValueTask DisposeAsync()
         {
             _dtoCacheToken?.Dispose();
+            return new ValueTask();
         }
+
     }
 }

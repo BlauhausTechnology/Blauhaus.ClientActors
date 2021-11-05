@@ -4,7 +4,7 @@ using Blauhaus.ClientActors.Actors;
 
 namespace Blauhaus.ClientActors.Tests.Suts
 {
-    public class TestModelActor : BaseModelActor<Guid, ITestModel>
+    public class TestModelActor : BaseModelActor<ITestModel, Guid>
     {
         protected override Task<ITestModel> LoadModelAsync()
         {

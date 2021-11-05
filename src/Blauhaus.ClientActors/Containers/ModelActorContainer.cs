@@ -5,12 +5,13 @@ using Blauhaus.Analytics.Abstractions.Service;
 using Blauhaus.ClientActors.Abstractions;
 using Blauhaus.Common.Abstractions;
 using Blauhaus.Common.Utils.Disposables;
+using Blauhaus.Domain.Abstractions.Actors;
 using Blauhaus.Ioc.Abstractions;
 
 namespace Blauhaus.ClientActors.Containers
 {
     public class ModelActorContainer<TActor, TId, TModel> : ActorContainer<TActor, TId>, IModelActorContainer<TActor, TId, TModel>
-        where TActor : class, IModelActor<TId, TModel> 
+        where TActor : class, IModelActor<TModel, TId> 
         where TModel : IHasId<TId>
     {
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Blauhaus.ClientActors.Abstractions;
+using Blauhaus.Domain.Abstractions.Actors;
 using Blauhaus.TestHelpers.MockBuilders;
 using Moq;
 
