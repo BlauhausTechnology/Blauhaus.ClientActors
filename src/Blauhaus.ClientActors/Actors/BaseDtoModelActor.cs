@@ -8,7 +8,7 @@ using Blauhaus.Domain.Abstractions.DtoCaches;
 
 namespace Blauhaus.ClientActors.Actors
 {
-    public abstract class BaseDtoModelActor<TModel, TDto, TDtoLoader, TId> : BasePublisher, IDtoModelActor<TModel, TDto, TId>
+    public abstract class BaseDtoModelActor<TModel, TDto, TDtoLoader, TId> : BaseModelActor<TModel, TId>, IDtoModelActor<TModel, TDto, TId>
         where TModel : class, IHasId<TId>
         where TDtoLoader : IDtoLoader<TDto, TId>
         where TDto : class, IHasId<TId>
@@ -24,11 +24,9 @@ namespace Blauhaus.ClientActors.Actors
             DtoLoader = dtoLoader;
         }
 
-        public TId Id { get; private set; } = default!;
-
-        public async Task InitializeAsync(TId id)
+        protected override async Task OnInitializedAsync(TId id)
         {
-            Id = id;
+            await base.OnInitializedAsync(id);
 
             _dtoCacheToken = await DtoLoader.SubscribeAsync(async dto =>
             {
@@ -39,40 +37,24 @@ namespace Blauhaus.ClientActors.Actors
 
             Dto = await DtoLoader.GetOneAsync(Id);
         }
-
+         
         public virtual Task<TDto> GetDtoAsync()
         {
             return Task.FromResult(Dto);
         }
 
-        protected virtual async Task<TModel> LoadModelAsync()
+        protected override async Task<TModel> LoadModelAsync()
         {
-            var dto = await DtoLoader.GetOneAsync(Id);
+            var dto = await GetDtoAsync();
             return await ConstructModelAsync(dto);
-        }
-        
-        public Task<IDisposable> SubscribeAsync(Func<TModel, Task> handler, Func<TModel, bool>? filter = null)
-        {
-            return Task.FromResult(AddSubscriber(handler, filter));
-        }
-
-        public async Task ReloadAsync()
-        {
-            _model = await LoadModelAsync();
-            await UpdateSubscribersAsync(_model);
-        }
-
-        public async Task<TModel> GetModelAsync()
-        {
-            return _model ??= await LoadModelAsync();
         }
 
         protected abstract Task<TModel> ConstructModelAsync(TDto dto);
          
-        public ValueTask DisposeAsync()
+        public override ValueTask DisposeAsync()
         {
             _dtoCacheToken?.Dispose();
-            return new ValueTask();
+            return base.DisposeAsync();
         }
 
     }

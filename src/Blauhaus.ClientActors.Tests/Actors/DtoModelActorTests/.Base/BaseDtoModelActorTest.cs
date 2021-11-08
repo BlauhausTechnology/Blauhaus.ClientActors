@@ -10,9 +10,9 @@ namespace Blauhaus.ClientActors.Tests.Actors.DtoModelActorTests.Base
 {
     public class BaseDtoModelActorTest : BaseActorTest<TestDtoModelActor>
     {
-        protected TestDtoLoaderMockBuilder MockDtoLoader;
+        protected TestDtoLoaderMockBuilder MockDtoLoader = null!;
         protected  Guid Id;
-        protected  TestDto Dto;
+        protected  TestDto Dto = null!;
 
         public override void Setup()
         {

@@ -46,7 +46,7 @@ namespace Blauhaus.ClientActors.Tests.Actors.DtoModelActorTests
 
             //Assert
             Assert.That(resultTwo, Is.Not.EqualTo(resultOne));
-            Assert.That(resultOne.RandomThing, Is.Not.EqualTo(resultTwo.RandomThing));
+            Assert.That(resultOne.RandomThing, Is.Not.EqualTo(resultTwo!.RandomThing));
 
             Assert.That(resultOne.Id, Is.EqualTo(Id));
             Assert.That(resultOne.Id, Is.EqualTo(resultTwo.Id));

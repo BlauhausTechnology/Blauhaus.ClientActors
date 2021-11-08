@@ -15,7 +15,7 @@ namespace Blauhaus.ClientActors.Tests.Actors.DtoModelActorTests
         {
             //Arrange
             await Sut.InitializeAsync(Id);
-            ITestModel result = null;
+            ITestModel? result = null;
 
             //Act
             await Sut.SubscribeAsync(testModel =>
@@ -27,7 +27,7 @@ namespace Blauhaus.ClientActors.Tests.Actors.DtoModelActorTests
 
 
             //Assert 
-            Assert.That(result.Id, Is.EqualTo(Id)); 
+            Assert.That(result!.Id, Is.EqualTo(Id)); 
         }
 
          

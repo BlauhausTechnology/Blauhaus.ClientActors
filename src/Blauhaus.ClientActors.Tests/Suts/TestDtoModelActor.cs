@@ -20,5 +20,6 @@ namespace Blauhaus.ClientActors.Tests.Suts
         {
             await UpdateSubscribersAsync(await GetModelAsync());
         }
+         
     }
 }
