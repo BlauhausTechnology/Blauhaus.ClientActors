@@ -9,9 +9,9 @@ namespace Blauhaus.ClientActors.Sqlite
     public abstract class SqliteActor : IAsyncInitializable<string>
     {
         private readonly ISqliteDatabaseService _sqliteDatabaseService;
-        private SQLiteAsyncConnection _connection;
+        private readonly SQLiteAsyncConnection _connection = null!;
 
-        protected string Key { get; private set; }
+        protected string Key { get; private set; } = null!;
 
         protected SqliteActor(ISqliteDatabaseService sqliteDatabaseService)
         {

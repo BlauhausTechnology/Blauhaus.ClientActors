@@ -35,7 +35,7 @@ namespace Blauhaus.ClientActors.Actors
 
         protected TModel? Model;
         
-        public Task<IDisposable> SubscribeAsync(Func<TModel, Task> handler, Func<TModel, bool>? filter = null)
+        public virtual Task<IDisposable> SubscribeAsync(Func<TModel, Task> handler, Func<TModel, bool>? filter = null)
         {
             return Task.FromResult(AddSubscriber(handler, filter));
         }
