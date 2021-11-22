@@ -105,9 +105,10 @@ namespace Blauhaus.ClientActors.Containers
                     var filter = modelSubscription.Filter;
                     disposables.Add(await newActor.SubscribeAsync(handler, filter)); 
                 }
+
+                AnalyticsService.Debug($"Added {_activeModelSubscriptions.Count} subscriptions to actor of type {typeof(TActor).Name}");
             }
             
-            AnalyticsService.Debug($"Added {_activeModelSubscriptions.Count} subscriptions to actor of type {typeof(TActor).Name}");
         }
 
         

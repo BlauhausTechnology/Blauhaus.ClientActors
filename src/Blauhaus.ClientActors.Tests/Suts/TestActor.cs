@@ -4,7 +4,7 @@ using Blauhaus.Common.Abstractions;
 
 namespace Blauhaus.ClientActors.Tests.Suts
 {
-    public class TestActor : BaseActor, IAsyncInitializable<string>
+    public class TestActor : BaseWildActor, IAsyncInitializable<string>
     {
         public Task InitializeAsync(string id)
         {
