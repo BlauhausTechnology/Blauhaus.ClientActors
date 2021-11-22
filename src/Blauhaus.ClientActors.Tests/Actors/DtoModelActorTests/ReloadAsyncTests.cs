@@ -1,7 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Blauhaus.ClientActors.Tests.Actors.DtoModelActorTests.Base;
-using Blauhaus.ClientActors.Tests.Base;
 using Blauhaus.ClientActors.Tests.Suts;
 using NUnit.Framework;
 
@@ -34,7 +32,7 @@ namespace Blauhaus.ClientActors.Tests.Actors.DtoModelActorTests
             //Arrange 
             await Sut.InitializeAsync(Id);
             var resultOne = await Sut.GetModelAsync();
-            ITestModel resultTwo = null;
+            ITestModel? resultTwo = null;
             await Sut.SubscribeAsync(testModel =>
             {
                 resultTwo = testModel;
@@ -58,7 +56,7 @@ namespace Blauhaus.ClientActors.Tests.Actors.DtoModelActorTests
         {
             //Arrange 
             await Sut.InitializeAsync(Id);
-            ITestModel resultTwo = null;
+            ITestModel? resultTwo;
             var token = await Sut.SubscribeAsync(testModel =>
             {
                 resultTwo = testModel;

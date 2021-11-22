@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Blauhaus.ClientActors.Containers;
 using Blauhaus.ClientActors.Tests.Base;
@@ -45,32 +44,33 @@ namespace Blauhaus.ClientActors.Tests.Containers.ModelActorContainerTests
         {
             //Arrange
             await Sut.GetOneAsync(_id);
-            ITestModel publishedModel = null;
-            Func<ITestModel, Task> handler = model =>
+            ITestModel? publishedModel = null;
+
+            Task Handler(ITestModel model)
             {
                 publishedModel = model;
                 return Task.CompletedTask;
-            }; 
+            }
 
             //Act
-            await Sut.SubscribeToActiveModelsAsync(handler);
+            await Sut.SubscribeToActiveModelsAsync(Handler);
             var newModelId = Guid.NewGuid();
             await MockTestActor.PublishMockSubscriptionAsync((ITestModel)new TestModel(newModelId));
 
             //Assert
             Assert.That(publishedModel, Is.Not.Null);
-            Assert.That(publishedModel.Id, Is.EqualTo(newModelId));
+            Assert.That(publishedModel!.Id, Is.EqualTo(newModelId));
         }
 
         [Test]
         public async Task WHEN_token_is_disposed_SHOULD_dispose_Subscriptions()
         {
             //Arrange
-            Func<ITestModel, Task> handler = model => Task.CompletedTask;
+            Task Handler(ITestModel model) => Task.CompletedTask;
             await Sut.GetOneAsync(_id);
 
             //Act
-            var token = await Sut.SubscribeToActiveModelsAsync(handler);
+            var token = await Sut.SubscribeToActiveModelsAsync(Handler);
             token.Dispose();
 
             //Assert

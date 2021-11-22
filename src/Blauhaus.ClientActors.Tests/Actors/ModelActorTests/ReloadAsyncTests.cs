@@ -35,7 +35,7 @@ namespace Blauhaus.ClientActors.Tests.Actors.ModelActorTests
             var id = Guid.NewGuid();
             await Sut.InitializeAsync(id);
             var resultOne = await Sut.GetModelAsync();
-            ITestModel resultTwo = null;
+            ITestModel? resultTwo = null;
             await Sut.SubscribeAsync(testModel =>
             {
                 resultTwo = testModel;
@@ -60,7 +60,7 @@ namespace Blauhaus.ClientActors.Tests.Actors.ModelActorTests
             //Arrange
             var id = Guid.NewGuid();
             await Sut.InitializeAsync(id);
-            ITestModel resultTwo = null;
+            ITestModel? resultTwo;
             var token = await Sut.SubscribeAsync(testModel =>
             {
                 resultTwo = testModel;

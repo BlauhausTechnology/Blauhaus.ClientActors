@@ -1,7 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Blauhaus.ClientActors.Tests.Actors.DtoModelActorTests.Base;
-using Blauhaus.ClientActors.Tests.Base;
 using Blauhaus.ClientActors.Tests.Suts;
 using NUnit.Framework;
 

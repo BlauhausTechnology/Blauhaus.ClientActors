@@ -3,7 +3,6 @@ using NUnit.Framework;
 using System.Threading.Tasks;
 using Blauhaus.ClientActors.Tests.Suts;
 using Blauhaus.Common.TestHelpers.Extensions;
-using Blauhaus.Domain.Abstractions.Entities;
 using Blauhaus.TestHelpers.Extensions;
 
 namespace Blauhaus.ClientActors.Tests.Actors.DtoModelActorTests

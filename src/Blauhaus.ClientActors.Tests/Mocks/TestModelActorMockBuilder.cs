@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Blauhaus.ClientActors.TestHelpers;
 using Blauhaus.ClientActors.Tests.Suts;
 

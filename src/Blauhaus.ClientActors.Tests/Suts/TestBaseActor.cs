@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Blauhaus.ClientActors.Abstractions;
 using Blauhaus.ClientActors.Actors;
 using Blauhaus.Domain.Abstractions.Actors;
 
@@ -11,11 +10,11 @@ namespace Blauhaus.ClientActors.Tests.Suts
     public class TestBaseActor : BaseActor, IActor<string>
     {
         public  int Count;
-        public List<int> Numbers = new List<int>();
-        private readonly Random _random = new Random();
-        public HashSet<int> UsedThreadIds = new HashSet<int>();
+        public List<int> Numbers = new();
+        private readonly Random _random = new();
+        public HashSet<int> UsedThreadIds = new();
 
-        public List<long> StartTimeTicks = new List<long>();
+        public List<long> StartTimeTicks = new();
          
         public Task InvokeAndBlockAsync(int callIndex)
         { 
@@ -54,6 +53,6 @@ namespace Blauhaus.ClientActors.Tests.Suts
             return Task.CompletedTask;
         }
 
-        public string Id { get; private set; }
+        public string Id { get; private set; } = null!;
     }
 }

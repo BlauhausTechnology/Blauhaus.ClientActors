@@ -11,7 +11,7 @@ namespace Blauhaus.ClientActors.Tests.Containers.ModelActorContainerTests
 {
     public class GetActiveModelsAsyncTests : BaseActorTest<ModelActorContainer<ITestModelActor, Guid, ITestModel>>
     {
-        private MockBuilder<ITestModel> _mockTestModel;
+        private MockBuilder<ITestModel> _mockTestModel = null!;
         private Guid _id;
 
         protected MockBuilder<ITestModelActor> MockTestActor => AddMock<ITestModelActor>().Invoke();
