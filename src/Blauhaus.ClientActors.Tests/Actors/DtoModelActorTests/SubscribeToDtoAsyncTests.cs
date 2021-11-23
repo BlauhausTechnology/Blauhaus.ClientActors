@@ -7,18 +7,19 @@ using Blauhaus.TestHelpers.Extensions;
 
 namespace Blauhaus.ClientActors.Tests.Actors.DtoModelActorTests
 {
-    public class DtoLoaderUpdatedTests : BaseDtoModelActorTest
+    public class SubscribeToDtoAsyncTests : BaseDtoModelActorTest
     {
          
         [Test]
-        public async Task SHOULD_load_and_cached_model()
+        public async Task SHOULD_load_and_cache_model()
         {
             //Arrange
             await Sut.InitializeAsync(Id);
             using var updates = await Sut.SubscribeToUpdatesAsync();
+            var dto = new TestDto { Id = Id, RandomThing = "Hi Sailor" };
 
             //Act
-            var dto = new TestDto { Id = Id, RandomThing = "Hi Sailor" };
+            await Sut.SubscribeToDtoAsync();
             await MockDtoLoader.PublishMockSubscriptionAsync(dto);
 
             //Assert

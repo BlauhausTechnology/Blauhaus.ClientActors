@@ -27,7 +27,11 @@ namespace Blauhaus.ClientActors.Actors
         protected override async Task OnInitializedAsync(TId id)
         {
             await base.OnInitializedAsync(id);
+            Dto = await DtoLoader.GetOneAsync(Id);
+        }
 
+        public async Task SubscribeToDtoAsync()
+        {
             _dtoCacheToken = await DtoLoader.SubscribeAsync(async dto =>
             {
                 Dto = dto;
@@ -35,9 +39,8 @@ namespace Blauhaus.ClientActors.Actors
                 await UpdateSubscribersAsync(_model);
             }, x => x.Id.Equals(Id));
 
-            Dto = await DtoLoader.GetOneAsync(Id);
         }
-         
+
         public virtual Task<TDto> GetDtoAsync()
         {
             return Task.FromResult(Dto);
