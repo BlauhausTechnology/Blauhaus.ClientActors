@@ -6,12 +6,12 @@ using Winton.Extensions.Threading.Actor;
 
 namespace Blauhaus.ClientActors.Actors
 {
-    public abstract class BaseWildActor : BasePublisher, IAsyncDisposable
+    public abstract class BaseActor : BasePublisher, IAsyncDisposable
     {
         private readonly Actor _handler;
         private readonly SemaphoreSlim _lock; 
 
-        protected BaseWildActor()
+        protected BaseActor()
         {
             _lock = new SemaphoreSlim(1);
 
