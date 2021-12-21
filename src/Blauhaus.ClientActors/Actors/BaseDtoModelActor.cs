@@ -48,7 +48,7 @@ namespace Blauhaus.ClientActors.Actors
 
         protected override async Task<TModel> LoadModelAsync()
         {
-            var dto = await GetDtoAsync();
+            var dto = await DtoLoader.GetOneAsync(Id);
             return await ConstructModelAsync(dto);
         }
 
