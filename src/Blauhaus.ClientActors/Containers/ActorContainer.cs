@@ -7,6 +7,7 @@ using Blauhaus.ClientActors.Abstractions;
 using Blauhaus.ClientActors.Actors;
 using Blauhaus.Domain.Abstractions.Actors;
 using Blauhaus.Ioc.Abstractions;
+using Winton.Extensions.Threading.Actor;
 
 namespace Blauhaus.ClientActors.Containers
 {
@@ -44,11 +45,15 @@ namespace Blauhaus.ClientActors.Containers
                     return existingActor;
                 }
 
-                var newActor = _serviceLocator.Resolve<TActor>();
-                await newActor.InitializeAsync(actorId);
-
-                return newActor;
+                return await ResolveAndinitializeActorAsync(actorId);
             });
+        }
+
+        protected virtual async Task<TActor> ResolveAndinitializeActorAsync(TId id)
+        {
+            var newActor = _serviceLocator.Resolve<TActor>();
+            await newActor.InitializeAsync(id);
+            return newActor;
         }
 
         public Task<IReadOnlyList<TActor>> UseAsync(IEnumerable<TId> actorIds)
@@ -176,8 +181,7 @@ namespace Blauhaus.ClientActors.Containers
                 return existingActor;
             }
 
-            var newActor = _serviceLocator.Resolve<TActor>();
-            await newActor.InitializeAsync(actorId);
+            var newActor = await ResolveAndinitializeActorAsync(actorId);
             _actorCache[actorId] = newActor;
 
             AnalyticsService.Debug($"New {typeof(TActor).Name} constructed with Id {actorId}");
@@ -217,10 +221,7 @@ namespace Blauhaus.ClientActors.Containers
                 return existingActor;
             }
 
-            var newActor = _serviceLocator.Resolve<TActor>();
-            await newActor.InitializeAsync(actorId);
-
-            return newActor;
+            return await ResolveAndinitializeActorAsync(actorId);
         }
 
         
