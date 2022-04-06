@@ -7,7 +7,7 @@ using Blauhaus.Domain.Abstractions.Actors;
 namespace Blauhaus.ClientActors.Actors
 {
      
-    public abstract class BaseModelActor<TModel, TId> : BaseActor, IModelActor<TModel, TId>
+    public abstract class BaseModelActor<TModel, TId> : BaseActor<TModel>, IModelActor<TModel, TId>
         where TModel : class, IHasId<TId>
     {
 
@@ -34,15 +34,15 @@ namespace Blauhaus.ClientActors.Actors
         }
 
         protected TModel? Model;
-        
-        public virtual Task<IDisposable> SubscribeAsync(Func<TModel, Task> handler, Func<TModel, bool>? filter = null)
+
+        protected override async Task<TModel> GetAsync()
         {
-            return Task.FromResult(AddSubscriber(handler, filter));
+            return Model ??= await LoadModelAsync();
         }
-        
+
         public Task<TModel> GetModelAsync()
         {
-            return InvokeAsync(async () => await GetOrLoadModelAsync());
+            return InvokeAsync(async () => await GetAsync());
         }
         
         public Task ReloadAsync()
@@ -52,11 +52,7 @@ namespace Blauhaus.ClientActors.Actors
                 await ReloadSelfAsync();
             });
         }
-        
-        protected async Task<TModel> GetOrLoadModelAsync()
-        {
-            return Model ??= await LoadModelAsync();
-        }
+         
         
         protected async Task<TModel> ReloadSelfAsync()
         {
@@ -67,7 +63,7 @@ namespace Blauhaus.ClientActors.Actors
 
         protected async Task<TModel> UpdateModelAsync(Func<TModel, TModel> modelUpdater)
         {
-            var model = await GetOrLoadModelAsync();
+            var model = await GetAsync();
             
             Model = modelUpdater.Invoke(model);
             await UpdateSubscribersAsync(Model);

@@ -23,8 +23,9 @@ namespace Blauhaus.ClientActors.Tests.Actors.DtoModelActorTests
             await MockDtoLoader.PublishMockSubscriptionAsync(dto);
 
             //Assert
-            updates.WaitFor(x => x.Count == 1);
-            Assert.That(updates[0].RandomThing, Is.EqualTo("Hi Sailor"));
+            updates.WaitFor(x => x.Count == 2);
+            //first update is random
+            Assert.That(updates[1].RandomThing, Is.EqualTo("Hi Sailor"));
         }
     }
 }
