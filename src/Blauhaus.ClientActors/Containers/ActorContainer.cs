@@ -2,28 +2,40 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Blauhaus.Analytics.Abstractions;
 using Blauhaus.Analytics.Abstractions.Service;
 using Blauhaus.ClientActors.Abstractions;
 using Blauhaus.ClientActors.Actors;
 using Blauhaus.Domain.Abstractions.Actors;
 using Blauhaus.Ioc.Abstractions;
+using Microsoft.Extensions.Logging;
 using Winton.Extensions.Threading.Actor;
 
 namespace Blauhaus.ClientActors.Containers
 {
-    public class ActorContainer<TActor, TId> : BaseActor, IActorContainer<TActor, TId> 
+    public class ActorContainer<TActor, TId> : BaseActorContainer<TActor, TId> where TActor : class, IActor<TId>
+    {
+        public ActorContainer(
+            IAnalyticsLogger<ActorContainer<TActor, TId>> logger, 
+            IServiceLocator serviceLocator) 
+                : base(logger, serviceLocator)
+        {
+        }
+    }
+
+    public abstract class BaseActorContainer<TActor, TId> : BaseActor, IActorContainer<TActor, TId> 
         where TActor : class, IActor<TId>
     {
         private readonly IServiceLocator _serviceLocator;
-        protected readonly IAnalyticsService AnalyticsService;
+        protected readonly IAnalyticsLogger Logger;
         private readonly Dictionary<TId, TActor> _actorCache = new();
 
-        public ActorContainer(
-            IServiceLocator serviceLocator,
-            IAnalyticsService analyticsService)
+        protected BaseActorContainer(
+            IAnalyticsLogger logger,
+            IServiceLocator serviceLocator)
         {
             _serviceLocator = serviceLocator;
-            AnalyticsService = analyticsService;
+            Logger = logger;
         }
 
         public Task<TActor> GetOneAsync(TId actorId)
@@ -184,7 +196,7 @@ namespace Blauhaus.ClientActors.Containers
             var newActor = await ResolveAndinitializeActorAsync(actorId);
             _actorCache[actorId] = newActor;
 
-            AnalyticsService.Debug($"New {typeof(TActor).Name} constructed with Id {actorId}");
+            Logger.LogTrace("New {ActorTypeName} constructed with Id {ActorId}", typeof(TActor).Name, actorId);
 
             await HandleNewActorAsync(newActor);
 

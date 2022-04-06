@@ -1,4 +1,5 @@
-﻿using Blauhaus.Analytics.Abstractions.Service;
+﻿using Blauhaus.Analytics.Abstractions;
+using Blauhaus.Analytics.Abstractions.Service;
 using Blauhaus.Analytics.TestHelpers.MockBuilders;
 using Blauhaus.Ioc.Abstractions;
 using Blauhaus.Ioc.DotNetCoreIocService;
@@ -17,9 +18,9 @@ namespace Blauhaus.ClientActors.Tests.Base
 
             Services.AddSingleton<IServiceLocator, DotNetCoreServiceLocator>();
 
-            AddService(x => MockAnalyticsService.Object);
+            AddService(x => MockLogger.Object);
         }
 
-        protected AnalyticsServiceMockBuilder MockAnalyticsService => AddMock<AnalyticsServiceMockBuilder, IAnalyticsService>().Invoke();
+        protected AnalyticsLoggerMockBuilder<TSut> MockLogger => AddMock<AnalyticsLoggerMockBuilder<TSut>, IAnalyticsLogger<TSut>>().Invoke();
     }
 }
