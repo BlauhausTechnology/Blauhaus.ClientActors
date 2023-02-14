@@ -11,8 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Blauhaus.Domain.Abstractions" Version="2.0.0" />
-    <PackageReference Include="Blauhaus.Ioc.Abstractions" Version="1.5.1" />
+    <PackageReference Include="Blauhaus.Domain.Abstractions" Version="2.0.1" />
+    <PackageReference Include="Blauhaus.Ioc.Abstractions" Version="1.5.2" />
     <PackageReference Include="Blauhaus.Responses" Version="0.4.11" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
     <PackageReference Include="Winton.Extensions.Threading.Actor" Version="1.10.0" />
