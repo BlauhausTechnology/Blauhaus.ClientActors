@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-      <LangVersion>9</LangVersion>
+      <LangVersion>latest</LangVersion>
       <Nullable>enable</Nullable>
   </PropertyGroup>
 
@@ -11,8 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Blauhaus.Domain.Abstractions" Version="2.0.1" />
-    <PackageReference Include="Blauhaus.Ioc.Abstractions" Version="1.5.2" />
+    <PackageReference Include="Blauhaus.Domain.Abstractions" Version="2.0.3" />
+    <PackageReference Include="Blauhaus.Ioc.Abstractions" Version="1.5.3" />
     <PackageReference Include="Blauhaus.Responses" Version="0.4.11" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
     <PackageReference Include="Winton.Extensions.Threading.Actor" Version="1.10.0" />

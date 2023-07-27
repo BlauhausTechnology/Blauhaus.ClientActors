@@ -196,8 +196,6 @@ namespace Blauhaus.ClientActors.Containers
             var newActor = await ResolveAndinitializeActorAsync(actorId);
             _actorCache[actorId] = newActor;
 
-            Logger.LogTrace("New {ActorTypeName} constructed with Id {ActorId}", typeof(TActor).Name, actorId);
-
             await HandleNewActorAsync(newActor);
 
             return newActor;

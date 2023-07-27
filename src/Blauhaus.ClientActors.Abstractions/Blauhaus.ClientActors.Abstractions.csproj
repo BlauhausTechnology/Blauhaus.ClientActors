@@ -2,13 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-      <LangVersion>8</LangVersion>
+      <LangVersion>latest</LangVersion>
       <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Blauhaus.Common.Utils" Version="2.2.11" />
-    <PackageReference Include="Blauhaus.Domain.Abstractions" Version="2.0.1" />
+    <PackageReference Include="Blauhaus.Common.Utils" Version="2.3.18" />
+    <PackageReference Include="Blauhaus.Domain.Abstractions" Version="2.0.3" />
     <PackageReference Include="Blauhaus.Responses" Version="0.4.11" />
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="7.0.0" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
