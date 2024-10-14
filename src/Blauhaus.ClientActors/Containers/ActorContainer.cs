@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Blauhaus.Analytics.Abstractions;
-using Blauhaus.Analytics.Abstractions.Service;
 using Blauhaus.ClientActors.Abstractions;
 using Blauhaus.ClientActors.Actors;
-using Blauhaus.Domain.Abstractions.Actors;
 using Blauhaus.Ioc.Abstractions;
 using Microsoft.Extensions.Logging;
 using Winton.Extensions.Threading.Actor;
@@ -16,7 +13,7 @@ namespace Blauhaus.ClientActors.Containers
     public class ActorContainer<TActor, TId> : BaseActorContainer<TActor, TId> where TActor : class, IActor<TId>
     {
         public ActorContainer(
-            IAnalyticsLogger<ActorContainer<TActor, TId>> logger, 
+            ILogger<ActorContainer<TActor, TId>> logger, 
             IServiceLocator serviceLocator) 
                 : base(logger, serviceLocator)
         {
@@ -27,11 +24,11 @@ namespace Blauhaus.ClientActors.Containers
         where TActor : class, IActor<TId>
     {
         private readonly IServiceLocator _serviceLocator;
-        protected readonly IAnalyticsLogger Logger;
+        protected readonly ILogger Logger;
         private readonly Dictionary<TId, TActor> _actorCache = new();
 
         protected BaseActorContainer(
-            IAnalyticsLogger logger,
+            ILogger logger,
             IServiceLocator serviceLocator)
         {
             _serviceLocator = serviceLocator;

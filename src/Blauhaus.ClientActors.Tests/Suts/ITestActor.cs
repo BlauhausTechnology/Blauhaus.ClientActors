@@ -1,4 +1,4 @@
-﻿using Blauhaus.Domain.Abstractions.Actors;
+﻿using Blauhaus.ClientActors.Abstractions;
 
 namespace Blauhaus.ClientActors.Tests.Suts
 {

@@ -1,10 +1,9 @@
-﻿using Blauhaus.Analytics.Abstractions;
-using Blauhaus.Analytics.Abstractions.Service;
-using Blauhaus.Analytics.TestHelpers.MockBuilders;
+﻿using Blauhaus.Analytics.TestHelpers.MockBuilders;
 using Blauhaus.Ioc.Abstractions;
 using Blauhaus.Ioc.DotNetCoreIocService;
 using Blauhaus.TestHelpers.BaseTests;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 
 namespace Blauhaus.ClientActors.Tests.Base
@@ -17,10 +16,9 @@ namespace Blauhaus.ClientActors.Tests.Base
             base.Cleanup();
 
             Services.AddSingleton<IServiceLocator, DotNetCoreServiceLocator>();
+            Services.AddLogging(x => x.AddDebug());
 
-            AddService(x => MockLogger.Object);
         }
 
-        protected AnalyticsLoggerMockBuilder<TSut> MockLogger => AddMock<AnalyticsLoggerMockBuilder<TSut>, IAnalyticsLogger<TSut>>().Invoke();
     }
 }

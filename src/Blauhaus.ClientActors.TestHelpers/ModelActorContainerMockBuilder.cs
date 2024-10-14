@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Blauhaus.ClientActors.Abstractions;
 using Blauhaus.Common.Abstractions;
-using Blauhaus.Domain.Abstractions.Actors;
 using Blauhaus.TestHelpers.Builders.Base;
 using Moq;
 

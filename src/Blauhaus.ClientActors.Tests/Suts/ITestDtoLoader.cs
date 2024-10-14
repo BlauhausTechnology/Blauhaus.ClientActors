@@ -1,5 +1,5 @@
 ﻿using System;
-using Blauhaus.Domain.Abstractions.DtoCaches;
+using Blauhaus.ClientActors.Abstractions;
 
 namespace Blauhaus.ClientActors.Tests.Suts
 {

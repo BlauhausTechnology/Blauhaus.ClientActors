@@ -2,8 +2,8 @@
 using Blauhaus.ClientActors.Tests.Suts;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using Moq;
 using Blauhaus.ClientActors.Tests.Mocks;
+using Moq;
 
 namespace Blauhaus.ClientActors.Tests.Actors.DtoModelActorTests.Base
 {

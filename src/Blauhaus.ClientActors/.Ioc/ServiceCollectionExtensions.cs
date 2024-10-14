@@ -1,7 +1,6 @@
 ﻿using Blauhaus.ClientActors.Abstractions;
 using Blauhaus.ClientActors.Containers;
 using Blauhaus.Common.Abstractions;
-using Blauhaus.Domain.Abstractions.Actors;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 

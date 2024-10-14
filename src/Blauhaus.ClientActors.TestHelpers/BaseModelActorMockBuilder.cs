@@ -2,7 +2,6 @@
 using Blauhaus.ClientActors.Abstractions;
 using Blauhaus.Common.Abstractions;
 using Blauhaus.Common.TestHelpers.MockBuilders;
-using Blauhaus.Domain.Abstractions.Actors;
 using Moq;
 
 namespace Blauhaus.ClientActors.TestHelpers

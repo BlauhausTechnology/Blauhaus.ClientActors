@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Blauhaus.Common.Abstractions;
-using Blauhaus.Domain.Abstractions.Actors;
 
 namespace Blauhaus.ClientActors.Abstractions
 {

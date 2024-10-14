@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Blauhaus.ClientActors.Abstractions;
 using Blauhaus.ClientActors.Actors;
-using Blauhaus.Domain.Abstractions.Actors;
 
 namespace Blauhaus.ClientActors.Tests.Suts
 {

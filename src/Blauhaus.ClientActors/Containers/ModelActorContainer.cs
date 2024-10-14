@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Blauhaus.Analytics.Abstractions;
-using Blauhaus.Analytics.Abstractions.Service;
 using Blauhaus.ClientActors.Abstractions;
 using Blauhaus.Common.Abstractions;
 using Blauhaus.Common.Utils.Disposables;
-using Blauhaus.Domain.Abstractions.Actors;
 using Blauhaus.Ioc.Abstractions;
 using Microsoft.Extensions.Logging;
 
@@ -20,7 +17,7 @@ namespace Blauhaus.ClientActors.Containers
         private readonly List<SavedSubscription> _activeModelSubscriptions = new();
          
         public ModelActorContainer(
-            IAnalyticsLogger<ModelActorContainer<TActor, TId, TModel>> logger, 
+            ILogger<ModelActorContainer<TActor, TId, TModel>> logger, 
             IServiceLocator serviceLocator) 
                 : base(logger, serviceLocator)
         {

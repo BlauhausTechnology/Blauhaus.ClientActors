@@ -2,9 +2,6 @@
 using System.Threading.Tasks;
 using Blauhaus.ClientActors.Abstractions;
 using Blauhaus.Common.Abstractions;
-using Blauhaus.Common.Utils.Disposables;
-using Blauhaus.Domain.Abstractions.Actors;
-using Blauhaus.Domain.Abstractions.DtoCaches;
 
 namespace Blauhaus.ClientActors.Actors
 {
